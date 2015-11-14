@@ -8,27 +8,37 @@ public class Enemy : MonoBehaviour {
 	public int str;
 	public int agi;
 	public int con;
-	public int minDamage;
-	public int maxDamage;
-	public int dodge;
-	public int hp;
 	public int armor;
 	public int level;
 	public int expGiven;
+	public int moneyGiven;
+	public int hp { get { return con * 5; } }
+	public int minDamage { get { return Mathf.RoundToInt (str / 2); }}
+	public int maxDamage { get { return minDamage + str; }}
 	public enum EnemyType {
 		NONE
 	}
 	public EnemyType type;
 	public Animator animator;
 	public NavMeshAgent agent;
+	public AudioSource aS;
+	public AudioClip death;
+	public Curves.StatCurve[]	statCurves;
 
 	private int _framesToWait = 180;
 
+	void InstantiateStats () {
+		foreach (Curves.StatCurve statCurve in statCurves) {
+
+		}
+	}
+
 	void CheckHealth () {
 		if (hp <= 0) {
-			hp = 0;
 			OnDeath();
 			animator.SetTrigger ("Death");
+			aS.clip = death;
+			aS.Play ();
 			StartCoroutine (BodyDissolve());
 		}
 	}
@@ -44,10 +54,12 @@ public class Enemy : MonoBehaviour {
 	}
 
 	void Start () {
-	
+		InstantiateStats ();
 	}
 
 	void Update () {
-	
+		if (hp > 0) {
+
+		}
 	}
 }
