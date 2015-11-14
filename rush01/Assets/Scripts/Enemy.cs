@@ -23,14 +23,36 @@ public class Enemy : MonoBehaviour {
 	public NavMeshAgent agent;
 	public AudioSource aS;
 	public AudioClip death;
-	public Curves.StatCurve[]	statCurves;
+	public Curves.StatCurve[] statCurves;
+	public AggroRange aggroRange;
 
 	private int _framesToWait = 180;
 
 	void InstantiateStats () {
 		foreach (Curves.StatCurve statCurve in statCurves) {
 			switch (statCurve.stat) {
-			case Curves.Stat.STRENGTH:
+				case Curves.Stat.STRENGTH:
+					str = Curves.ApplyCurve(statCurve.curve, level, str);
+					break;
+
+				case Curves.Stat.AGILITY:
+					agi = Curves.ApplyCurve(statCurve.curve, level, agi);
+					break;
+
+				case Curves.Stat.CONSTITUTION:
+					con = Curves.ApplyCurve(statCurve.curve, level, con);
+					break;
+
+				case Curves.Stat.ARMOR:
+					armor = Curves.ApplyCurve(statCurve.curve, level, armor);
+					break;
+
+				case Curves.Stat.EXPERIENCE:
+					expGiven = Curves.ApplyCurve(statCurve.curve, level, expGiven);
+					break;
+
+				default:
+					break;
 			}
 		}
 	}
@@ -39,6 +61,7 @@ public class Enemy : MonoBehaviour {
 		if (hp <= 0) {
 			OnDeath();
 			animator.SetTrigger ("Death");
+			animator.SetInteger ("RandomDeath", Random.Range(0, 4));
 			aS.clip = death;
 			aS.Play ();
 			StartCoroutine (BodyDissolve());
@@ -55,13 +78,43 @@ public class Enemy : MonoBehaviour {
 		Destroy (gameObject);
 	}
 
+	void CheckAggroRange () {
+		if (aggroRange.intruder) {
+			agent.SetDestination (aggroRange.intruder.transform.position);
+			agent.stoppingDistance = 2.0f;
+			animator.SetBool ("Run", true);
+		}
+	}
+
+	void Attack () {
+		if (aggroRange.intruder) {
+			float distanceToTarget;
+			bool closeEnough = false;
+
+			distanceToTarget = Vector3.Distance (this.transform.position, aggroRange.intruder.transform.position);
+			closeEnough = distanceToTarget > agent.stoppingDistance ? false : true;
+			if (closeEnough) {
+				this.transform.LookAt (aggroRange.intruder.transform.position);
+				animator.SetBool ("Run", false);
+				animator.SetTrigger ("Attack");
+				Damage ();
+			}
+		}
+	}
+
+	void Damage () {
+
+	}
+
 	void Start () {
 		InstantiateStats ();
 	}
 
 	void Update () {
 		if (hp > 0) {
-
+			CheckHealth ();
+			CheckAggroRange ();
+			Attack ();
 		}
 	}
 }

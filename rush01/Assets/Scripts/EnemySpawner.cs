@@ -24,6 +24,7 @@ public class EnemySpawner : MonoBehaviour {
 			_clone = Instantiate (_spawn, position, Quaternion.Euler(0f, 0f + Random.Range(0, 360), 0f)) as Enemy;
 			_clone.OnDeath += OnEnemyDeathListener;
 			_clone.type = type;
+			_clone.level = PlayerScript.instance.level;
 		}
 		_spawnCount = density;
 	}

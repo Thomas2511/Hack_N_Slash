@@ -29,36 +29,33 @@ public class Curves : MonoBehaviour {
 		public Curve curve;
 	}
 
-	private Dictionary<Curve, System.Func<int, int, int>> table;
+	public static Dictionary<Curve, System.Func<int, int, int>> table = new Dictionary<Curve, System.Func<int, int, int>>
+	{
+		{Curve.LOG, UseLog},
+		{Curve.LINEAR, UseLinear},
+		{Curve.LINEAR2X, UseLinear2X},
+		{Curve.SQR, UseSqr}
+	};
 
-	void Start () {
-		instance = this;
-		table = new Dictionary<Curve, System.Func<int, int, int>>();
-		table [Curve.LOG] = UseLog;
-		table [Curve.LINEAR] = UseLinear;
-		table [Curve.LINEAR2X] = UseLinear2X;
-		table [Curve.SQR] = UseSqr;
-	}
-
-	public int ApplyCurve(Curve curve, int level, int stat)
+	public static int ApplyCurve(Curve curve, int level, int stat)
 	{
 		return table[curve](stat, level);
 	}
 
-	public int UseLog (int stat, int level) {
+	public static int UseLog (int stat, int level) {
 		return stat + (int) Mathf.Log (level);
 	}
 
-	public int UseLinear (int stat, int level) {
+	public static int UseLinear (int stat, int level) {
 		return stat + level;
 	}
 
-	public int UseLinear2X(int stat, int level)
+	public static int UseLinear2X(int stat, int level)
 	{
 		return stat + level * 2;
 	}
 
-	public int UseSqr (int stat, int level) {
+	public static int UseSqr (int stat, int level) {
 		return stat * level * level;
 	}
 }
