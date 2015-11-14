@@ -61,5 +61,4 @@ public class Curves : MonoBehaviour {
 	public int UseSqr (int stat, int level) {
 		return stat * level * level;
 	}
-
 }

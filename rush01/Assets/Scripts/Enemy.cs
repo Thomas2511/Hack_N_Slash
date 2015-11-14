@@ -29,7 +29,9 @@ public class Enemy : MonoBehaviour {
 
 	void InstantiateStats () {
 		foreach (Curves.StatCurve statCurve in statCurves) {
-
+			switch (statCurve.stat) {
+			case Curves.Stat.STRENGTH:
+			}
 		}
 	}
 
