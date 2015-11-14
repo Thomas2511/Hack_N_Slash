@@ -1,7 +1,11 @@
 fileFormatVersion: 2
 guid: 92a62c583a2e8734d9a6018eec4d27fb
 folderAsset: yes
+<<<<<<< HEAD
 timeCreated: 1447507427
+=======
+timeCreated: 1447507506
+>>>>>>> thomas
 licenseType: Free
 DefaultImporter:
   userData: 
