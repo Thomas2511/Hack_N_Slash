@@ -5,16 +5,19 @@ public class Enemy : MonoBehaviour {
 
 	public delegate void  EnemyEvent();
 	public event EnemyEvent OnDeath;
-	public int str;
-	public int agi;
-	public int con;
-	public int armor;
-	public int level;
-	public int expGiven;
-	public int moneyGiven;
-	public int hp { get { return con * 5; } }
-	public int minDamage { get { return Mathf.RoundToInt (str / 2); }}
-	public int maxDamage { get { return minDamage + str; }}
+	public uint str;
+	public uint agi;
+	public uint con;
+	public uint armor;
+	public uint level;
+	public uint expGiven;
+	public uint moneyGiven;
+	public uint hp { get { return con * 5; } }
+	public uint currentHp;
+	public uint minDamage { get { return (uint) Mathf.RoundToInt (str / 2); }}
+	public uint maxDamage { get { return minDamage + str; }}
+	public bool dead;
+	public GameObject intruder;
 	public enum EnemyType {
 		NONE
 	}
@@ -24,9 +27,18 @@ public class Enemy : MonoBehaviour {
 	public AudioSource aS;
 	public AudioClip death;
 	public Curves.StatCurve[] statCurves;
-	public AggroRange aggroRange;
 
-	private int _framesToWait = 180;
+	private uint _framesToWait = 600;
+
+	void OnTriggerStay (Collider col) {
+		if (col.gameObject.tag == "Player")
+			intruder = col.gameObject;
+	}
+
+	void OnTriggerExit (Collider col) {
+		if (col.gameObject.tag == "Player")
+			intruder = null;
+	}
 
 	void InstantiateStats () {
 		foreach (Curves.StatCurve statCurve in statCurves) {
@@ -58,7 +70,8 @@ public class Enemy : MonoBehaviour {
 	}
 
 	void CheckHealth () {
-		if (hp <= 0) {
+		if (currentHp <= 0 && !dead) {
+			dead = true;
 			OnDeath();
 			animator.SetTrigger ("Death");
 			animator.SetInteger ("RandomDeath", Random.Range(0, 4));
@@ -71,30 +84,45 @@ public class Enemy : MonoBehaviour {
 	IEnumerator BodyDissolve ()
 	{
 		Destroy (agent);
+		Destroy (GetComponent<Rigidbody> ());
+		Destroy (GetComponent<BoxCollider> ());
+		Destroy (GetComponentInChildren<Canvas> ().gameObject);
+		float length = 0.0f;
+		foreach (AnimatorClipInfo animinfo in animator.GetCurrentAnimatorClipInfo(0))
+		{
+			if (animinfo.clip.name.StartsWith ("Standing_React_Death_"))
+				length = animinfo.clip.length;
+		}
+		yield return new WaitForSeconds (length);
 		for (int i = 0; i < _framesToWait; i++) {
 			yield return new WaitForEndOfFrame ();
-			this.transform.position = new Vector3 (this.transform.position.x, this.transform.position.y - 0.0125f, this.transform.position.z);
+			this.transform.position = new Vector3 (this.transform.position.x, this.transform.position.y - 0.00125f, this.transform.position.z);
 		}
 		Destroy (gameObject);
 	}
 
 	void CheckAggroRange () {
-		if (aggroRange.intruder) {
-			agent.SetDestination (aggroRange.intruder.transform.position);
-			agent.stoppingDistance = 2.0f;
+		if (intruder != null) {
+			agent.SetDestination (intruder.transform.position);
 			animator.SetBool ("Run", true);
+		} else {
+			agent.SetDestination (this.transform.position);
+			animator.SetBool ("Run", false);
 		}
+
 	}
 
 	void Attack () {
-		if (aggroRange.intruder) {
+		if (intruder) {
 			float distanceToTarget;
 			bool closeEnough = false;
 
-			distanceToTarget = Vector3.Distance (this.transform.position, aggroRange.intruder.transform.position);
+			distanceToTarget = Vector3.Distance (this.transform.position, intruder.transform.position);
 			closeEnough = distanceToTarget > agent.stoppingDistance ? false : true;
 			if (closeEnough) {
-				this.transform.LookAt (aggroRange.intruder.transform.position);
+				Vector3 targetPosition = new Vector3 (intruder.transform.position.x, this.transform.position.y, intruder.transform.position.z);
+				
+				this.transform.LookAt (targetPosition);
 				animator.SetBool ("Run", false);
 				animator.SetTrigger ("Attack");
 				Damage ();
@@ -107,12 +135,15 @@ public class Enemy : MonoBehaviour {
 	}
 
 	void Start () {
+		currentHp = hp;
+		dead = false;
+		agent.stoppingDistance = 2.5f;
 		InstantiateStats ();
 	}
 
 	void Update () {
-		if (hp > 0) {
-			CheckHealth ();
+		CheckHealth ();
+		if (currentHp > 0) {
 			CheckAggroRange ();
 			Attack ();
 		}
