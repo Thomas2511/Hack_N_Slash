@@ -15,6 +15,6 @@ public abstract class SkillScript
 	public int				range;
 	public float			coolDown;
 	public bool				onCoolDown;
-	public abstract void	UseSkill();
+	public abstract void	UseSkill(Animator animator);
 }
 

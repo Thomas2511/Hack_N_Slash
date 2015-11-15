@@ -3,6 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class PlayerScript : MonoBehaviour {
+	public enum AttackType
+	{
+		WEAPON_ATTACK,
+		SPELL_ATTACK,
+		NONE
+	}
 	// Singleton
 	public static PlayerScript	instance;
 
@@ -13,12 +19,13 @@ public class PlayerScript : MonoBehaviour {
 
 	// Utility
 	public 	bool				_dead;
-	public 	bool				_attack;
+	public	bool				_attack;
 	public	bool				_targeting;
 	public	bool				_onCoolDown;
 	public 	GameObject			_target;
 	public 	SkillScript			_currentSkill;
 	public	List<GameObject>	_targetsInRange;
+	public	AttackType			_attackType;
 
 	// Audio
 	public AudioSource			footstepsSound;
@@ -35,7 +42,7 @@ public class PlayerScript : MonoBehaviour {
 	public	int					xp;
 	public	int					money;
 	public	int					level;
-	public	int					mana;
+	public	int					current_mana;
 
 	// Equipment
 	public	WeaponScript		weapon;
@@ -45,6 +52,7 @@ public class PlayerScript : MonoBehaviour {
 	public	int					minDamage { get { return str / 2;}}
 	public	int					maxDamage { get { return minDamage + weaponDamage;}}
 	public	int					hpMax { get { return 5 * con; } }
+	public	int					manaMax { get { return 100; }}
 	public	int					weaponDamage { get { return weapon == null ? 0 : weapon.damage; }}
 	public	int					armorValue { get { return armor == null ? 0 : armor.armorValue; }} 
 	public	float				weaponCoolDown { get { return weapon == null ? 3.0f : weapon.coolDown; }}
@@ -53,6 +61,7 @@ public class PlayerScript : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		instance = this;
+		_attackType = AttackType.NONE;
 		_navMeshAgent = GetComponent<NavMeshAgent>();
 		_animator = GetComponent<Animator>();
 		_sphereCollider = GetComponentInChildren<SphereCollider>();
@@ -68,6 +77,15 @@ public class PlayerScript : MonoBehaviour {
 		return (_currentSkill == null);
 	}
 
+	void CancelAttackAnimation()
+	{
+		if (_attack)
+		{
+			_animator.SetTrigger ("Cancel");
+			_attack = false;
+		}
+	}
+
 	void FollowMouse ()
 	{
 		if (CurrentSkillIsDirectAttack() && Input.GetMouseButtonDown (0))
@@ -79,7 +97,8 @@ public class PlayerScript : MonoBehaviour {
 				{
 					_navMeshAgent.destination = hit.point;
 					_navMeshAgent.stoppingDistance = 0.0f;
-					_attack = false;
+					CancelAttackAnimation ();
+					_targeting = false;
 					_navMeshAgent.Resume ();
 				}
 				else if (hit.collider.tag == "Enemy")
@@ -87,7 +106,8 @@ public class PlayerScript : MonoBehaviour {
 					_navMeshAgent.destination = hit.point;
 					_navMeshAgent.stoppingDistance = NoSkillSelected () ? weaponRange : _currentSkill.range;
 					_target = hit.collider.gameObject;
-					_attack = true;
+					CancelAttackAnimation ();
+					_targeting = true;
 					_navMeshAgent.Resume();
 				}
 			}
@@ -106,26 +126,38 @@ public class PlayerScript : MonoBehaviour {
 		return (_target != null && isInRange(_target));
 	}
 
+	void applyDamage()
+	{
+		Debug.Log ("Damage");
+	}
+
+	void attackOver()
+	{
+		_attack = false;
+	}
+
 	void AttackEnemy()
 	{
-		if (_attack && targetInRange () && _navMeshAgent.velocity == Vector3.zero)
+		if (_targeting && targetInRange () && _navMeshAgent.velocity == Vector3.zero)
 		{
 			if (NoSkillSelected () && !_onCoolDown)
 			{
-				StartCoroutine (onCoolDown());
 				_navMeshAgent.Stop ();
-				transform.LookAt (_target.transform);
+				StartCoroutine (onCoolDown());
+				transform.LookAt (new Vector3 (_target.transform.position.x, this.transform.position.y, _target.transform.position.z));
 				_animator.SetTrigger ("WeaponAttack");
+				_attack = true;
 				attackSounds[Random.Range (0, attackSounds.Length)].Play ();
 				if (!Input.GetMouseButton (0))
-					_attack = false;
+					_targeting = false;
 			}
 			if (!NoSkillSelected () && !_currentSkill.onCoolDown)
 			{
 				_navMeshAgent.Stop ();
-				_currentSkill.UseSkill ();
+				_currentSkill.UseSkill (_animator);
+				transform.LookAt (new Vector3 (_target.transform.position.x, this.transform.position.y, _target.transform.position.z));
 				if (!Input.GetMouseButton(0))
-					_attack = false;
+					_targeting = false;
 			}
 		}
 	}
@@ -177,6 +209,11 @@ public class PlayerScript : MonoBehaviour {
 	{
 		_sphereCollider.radius = weaponRange;
 	}
+
+	/*void UpdateSpeed()
+	{
+		_animator.SetFloat ("Speed", _navMeshAgent.velocity.magnitude / 3.5f);
+	}*/
 	
 	// Update is called once per frame
 	void Update () {
@@ -184,6 +221,7 @@ public class PlayerScript : MonoBehaviour {
 		FollowMouse();
 		DeathAnimation();
 		UpdateRange();
+		//UpdateSpeed ();
 		RunAnimation();
 		RunSound();
 	}
