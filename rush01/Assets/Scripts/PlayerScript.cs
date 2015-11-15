@@ -26,6 +26,7 @@ public class PlayerScript : MonoBehaviour {
 	public 	SkillScript			_currentSkill;
 	public	List<GameObject>	_targetsInRange;
 	public	AttackType			_attackType;
+	public	GameObject			playerRightHand;
 
 	// Audio
 	public AudioSource			footstepsSound;
@@ -99,6 +100,7 @@ public class PlayerScript : MonoBehaviour {
 					_navMeshAgent.stoppingDistance = 0.0f;
 					CancelAttackAnimation ();
 					_targeting = false;
+					_target = null;
 					_navMeshAgent.Resume ();
 				}
 				else if (hit.collider.tag == "Enemy")
@@ -128,7 +130,8 @@ public class PlayerScript : MonoBehaviour {
 
 	void applyDamage()
 	{
-		Debug.Log ("Damage");
+		if (!NoSkillSelected() && CurrentSkillIsDirectAttack())
+			_currentSkill.ApplyEffect (_target, playerRightHand.transform.position);
 	}
 
 	void attackOver()
@@ -155,6 +158,7 @@ public class PlayerScript : MonoBehaviour {
 			{
 				_navMeshAgent.Stop ();
 				_currentSkill.UseSkill (_animator);
+				_attack = true;
 				transform.LookAt (new Vector3 (_target.transform.position.x, this.transform.position.y, _target.transform.position.z));
 				if (!Input.GetMouseButton(0))
 					_targeting = false;
@@ -207,7 +211,10 @@ public class PlayerScript : MonoBehaviour {
 
 	void UpdateRange ()
 	{
-		_sphereCollider.radius = weaponRange;
+		if (!NoSkillSelected () && CurrentSkillIsDirectAttack())
+			_sphereCollider.radius = _currentSkill.range;
+		else
+			_sphereCollider.radius = weaponRange;
 	}
 
 	/*void UpdateSpeed()
