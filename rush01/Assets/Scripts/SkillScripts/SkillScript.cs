@@ -17,7 +17,7 @@ public abstract class SkillScript : MonoBehaviour
 	public int				range;
 	public float			coolDown;
 	public bool				onCoolDown;
-	public abstract	void	ApplyEffect(GameObject target);
+	public abstract	void	ApplyEffect(GameObject target, Vector3 playerPos);
 	public abstract void	UseSkill(Animator animator);
 }
 

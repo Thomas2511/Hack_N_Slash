@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class DirectAttackScript : SkillScript {
+public class DirectAttackScript : SkillScript
+{
 	public ProjectileScript			projectile;
 	// Use this for initialization
 	void Start () {
@@ -32,9 +33,10 @@ public class DirectAttackScript : SkillScript {
 		}
 	}
 
-	public override void ApplyEffect (GameObject target)
+	public override void ApplyEffect (GameObject target, Vector3 playerPos)
 	{
-		throw new System.NotImplementedException ();
+		if (projectile != null && target != null)
+			Instantiate (projectile, playerPos, Quaternion.LookRotation(target.transform.position - playerPos));
 	}
 
 	// Update is called once per frame
