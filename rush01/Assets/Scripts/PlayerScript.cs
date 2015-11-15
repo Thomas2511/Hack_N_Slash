@@ -155,6 +155,7 @@ public class PlayerScript : MonoBehaviour {
 			{
 				_navMeshAgent.Stop ();
 				_currentSkill.UseSkill (_animator);
+				_attack = true;
 				transform.LookAt (new Vector3 (_target.transform.position.x, this.transform.position.y, _target.transform.position.z));
 				if (!Input.GetMouseButton(0))
 					_targeting = false;
@@ -207,7 +208,10 @@ public class PlayerScript : MonoBehaviour {
 
 	void UpdateRange ()
 	{
-		_sphereCollider.radius = weaponRange;
+		if (!NoSkillSelected () && CurrentSkillIsDirectAttack())
+			_sphereCollider.radius = _currentSkill.range;
+		else
+			_sphereCollider.radius = weaponRange;
 	}
 
 	/*void UpdateSpeed()
