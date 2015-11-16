@@ -3,7 +3,7 @@ using System.Collections;
 
 public class PassiveAOESpellScript : SkillScript {
 	public FollowTargetAOEScript	spell;
-	public FollowTargetAOEScript	clone;
+	public static FollowTargetAOEScript	clone;
 
 	public override bool SelectSkill ()
 	{

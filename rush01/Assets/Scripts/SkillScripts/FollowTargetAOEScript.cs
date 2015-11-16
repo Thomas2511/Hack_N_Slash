@@ -22,7 +22,7 @@ public class FollowTargetAOEScript : MonoBehaviour
 	protected virtual IEnumerator FadeIntensity ()
 	{
 		particles.loop = false;
-		while (lightComponent == null || lightComponent.intensity > 0)
+		while (lightComponent != null && lightComponent.intensity > 0)
 		{
 			yield return new WaitForEndOfFrame();
 			lightComponent.intensity -= 0.5f;
