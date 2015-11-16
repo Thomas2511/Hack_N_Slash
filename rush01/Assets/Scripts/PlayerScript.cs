@@ -83,8 +83,12 @@ public class PlayerScript : MonoBehaviour {
 	{
 		if (_attack)
 		{
+<<<<<<< HEAD
 			if (!CurrentSkillIsDirectAttack())
 				currentSkill = null;
+=======
+			currentSkill = null;
+>>>>>>> new_afaucher
 			_animator.SetTrigger ("Cancel");
 			_attack = false;
 		}
@@ -102,6 +106,8 @@ public class PlayerScript : MonoBehaviour {
 					_navMeshAgent.destination = hit.point;
 					_navMeshAgent.stoppingDistance = 0.0f;
 					CancelAttackAnimation ();
+					currentSkill = null;
+					_attack = false;
 					_enemyTargeting = false;
 					_enemyTarget = null;
 					_navMeshAgent.Resume ();
@@ -112,6 +118,7 @@ public class PlayerScript : MonoBehaviour {
 					_navMeshAgent.stoppingDistance = NoSkillSelected () ? weaponRange : currentSkill.range;
 					_enemyTarget = hit.collider.gameObject;
 					CancelAttackAnimation ();
+					_attack = false;
 					_enemyTargeting = true;
 					_navMeshAgent.Resume();
 				}
@@ -133,6 +140,7 @@ public class PlayerScript : MonoBehaviour {
 
 	void applyDamage()
 	{
+<<<<<<< HEAD
 		if (!NoSkillSelected() && CurrentSkillIsDirectAttack())
 			currentSkill.ApplyEffect (_enemyTarget.transform.position, playerRightHand.transform.position);
 		if (!NoSkillSelected() && currentSkill.skillType == SkillScript.SkillType.TARGETED_AOE)
@@ -145,12 +153,28 @@ public class PlayerScript : MonoBehaviour {
 			currentSkill.ApplyEffect (this.transform.position, Vector3.zero);
 			currentSkill = null;
 		}
+=======
+		if (NoSkillSelected())
+			return ;
+		if (CurrentSkillIsDirectAttack())
+			currentSkill.ApplyEffect (_enemyTarget.transform.position, playerRightHand);
+		else if (currentSkill.skillType == SkillScript.SkillType.SELF_AOE
+		    || currentSkill.skillType == SkillScript.SkillType.PASSIVE_AOE
+		    || currentSkill.skillType == SkillScript.SkillType.TARGETED_AOE)
+			currentSkill.ApplyEffect (this.transform.position, gameObject);
+>>>>>>> new_afaucher
 	}
 
 	void attackOver()
 	{
 		Debug.Log ("over");
 		_attack = false;
+		currentSkill = null;
+	}
+
+	void attackBegin()
+	{
+		_attack = true;
 	}
 
 	void attackBegin()
@@ -161,7 +185,7 @@ public class PlayerScript : MonoBehaviour {
 
 	void AttackEnemy()
 	{
-		if (_enemyTargeting && targetInRange () && _navMeshAgent.velocity == Vector3.zero)
+		if (!_attack && _enemyTargeting && targetInRange () && _navMeshAgent.velocity == Vector3.zero)
 		{
 			if (NoSkillSelected () && !_onCoolDown)
 			{
@@ -173,13 +197,16 @@ public class PlayerScript : MonoBehaviour {
 				if (!Input.GetMouseButton (0))
 					_enemyTargeting = false;
 			}
+<<<<<<< HEAD
 			if (!NoSkillSelected () && !currentSkill.onCoolDown)
+=======
+			if (!NoSkillSelected () && currentSkill.skillType == SkillScript.SkillType.DIRECT_ATTACK && !currentSkill.onCoolDown)
+>>>>>>> new_afaucher
 			{
 				_navMeshAgent.Stop ();
 				currentSkill.UseSkill ();
 				transform.LookAt (new Vector3 (_enemyTarget.transform.position.x, this.transform.position.y, _enemyTarget.transform.position.z));
-				if (!Input.GetMouseButton(0))
-					_enemyTargeting = false;
+				_enemyTargeting = false;
 			}
 		}
 	}
@@ -237,8 +264,14 @@ public class PlayerScript : MonoBehaviour {
 
 	void SelectSkill(int index)
 	{
+<<<<<<< HEAD
 		if (!_attack && _skills[index] != null && _skills[index].SelectSkill())
 			currentSkill = _skills[index];
+=======
+		if (_attack || _skills[index] == null)
+			return ;
+		currentSkill = (_skills[index].SelectSkill()) ? _skills[index] : null;
+>>>>>>> new_afaucher
 	}
 
 	void ManageSkills ()
@@ -256,10 +289,13 @@ public class PlayerScript : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		ManageSkills();
+<<<<<<< HEAD
+=======
+		UpdateRange();
+>>>>>>> new_afaucher
 		AttackEnemy ();
 		FollowMouse();
 		DeathAnimation();
-		UpdateRange();
 		//UpdateSpeed ();
 		RunAnimation();
 		RunSound();

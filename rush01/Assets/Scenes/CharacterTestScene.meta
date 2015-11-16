@@ -1,7 +1,11 @@
 fileFormatVersion: 2
 guid: 3e51b7302942c4c3b83da19d225bd89c
 folderAsset: yes
+<<<<<<< HEAD
 timeCreated: 1447639641
+=======
+timeCreated: 1447683256
+>>>>>>> new_afaucher
 licenseType: Free
 DefaultImporter:
   userData: 

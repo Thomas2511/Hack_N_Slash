@@ -19,7 +19,7 @@ public class MouseAOESpell : MonoBehaviour {
 		
 		if (Physics.Raycast(ray, out hit, Mathf.Infinity, layerMask))
 		{
-			transform.position = hit.point + new Vector3(0, 8, 0);
+			transform.position = hit.point + new Vector3(0, 80, 0);
 			GetComponent<Light>().cookieSize = range;
 		}
 	}
@@ -28,7 +28,7 @@ public class MouseAOESpell : MonoBehaviour {
 	{
 		if (Input.GetMouseButtonUp (0))
 		{
-			onMouseClick(this.transform.position - new Vector3(0, 8, 0));
+			onMouseClick(this.transform.position - new Vector3(0, 80, 0));
 			StartCoroutine (DestroyMe());
 		}
 		if (Input.GetMouseButtonUp (1))

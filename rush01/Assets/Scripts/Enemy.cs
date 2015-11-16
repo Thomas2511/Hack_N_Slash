@@ -130,8 +130,12 @@ public class Enemy : MonoBehaviour {
 		}
 	}
 
-	void Damage () {
+	void Damage ()
+	{
+	}
 
+	public void RecieveDamage (int damage) {
+		this.currentHp = (uint)Mathf.Clamp(this.currentHp - damage, 0, this.hp);
 	}
 
 	void Start () {

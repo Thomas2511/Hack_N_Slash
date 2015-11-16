@@ -37,15 +37,26 @@ public class TargetedAOE : SkillScript {
 			Destroy (clone);
 		}
 		clone = Instantiate(spellAOE);
-		clone.range = range;
 		clone.onMouseClick += onMouseClick;
 		clone.onCancel += onCancel;
+<<<<<<< HEAD
 		return true;
 	}
 
 	public override void ApplyEffect (Vector3 target, Vector3 playerPos)
 	{
 		Instantiate (spell, AOEtarget + new Vector3(0, 0.5f, 0), Quaternion.LookRotation(Vector3.up));
+=======
+		clone.range = AOE;
+		return true;
+	}
+
+	public override void ApplyEffect (Vector3 target, GameObject origin)
+	{
+		GameObject clone = Instantiate (spell, AOEtarget + new Vector3(0, 0.5f, 0), Quaternion.LookRotation(Vector3.up)) as GameObject;
+		clone.GetComponent<AOEAttackScript>().damage = damage;
+		clone.GetComponent<AOEAttackScript>().radius = AOE / 2.0f;
+>>>>>>> new_afaucher
 	}
 
 	
