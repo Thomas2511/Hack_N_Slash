@@ -4,7 +4,7 @@ using System.Collections;
 public class AOEAttackScript : MonoBehaviour {
 
 	public Light		lightComponent;
-	void Awake()
+	protected virtual void Awake()
 	{
 		this.lightComponent = GetComponentInChildren<Light>();
 		Invoke("Destroy", GetComponent<ParticleSystem>().duration);
@@ -12,24 +12,19 @@ public class AOEAttackScript : MonoBehaviour {
 			StartCoroutine (FadeIntensity());
 	}
 
-	void Destroy()
+	protected virtual void Destroy()
 	{
 		StopAllCoroutines ();
 		Destroy (gameObject);
 		Destroy (this);
 	}
 
-	IEnumerator FadeIntensity ()
+	protected virtual IEnumerator FadeIntensity ()
 	{
 		while (true)
 		{
 			yield return new WaitForEndOfFrame();
 			lightComponent.intensity -= 0.05f;
 		}
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
 	}
 }

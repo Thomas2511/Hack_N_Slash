@@ -7,8 +7,9 @@ public abstract class SkillScript : MonoBehaviour
 	{
 		TARGETED_AOE,
 		SELF_AOE,
+		PASSIVE_AOE,
 		DIRECT_ATTACK,
-		PASSIVE
+		PASSIVE,
 	}
 	public SkillType		skillType;
 	public bool				spellAttack;
@@ -23,7 +24,6 @@ public abstract class SkillScript : MonoBehaviour
 
 	public virtual void		UseSkill()
 	{
-		Debug.Log ("?");
 		StartCoroutine (doCoolDown ());
 		Animator animator = PlayerScript.instance.GetComponent<Animator>();
 		animator.SetInteger("AttackType", attackAnimationIndex);

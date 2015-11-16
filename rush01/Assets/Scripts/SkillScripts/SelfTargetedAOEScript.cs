@@ -2,11 +2,10 @@
 using System.Collections;
 
 public class SelfTargetedAOEScript : SkillScript {
-	public GameObject			spell;
+	public GameObject spell;
 
 	public override bool SelectSkill ()
 	{
-		Debug.Log("test");
 		if (onCoolDown)
 			return false;
 		UseSkill ();

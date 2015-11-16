@@ -135,12 +135,9 @@ public class PlayerScript : MonoBehaviour {
 	{
 		if (!NoSkillSelected() && CurrentSkillIsDirectAttack())
 			currentSkill.ApplyEffect (_enemyTarget.transform.position, playerRightHand.transform.position);
-		if (!NoSkillSelected() && currentSkill.skillType == SkillScript.SkillType.TARGETED_AOE)
-		{
-			currentSkill.ApplyEffect (Vector3.zero, Vector3.zero);
-			currentSkill = null;
-		}
-		if (!NoSkillSelected () && currentSkill.skillType == SkillScript.SkillType.SELF_AOE)
+		if (!NoSkillSelected () && currentSkill.skillType == SkillScript.SkillType.SELF_AOE
+		    || currentSkill.skillType == SkillScript.SkillType.PASSIVE_AOE
+		    || currentSkill.skillType == SkillScript.SkillType.TARGETED_AOE)
 		{	
 			currentSkill.ApplyEffect (this.transform.position, Vector3.zero);
 			currentSkill = null;
@@ -235,8 +232,9 @@ public class PlayerScript : MonoBehaviour {
 
 	void SelectSkill(int index)
 	{
-		if (!_attack && _skills[index] != null && _skills[index].SelectSkill())
-			currentSkill = _skills[index];
+		if (_attack || _skills[index] == null)
+			return ;
+		currentSkill = (_skills[index].SelectSkill()) ? _skills[index] : null;
 	}
 
 	void ManageSkills ()
