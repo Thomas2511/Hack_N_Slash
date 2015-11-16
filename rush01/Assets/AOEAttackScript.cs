@@ -8,7 +8,8 @@ public class AOEAttackScript : MonoBehaviour {
 	{
 		this.lightComponent = GetComponentInChildren<Light>();
 		Invoke("Destroy", GetComponent<ParticleSystem>().duration);
-		StartCoroutine (FadeIntensity());
+		if (lightComponent != null)
+			StartCoroutine (FadeIntensity());
 	}
 
 	void Destroy()

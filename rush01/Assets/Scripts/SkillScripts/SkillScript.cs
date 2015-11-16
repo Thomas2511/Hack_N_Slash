@@ -18,9 +18,18 @@ public abstract class SkillScript : MonoBehaviour
 	public int				manaCost;
 	public float			coolDown;
 	public bool				onCoolDown;
-	public abstract void	SelectSkill();
+	public abstract bool	SelectSkill();
 	public abstract	void	ApplyEffect(Vector3 target, Vector3 origin);
-	public abstract void	UseSkill();
+
+	public virtual void		UseSkill()
+	{
+		Debug.Log ("?");
+		StartCoroutine (doCoolDown ());
+		Animator animator = PlayerScript.instance.GetComponent<Animator>();
+		animator.SetInteger("AttackType", attackAnimationIndex);
+		if (spellAttack) animator.SetTrigger ("SpellAttack");
+		else animator.SetTrigger ("WeaponAttack");
+	}
 
 	protected virtual IEnumerator doCoolDown ()
 	{

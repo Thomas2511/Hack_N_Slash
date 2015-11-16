@@ -4,6 +4,7 @@ using System.Collections;
 public class MouseAOESpell : MonoBehaviour {
 	public delegate void		MouseEvent(Vector3 pos);
 	public event MouseEvent		onMouseClick;
+	public event MouseEvent		onCancel;
 	public LayerMask			layerMask;
 	public int					range;
 	// Use this for initialization
@@ -29,6 +30,11 @@ public class MouseAOESpell : MonoBehaviour {
 		{
 			onMouseClick(this.transform.position - new Vector3(0, 8, 0));
 			StartCoroutine (DestroyMe());
+		}
+		if (Input.GetMouseButtonUp (1))
+		{
+			onCancel(Vector3.zero);
+			StartCoroutine (DestroyMe ());
 		}
 	}
 
