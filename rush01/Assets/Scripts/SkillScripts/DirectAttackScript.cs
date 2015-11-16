@@ -10,26 +10,9 @@ public class DirectAttackScript : SkillScript
 
 	}
 
-	public override void SelectSkill ()
+	public override bool SelectSkill ()
 	{
-		return ;
-	}
-
-
-	public override void UseSkill ()
-	{
-		Animator animator = PlayerScript.instance.GetComponent<Animator>();
-		StartCoroutine (doCoolDown());
-		if (spellAttack)
-		{
-			animator.SetInteger("AttackType", attackAnimationIndex);
-			animator.SetTrigger ("SpellAttack");
-		}
-		else
-		{
-			animator.SetInteger ("AttackType", attackAnimationIndex);
-			animator.SetTrigger ("WeaponAttack");
-		}
+		return true;
 	}
 
 	public override void ApplyEffect (Vector3 target, Vector3 origin)

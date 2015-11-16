@@ -24,7 +24,7 @@ public class PlayerScript : MonoBehaviour {
 	public	bool				_onCoolDown;
 	public 	GameObject			_enemyTarget;
 	public	List<SkillScript>	_skills;
-	public 	SkillScript			_currentSkill;
+	public 	SkillScript			currentSkill;
 	public	List<GameObject>	_enemyTargetsInRange;
 	public	AttackType			_attackType;
 	public	GameObject			playerRightHand;
@@ -71,18 +71,20 @@ public class PlayerScript : MonoBehaviour {
 
 	bool CurrentSkillIsDirectAttack()
 	{
-		return (_currentSkill == null || (_currentSkill.skillType == SkillScript.SkillType.DIRECT_ATTACK));
+		return (currentSkill == null || (currentSkill.skillType == SkillScript.SkillType.DIRECT_ATTACK));
 	}
 
 	bool NoSkillSelected()
 	{
-		return (_currentSkill == null);
+		return (currentSkill == null);
 	}
 
 	void CancelAttackAnimation()
 	{
 		if (_attack)
 		{
+			if (!CurrentSkillIsDirectAttack())
+				currentSkill = null;
 			_animator.SetTrigger ("Cancel");
 			_attack = false;
 		}
@@ -107,7 +109,7 @@ public class PlayerScript : MonoBehaviour {
 				else if (hit.collider.tag == "Enemy")
 				{
 					_navMeshAgent.destination = hit.point;
-					_navMeshAgent.stoppingDistance = NoSkillSelected () ? weaponRange : _currentSkill.range;
+					_navMeshAgent.stoppingDistance = NoSkillSelected () ? weaponRange : currentSkill.range;
 					_enemyTarget = hit.collider.gameObject;
 					CancelAttackAnimation ();
 					_enemyTargeting = true;
@@ -132,17 +134,27 @@ public class PlayerScript : MonoBehaviour {
 	void applyDamage()
 	{
 		if (!NoSkillSelected() && CurrentSkillIsDirectAttack())
-			_currentSkill.ApplyEffect (_enemyTarget.transform.position, playerRightHand.transform.position);
-		if (!NoSkillSelected() && _currentSkill.skillType == SkillScript.SkillType.TARGETED_AOE)
+			currentSkill.ApplyEffect (_enemyTarget.transform.position, playerRightHand.transform.position);
+		if (!NoSkillSelected() && currentSkill.skillType == SkillScript.SkillType.TARGETED_AOE)
 		{
-			_currentSkill.ApplyEffect (Vector3.zero, Vector3.zero);
-			_currentSkill = null;
+			currentSkill.ApplyEffect (Vector3.zero, Vector3.zero);
+			currentSkill = null;
+		}
+		if (!NoSkillSelected () && currentSkill.skillType == SkillScript.SkillType.SELF_AOE)
+		{	
+			currentSkill.ApplyEffect (this.transform.position, Vector3.zero);
+			currentSkill = null;
 		}
 	}
 
 	void attackOver()
 	{
 		_attack = false;
+	}
+
+	void attackBegin()
+	{
+		_attack = true;
 	}
 
 	void AttackEnemy()
@@ -155,16 +167,14 @@ public class PlayerScript : MonoBehaviour {
 				StartCoroutine (onCoolDown());
 				transform.LookAt (new Vector3 (_enemyTarget.transform.position.x, this.transform.position.y, _enemyTarget.transform.position.z));
 				_animator.SetTrigger ("WeaponAttack");
-				_attack = true;
 				attackSounds[Random.Range (0, attackSounds.Length)].Play ();
 				if (!Input.GetMouseButton (0))
 					_enemyTargeting = false;
 			}
-			if (!NoSkillSelected () && !_currentSkill.onCoolDown)
+			if (!NoSkillSelected () && !currentSkill.onCoolDown)
 			{
 				_navMeshAgent.Stop ();
-				_currentSkill.UseSkill ();
-				_attack = true;
+				currentSkill.UseSkill ();
 				transform.LookAt (new Vector3 (_enemyTarget.transform.position.x, this.transform.position.y, _enemyTarget.transform.position.z));
 				if (!Input.GetMouseButton(0))
 					_enemyTargeting = false;
@@ -218,30 +228,34 @@ public class PlayerScript : MonoBehaviour {
 	void UpdateRange ()
 	{
 		if (!NoSkillSelected () && CurrentSkillIsDirectAttack())
-			_sphereCollider.radius = _currentSkill.range;
+			_sphereCollider.radius = currentSkill.range;
 		else
 			_sphereCollider.radius = weaponRange;
 	}
 
+	void SelectSkill(int index)
+	{
+		if (!_attack && _skills[index] != null && _skills[index].SelectSkill())
+			currentSkill = _skills[index];
+	}
+
 	void ManageSkills ()
 	{
-		if (!_attack && Input.GetKeyDown(KeyCode.Alpha1))
-		{
-			_currentSkill = _skills[0];
-			_currentSkill.SelectSkill();
-		}
-		if (!_attack && Input.GetKeyDown (KeyCode.Alpha2))
-		{
-			_currentSkill = _skills[1];
-			_currentSkill.SelectSkill();
-		}
+		if (Input.GetKeyDown(KeyCode.Alpha1))
+			SelectSkill (0);
+		if (Input.GetKeyDown (KeyCode.Alpha2))
+			SelectSkill (1);
+		if (Input.GetKeyDown (KeyCode.Alpha3))
+			SelectSkill (2);
+		if (Input.GetKeyDown (KeyCode.Alpha4))
+			SelectSkill (3);
 	}
 	
 	// Update is called once per frame
 	void Update () {
+		ManageSkills();
 		AttackEnemy ();
 		FollowMouse();
-		ManageSkills();
 		DeathAnimation();
 		UpdateRange();
 		//UpdateSpeed ();
