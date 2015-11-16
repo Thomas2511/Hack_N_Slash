@@ -6,7 +6,7 @@ public class SelfTargetedAOEScript : SkillScript {
 
 	public override bool SelectSkill ()
 	{
-		if (onCoolDown)
+		if (onCoolDown || PlayerScript.instance.current_mana < manaCost)
 			return false;
 		UseSkill ();
 		return true;

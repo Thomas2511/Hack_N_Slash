@@ -40,12 +40,15 @@ public class TargetedAOE : SkillScript {
 		clone.range = range;
 		clone.onMouseClick += onMouseClick;
 		clone.onCancel += onCancel;
+		clone.range = AOE;
 		return true;
 	}
 
 	public override void ApplyEffect (Vector3 target, Vector3 playerPos)
 	{
-		Instantiate (spell, AOEtarget + new Vector3(0, 0.5f, 0), Quaternion.LookRotation(Vector3.up));
+		GameObject clone = Instantiate (spell, AOEtarget + new Vector3(0, 0.5f, 0), Quaternion.LookRotation(Vector3.up)) as GameObject;
+		clone.GetComponent<AOEAttackScript>().damage = damage;
+		clone.GetComponent<AOEAttackScript>().radius = AOE;
 	}
 
 	

@@ -4,6 +4,7 @@ using System.Collections;
 public class ProjectileScript : MonoBehaviour
 {
 	public Light		lightComponent;
+	public int			damage;
 	void Awake()
 	{
 		this.lightComponent = GetComponentInChildren<Light>();
@@ -31,6 +32,10 @@ public class ProjectileScript : MonoBehaviour
 		lightComponent.enabled = true;
 		lightComponent.gameObject.transform.position = other.transform.position;
 		StartCoroutine (FadeIntensity());
+		if (other.tag == "Enemy")
+		{
+			other.GetComponent<Enemy>().RecieveDamage(damage);
+		}
 	}
 }
 

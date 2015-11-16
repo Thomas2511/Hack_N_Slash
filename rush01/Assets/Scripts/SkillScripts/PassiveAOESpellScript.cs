@@ -11,7 +11,9 @@ public class PassiveAOESpellScript : SkillScript {
 		{
 			clone.Destroy ();
 			return false;
-		}	
+		}
+		if (onCoolDown || PlayerScript.instance.current_mana < manaCost)
+			return false;
 		UseSkill ();
 		return true;
 	}
