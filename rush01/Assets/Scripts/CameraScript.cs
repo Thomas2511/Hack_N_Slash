@@ -9,11 +9,7 @@ public class CameraScript : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	void Update () {
-	
-	}
-
-	void LateUpdate()
+	void Update()
 	{
 		transform.position = PlayerScript.instance.transform.position + offset;
 	}

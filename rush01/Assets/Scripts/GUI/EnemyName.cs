@@ -5,8 +5,8 @@ using System.Collections;
 public class EnemyName: MonoBehaviour {
 	
 	void Update () {
-		if (PlayerScript.instance._target)
-			GetComponent<Text> ().text = PlayerScript.instance._target.name;
+		if (PlayerScript.instance._enemyTarget)
+			GetComponent<Text> ().text = PlayerScript.instance._enemyTarget.name;
 		else
 			GetComponent<Text> ().text = "";
 	}

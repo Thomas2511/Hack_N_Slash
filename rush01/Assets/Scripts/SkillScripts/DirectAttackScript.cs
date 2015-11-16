@@ -10,33 +10,31 @@ public class DirectAttackScript : SkillScript
 
 	}
 
-	IEnumerator doCoolDown ()
+	public override void SelectSkill ()
 	{
-		onCoolDown = true;
-		yield return new WaitForSeconds(coolDown);
-		onCoolDown = false;
+		return ;
 	}
-	
-	public override void UseSkill (Animator animator)
+
+
+	public override void UseSkill ()
 	{
-		Debug.Log ("test");
+		Animator animator = PlayerScript.instance.GetComponent<Animator>();
 		StartCoroutine (doCoolDown());
 		if (spellAttack)
 		{
-			animator.SetInteger("SpellAttackType", attackAnimationIndex);
+			animator.SetInteger("AttackType", attackAnimationIndex);
 			animator.SetTrigger ("SpellAttack");
 		}
 		else
 		{
-			animator.SetInteger ("WeaponAttackType", attackAnimationIndex);
+			animator.SetInteger ("AttackType", attackAnimationIndex);
 			animator.SetTrigger ("WeaponAttack");
 		}
 	}
 
-	public override void ApplyEffect (GameObject target, Vector3 playerPos)
+	public override void ApplyEffect (Vector3 target, Vector3 origin)
 	{
-		if (projectile != null && target != null)
-			Instantiate (projectile, playerPos, Quaternion.LookRotation(target.transform.position - playerPos));
+		Instantiate (projectile, origin, Quaternion.LookRotation(target - origin));
 	}
 
 	// Update is called once per frame

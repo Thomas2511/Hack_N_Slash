@@ -15,9 +15,18 @@ public abstract class SkillScript : MonoBehaviour
 	public int				attackAnimationIndex;
 	public int				level;
 	public int				range;
+	public int				manaCost;
 	public float			coolDown;
 	public bool				onCoolDown;
-	public abstract	void	ApplyEffect(GameObject target, Vector3 playerPos);
-	public abstract void	UseSkill(Animator animator);
+	public abstract void	SelectSkill();
+	public abstract	void	ApplyEffect(Vector3 target, Vector3 origin);
+	public abstract void	UseSkill();
+
+	protected virtual IEnumerator doCoolDown ()
+	{
+		onCoolDown = true;
+		yield return new WaitForSeconds(coolDown);
+		onCoolDown = false;
+	}
 }
 

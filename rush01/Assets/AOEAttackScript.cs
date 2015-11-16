@@ -1,13 +1,14 @@
-using UnityEngine;
+﻿using UnityEngine;
 using System.Collections;
 
-public class ProjectileScript : MonoBehaviour
-{
+public class AOEAttackScript : MonoBehaviour {
+
 	public Light		lightComponent;
 	void Awake()
 	{
 		this.lightComponent = GetComponentInChildren<Light>();
-		Invoke("Destroy", 5);
+		Invoke("Destroy", GetComponent<ParticleSystem>().duration);
+		StartCoroutine (FadeIntensity());
 	}
 
 	void Destroy()
@@ -25,12 +26,9 @@ public class ProjectileScript : MonoBehaviour
 			lightComponent.intensity -= 0.05f;
 		}
 	}
-
-	void OnParticleCollision(GameObject other)
-	{
-		lightComponent.enabled = true;
-		lightComponent.gameObject.transform.position = other.transform.position;
-		StartCoroutine (FadeIntensity());
+	
+	// Update is called once per frame
+	void Update () {
+	
 	}
 }
-
