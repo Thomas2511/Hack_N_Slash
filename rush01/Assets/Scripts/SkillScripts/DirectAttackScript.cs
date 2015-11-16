@@ -12,11 +12,11 @@ public class DirectAttackScript : SkillScript
 		return (PlayerScript.instance.currentSkill != this);
 	}
 
-	public override void ApplyEffect (Vector3 target, Vector3 origin)
+	public override void ApplyEffect (Vector3 target, GameObject origin)
 	{
 		if (this.spellAttack)
 		{
-			Instantiate (projectile, origin, Quaternion.LookRotation(target - origin));
+			Instantiate (projectile, origin.transform.position, Quaternion.LookRotation(target - origin.transform.position));
 			projectile.damage = damage;
 		}
 	}

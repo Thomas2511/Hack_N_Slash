@@ -1,21 +1,18 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class AOEAttackScript : MonoBehaviour {
+public class AOEAttackScript : SimpleEffectScript {
 
-	public Light			lightComponent;
 	public SphereCollider	sphereCollider;
 	public int				damage;
 	public float			radius { get { return this.sphereCollider.radius; } set { this.sphereCollider.radius = value; }}
 
-	protected virtual void Awake()
+	protected override void Awake()
 	{
-		this.lightComponent = GetComponentInChildren<Light>();
 		this.sphereCollider = GetComponent<SphereCollider>();
 		Invoke("Destroy", GetComponent<ParticleSystem>().duration);
 		this.sphereCollider.radius = radius;
-		if (lightComponent != null)
-			StartCoroutine (FadeIntensity());
+		base.Awake();
 	}
 
 	public void SetDamage(int damage)

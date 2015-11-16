@@ -138,11 +138,11 @@ public class PlayerScript : MonoBehaviour {
 		if (NoSkillSelected())
 			return ;
 		if (CurrentSkillIsDirectAttack())
-			currentSkill.ApplyEffect (_enemyTarget.transform.position, playerRightHand.transform.position);
+			currentSkill.ApplyEffect (_enemyTarget.transform.position, playerRightHand);
 		else if (currentSkill.skillType == SkillScript.SkillType.SELF_AOE
 		    || currentSkill.skillType == SkillScript.SkillType.PASSIVE_AOE
 		    || currentSkill.skillType == SkillScript.SkillType.TARGETED_AOE)
-			currentSkill.ApplyEffect (this.transform.position, Vector3.zero);
+			currentSkill.ApplyEffect (this.transform.position, gameObject);
 	}
 
 	void attackOver()

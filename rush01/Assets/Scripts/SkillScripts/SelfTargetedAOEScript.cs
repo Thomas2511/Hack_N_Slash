@@ -12,8 +12,13 @@ public class SelfTargetedAOEScript : SkillScript {
 		return true;
 	}
 
-	public override void ApplyEffect (Vector3 target, Vector3 origin)
+	public override void ApplyEffect (Vector3 target, GameObject origin)
 	{
 		Instantiate (spell, target + new Vector3(0, 1.5f, 0), Quaternion.identity);
+		if (origin.tag == "Player")
+		{
+			PlayerScript player = origin.GetComponent<PlayerScript>();
+			player.current_hp = Mathf.Clamp (player.current_hp - damage, 0, player.hpMax);
+		}
 	}
 }

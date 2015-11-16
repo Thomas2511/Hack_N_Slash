@@ -24,13 +24,15 @@ public abstract class SkillScript : MonoBehaviour
 	public int				AOE { get { return skillStats[level].AOE; }}
 	public bool				onCoolDown;
 	public string			toolTip;
+	public bool				manaOverTime;
 	public SkillStat[]		skillStats = new SkillStat[5];
 	public abstract bool	SelectSkill();
-	public abstract	void	ApplyEffect(Vector3 target, Vector3 origin);
+	public abstract	void	ApplyEffect(Vector3 target, GameObject origin);
 
 	public virtual void		UseSkill()
 	{
-		PlayerScript.instance.current_mana = Mathf.Clamp(PlayerScript.instance.current_mana - manaCost, 0, PlayerScript.instance.manaMax);
+		if (!manaOverTime)
+			PlayerScript.instance.current_mana = Mathf.Clamp(PlayerScript.instance.current_mana - manaCost, 0, PlayerScript.instance.manaMax);
 		StartCoroutine (doCoolDown ());
 		Animator animator = PlayerScript.instance.GetComponent<Animator>();
 		animator.SetInteger("AttackType", attackAnimationIndex);

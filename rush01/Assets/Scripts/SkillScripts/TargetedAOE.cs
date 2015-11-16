@@ -43,7 +43,7 @@ public class TargetedAOE : SkillScript {
 		return true;
 	}
 
-	public override void ApplyEffect (Vector3 target, Vector3 playerPos)
+	public override void ApplyEffect (Vector3 target, GameObject origin)
 	{
 		GameObject clone = Instantiate (spell, AOEtarget + new Vector3(0, 0.5f, 0), Quaternion.LookRotation(Vector3.up)) as GameObject;
 		clone.GetComponent<AOEAttackScript>().damage = damage;
