@@ -3,7 +3,7 @@ using UnityEngine.UI;
 using System.Collections;
 
 public class SkillTreePanelScript : MonoBehaviour {
-	public GameObject			panel;
+
 	public bool					active;	
 	// Use this for initialization
 	void Start () {
@@ -14,8 +14,18 @@ public class SkillTreePanelScript : MonoBehaviour {
 	void Update () {
 		if (Input.GetKeyDown (KeyCode.N))
 		{
-			panel.SetActive (active);
-			active = !active;
+			if (active)
+			{
+				GetComponent<CanvasGroup>().alpha = 0;
+				GetComponent<CanvasGroup>().blocksRaycasts = false;
+				active = false;
+			}
+			else
+			{
+				GetComponent<CanvasGroup>().alpha = 1;
+				GetComponent<CanvasGroup>().blocksRaycasts = true;
+				active = true;
+			}
 		}
 	}
 }

@@ -35,6 +35,8 @@ public abstract class SkillScript : MonoBehaviour, IBeginDragHandler, IDragHandl
 	public GameObject		button;
 	public GameObject           dragging_icon;
 	public static GameObject    itemBeingDragged;
+	public float			timeOfCooldown;
+	public float			timeSinceCooldown { get { return Time.time - timeOfCooldown; }}
 
 
 	public SkillStat[]		skillStats = new SkillStat[5];
@@ -66,7 +68,7 @@ public abstract class SkillScript : MonoBehaviour, IBeginDragHandler, IDragHandl
 
 	public void OnEndDrag (PointerEventData eventData)
 	{
-		if (!itemBeingDragged.GetComponent<DraggingIconScript>().dragSuccessful)
+		if (itemBeingDragged != null && !itemBeingDragged.GetComponent<DraggingIconScript>().dragSuccessful)
 		{
 			Destroy (itemBeingDragged);
 		}
@@ -96,6 +98,7 @@ public abstract class SkillScript : MonoBehaviour, IBeginDragHandler, IDragHandl
 	protected virtual IEnumerator doCoolDown ()
 	{
 		onCoolDown = true;
+		timeOfCooldown = Time.time;
 		yield return new WaitForSeconds(coolDown);
 		onCoolDown = false;
 	}

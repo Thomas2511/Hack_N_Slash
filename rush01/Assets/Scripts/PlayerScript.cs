@@ -23,8 +23,7 @@ public class PlayerScript : MonoBehaviour {
 	public	bool				_enemyTargeting;
 	public	bool				_onCoolDown;
 	public 	GameObject			_enemyTarget;
-	public	List<SkillScript>	_skills;
-	public 	SkillScript			currentSkill;
+
 	public	List<GameObject>	_enemyTargetsInRange;
 	public	AttackType			_attackType;
 	public	GameObject			playerRightHand;
@@ -33,6 +32,7 @@ public class PlayerScript : MonoBehaviour {
 	// Audio
 	public AudioSource			footstepsSound;
 	public AudioSource[]		attackSounds;
+	
 
 	// Stats
 	public	int					current_hp;
@@ -52,6 +52,10 @@ public class PlayerScript : MonoBehaviour {
 	public	int					bonus_mana;
 	[Range(0, 49)]
 	public	int					skillPoints;	
+
+	// Skills
+	public	SkillScript[]		skills;
+	public 	SkillScript			currentSkill;
 
 	// Equipment
 	public	WeaponScript		weapon;
@@ -75,6 +79,7 @@ public class PlayerScript : MonoBehaviour {
 		_navMeshAgent = GetComponent<NavMeshAgent>();
 		animator = GetComponentInChildren<Animator>();
 		_sphereCollider = GetComponentInChildren<SphereCollider>();
+		skills = new SkillScript[4];
 	}
 
 	public int GetDamage()
@@ -257,10 +262,9 @@ public class PlayerScript : MonoBehaviour {
 
 	void SelectSkill(int index)
 	{
-		if (_attack || _skills[index] == null)
+		if (_attack || skills[index] == null)
 			return ;
-		currentSkill = (_skills[index].SelectSkill()) ? _skills[index] : null;
-		Debug.Log (currentSkill);
+		currentSkill = (skills[index].SelectSkill()) ? skills[index] : null;
 	}
 
 	void ManageSkills ()
