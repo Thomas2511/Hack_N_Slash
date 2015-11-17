@@ -33,7 +33,7 @@ public abstract class SkillScript : MonoBehaviour, IBeginDragHandler, IDragHandl
 
 	// UI
 	public GameObject		button;
-	public GameObject           dragging_icon;
+	public GameObject       dragging_icon;
 	public static GameObject    itemBeingDragged;
 	public float			timeOfCooldown;
 	public float			timeSinceCooldown { get { return Time.time - timeOfCooldown; }}

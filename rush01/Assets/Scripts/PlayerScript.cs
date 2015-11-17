@@ -137,6 +137,10 @@ public class PlayerScript : MonoBehaviour {
 					_enemyTargeting = true;
 					_navMeshAgent.Resume();
 				}
+				else if (hit.collider.tag == "Weapon")
+				{
+					InventoryScript.instance.addWeapon (hit.collider.gameObject.GetComponent<WeaponScript>());
+				}
 			}
 		}
 	}
