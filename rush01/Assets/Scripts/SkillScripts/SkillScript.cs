@@ -1,9 +1,10 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 using System.Collections;
 using System.Collections.Generic;
 
-public abstract class SkillScript : MonoBehaviour
+public abstract class SkillScript : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
 	public enum SkillType
 	{
@@ -29,7 +30,13 @@ public abstract class SkillScript : MonoBehaviour
 	public string			toolTip;
 	public bool				manaOverTime;
 	public int				levelUnlocked;
+
+	// UI
 	public GameObject		button;
+	public GameObject           dragging_icon;
+	public static GameObject    itemBeingDragged;
+
+
 	public SkillStat[]		skillStats = new SkillStat[5];
 	public abstract bool	SelectSkill();
 	public abstract	void	ApplyEffect(Vector3 target, GameObject origin);
@@ -37,6 +44,28 @@ public abstract class SkillScript : MonoBehaviour
 	protected virtual void	Start()
 	{
 		button = GetComponentInChildren<Button>().gameObject;
+	}
+
+	public void OnBeginDrag (PointerEventData eventData)
+	{
+		if (this.level >= 0)
+		{
+			itemBeingDragged = GameObject.Instantiate(dragging_icon);
+			itemBeingDragged.transform.SetParent (this.transform);
+			itemBeingDragged.GetComponent<Image>().sprite = GetComponent<Image>().sprite;
+			itemBeingDragged.transform.position = new Vector2(Input.mousePosition.x, Input.mousePosition.y);
+		}
+	}
+
+	public void OnDrag (PointerEventData eventData)
+	{
+		if (itemBeingDragged != null)
+			itemBeingDragged.transform.position = new Vector2(Input.mousePosition.x, Input.mousePosition.y);
+	}
+
+	public void OnEndDrag (PointerEventData eventData)
+	{
+		itemBeingDragged = null;
 	}
 	
 	public virtual void		UseSkill()
@@ -77,7 +106,6 @@ public abstract class SkillScript : MonoBehaviour
 
 	public void SpendSkillPoint()
 	{
-		Debug.Log ("??");
 		if (level <= 3 && PlayerScript.instance.skillPoints > 0)
 		{
 			PlayerScript.instance.skillPoints--;
