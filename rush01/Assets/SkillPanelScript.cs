@@ -5,9 +5,13 @@ using System.Collections;
 
 public class SkillPanelScript : MonoBehaviour, IDropHandler {
 	public SkillScript			skillScript;
+	public DraggingIconScript	draggingIcon;
+	public Text					text;
+	private string				defaultText;
 	// Use this for initialization
 	void Start () {
-	
+		text = GetComponentInChildren<Text>();
+		defaultText = text.text;
 	}
 
 	#region IDropHandler implementation
@@ -16,14 +20,22 @@ public class SkillPanelScript : MonoBehaviour, IDropHandler {
 	{
 		if (eventData.pointerDrag)
 		{
-			SkillScript.itemBeingDragged.transform.SetParent (this.transform);
+			draggingIcon = SkillScript.itemBeingDragged.GetComponent<DraggingIconScript>();
+			draggingIcon.transform.SetParent (this.transform);
+			draggingIcon.transform.localPosition = Vector3.zero;
+			skillScript = draggingIcon.originScript;
+			draggingIcon.dragSuccessful = true;
 		}
 	}
 
 	#endregion
-	
-	// Update is called once per frame
+
+	void UpdateText ()
+	{
+		text.text = (skillScript != null) ? skillScript.Skillname : defaultText;
+	}
+
 	void Update () {
-	
+		UpdateText();
 	}
 }

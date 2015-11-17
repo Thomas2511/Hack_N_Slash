@@ -51,6 +51,7 @@ public abstract class SkillScript : MonoBehaviour, IBeginDragHandler, IDragHandl
 		if (this.level >= 0)
 		{
 			itemBeingDragged = GameObject.Instantiate(dragging_icon);
+			itemBeingDragged.GetComponent<DraggingIconScript>().originScript = this;
 			itemBeingDragged.transform.SetParent (this.transform);
 			itemBeingDragged.GetComponent<Image>().sprite = GetComponent<Image>().sprite;
 			itemBeingDragged.transform.position = new Vector2(Input.mousePosition.x, Input.mousePosition.y);
@@ -65,7 +66,10 @@ public abstract class SkillScript : MonoBehaviour, IBeginDragHandler, IDragHandl
 
 	public void OnEndDrag (PointerEventData eventData)
 	{
-		itemBeingDragged = null;
+		if (!itemBeingDragged.GetComponent<DraggingIconScript>().dragSuccessful)
+		{
+			Destroy (itemBeingDragged);
+		}
 	}
 	
 	public virtual void		UseSkill()

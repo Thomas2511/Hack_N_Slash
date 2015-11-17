@@ -3,4 +3,5 @@ using System.Collections;
 
 public class DraggingIconScript : MonoBehaviour {
 	public SkillScript			originScript;
+	public bool					dragSuccessful;
 }
