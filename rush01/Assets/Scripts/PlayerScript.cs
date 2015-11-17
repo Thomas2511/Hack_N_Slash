@@ -14,7 +14,7 @@ public class PlayerScript : MonoBehaviour {
 
 	// Components
 	private NavMeshAgent		_navMeshAgent;
-	private Animator			_animator;
+	public	Animator			animator;
 	private SphereCollider		_sphereCollider;
 
 	// Utility
@@ -28,6 +28,7 @@ public class PlayerScript : MonoBehaviour {
 	public	List<GameObject>	_enemyTargetsInRange;
 	public	AttackType			_attackType;
 	public	GameObject			playerRightHand;
+	public	GameObject			playerChest;
 
 	// Audio
 	public AudioSource			footstepsSound;
@@ -43,30 +44,42 @@ public class PlayerScript : MonoBehaviour {
 	public	int					con;
 	public	int					xp;
 	public	int					money;
+	[Range(1, 50)]
 	public	int					level;
 	public	int					current_mana;
+	public	int					bonus_damage;
+	public	int					bonus_hp;
+	public	int					bonus_mana;
+	[Range(0, 49)]
+	public	int					skillPoints;	
 
 	// Equipment
 	public	WeaponScript		weapon;
 	public	ArmorScript			armor;
 
 	// Calculated Stats
-	public	int					minDamage { get { return str / 2;}}
+	public	int					minDamage { get { return str / 2 + bonus_damage;}}
 	public	int					maxDamage { get { return minDamage + weaponDamage;}}
-	public	int					hpMax { get { return 5 * con; } }
-	public	int					manaMax { get { return 100; }}
-	public	int					weaponDamage { get { return weapon == null ? 0 : weapon.damage; }}
-	public	int					armorValue { get { return armor == null ? 0 : armor.armorValue; }} 
-	public	float				weaponCoolDown { get { return weapon == null ? 3.0f : weapon.coolDown; }}
-	public	float				weaponRange { get { return weapon == null ? 2f : weapon.range; }}
+	public	int					hpMax { get { return 5 * con + bonus_hp; } }
+	public	int					manaMax { get { return 100 + bonus_mana; }}
+	public	int					weaponDamage { get { return weapon == null && weapon.equipped ? 0 : weapon.damage; }}
+	public	int					armorValue { get { return armor == null && weapon.equipped ? 0 : armor.armorValue; }} 
+	public	float				weaponCoolDown { get { return weapon == null && weapon.equipped ? 2.5f : weapon.coolDown; }}
+	public	float				weaponRange { get { return weapon == null && weapon.equipped ? 2f : weapon.range; }}
 
 	// Use this for initialization
 	void Start () {
+		current_hp = hpMax;
 		instance = this;
 		_attackType = AttackType.NONE;
 		_navMeshAgent = GetComponent<NavMeshAgent>();
-		_animator = GetComponent<Animator>();
+		animator = GetComponentInChildren<Animator>();
 		_sphereCollider = GetComponentInChildren<SphereCollider>();
+	}
+
+	public int GetDamage()
+	{
+		return Random.Range (minDamage, maxDamage + 1);
 	}
 
 	bool CurrentSkillIsDirectAttack()
@@ -83,20 +96,16 @@ public class PlayerScript : MonoBehaviour {
 	{
 		if (_attack)
 		{
-<<<<<<< HEAD
-			if (!CurrentSkillIsDirectAttack())
-				currentSkill = null;
-=======
 			currentSkill = null;
->>>>>>> new_afaucher
-			_animator.SetTrigger ("Cancel");
+			_sphereCollider.radius = weaponRange;
+			animator.SetTrigger ("Cancel");
 			_attack = false;
 		}
 	}
 
 	void FollowMouse ()
 	{
-		if (CurrentSkillIsDirectAttack() && Input.GetMouseButtonDown (0))
+		if (CurrentSkillIsDirectAttack() && Input.GetMouseButtonDown (0) && !UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject())
 		{
 			RaycastHit hit;
 			if (Physics.Raycast (Camera.main.ScreenPointToRay(Input.mousePosition), out hit))
@@ -115,9 +124,10 @@ public class PlayerScript : MonoBehaviour {
 				else if (hit.collider.tag == "Enemy")
 				{
 					_navMeshAgent.destination = hit.point;
-					_navMeshAgent.stoppingDistance = NoSkillSelected () ? weaponRange : currentSkill.range;
+					_navMeshAgent.stoppingDistance = _sphereCollider.radius;
 					_enemyTarget = hit.collider.gameObject;
-					CancelAttackAnimation ();
+					if (_enemyTarget == null || _enemyTarget != hit.collider.gameObject)
+						CancelAttackAnimation ();
 					_attack = false;
 					_enemyTargeting = true;
 					_navMeshAgent.Resume();
@@ -138,49 +148,46 @@ public class PlayerScript : MonoBehaviour {
 		return (_enemyTarget != null && isInRange(_enemyTarget));
 	}
 
-	void applyDamage()
+	public void applyDamage()
 	{
-<<<<<<< HEAD
-		if (!NoSkillSelected() && CurrentSkillIsDirectAttack())
-			currentSkill.ApplyEffect (_enemyTarget.transform.position, playerRightHand.transform.position);
-		if (!NoSkillSelected() && currentSkill.skillType == SkillScript.SkillType.TARGETED_AOE)
-		{
-			currentSkill.ApplyEffect (Vector3.zero, Vector3.zero);
-			currentSkill = null;
-		}
-		if (!NoSkillSelected () && currentSkill.skillType == SkillScript.SkillType.SELF_AOE)
-		{	
-			currentSkill.ApplyEffect (this.transform.position, Vector3.zero);
-			currentSkill = null;
-		}
-=======
 		if (NoSkillSelected())
-			return ;
-		if (CurrentSkillIsDirectAttack())
+		{
+			if (_enemyTarget != null)
+				_enemyTarget.GetComponent<Enemy>().RecieveDamage(GetDamage ());
+		}
+		else if (CurrentSkillIsDirectAttack())
 			currentSkill.ApplyEffect (_enemyTarget.transform.position, playerRightHand);
 		else if (currentSkill.skillType == SkillScript.SkillType.SELF_AOE
 		    || currentSkill.skillType == SkillScript.SkillType.PASSIVE_AOE
 		    || currentSkill.skillType == SkillScript.SkillType.TARGETED_AOE)
 			currentSkill.ApplyEffect (this.transform.position, gameObject);
->>>>>>> new_afaucher
 	}
 
-	void attackOver()
+	public void attackOver()
 	{
-		Debug.Log ("over");
 		_attack = false;
 		currentSkill = null;
 	}
 
-	void attackBegin()
+	public void attackBegin()
 	{
 		_attack = true;
 	}
 
-	void attackBegin()
+	public void equip ()
 	{
-		Debug.Log ("begin");
-		_attack = true;
+		weapon.transform.SetParent (playerRightHand.transform);
+		weapon.transform.localPosition = new Vector3(0, 0, 0);
+		weapon.equipped = true;
+		animator.SetBool ("HasWeapon", true);
+	}
+
+	public void unequip()
+	{
+		weapon.transform.SetParent (playerChest.transform);
+		weapon.transform.localPosition = new Vector3(-0.063f, 0.099f, -0.43f);
+		weapon.equipped = false;
+		animator.SetBool ("HasWeapon", false);
 	}
 
 	void AttackEnemy()
@@ -192,16 +199,13 @@ public class PlayerScript : MonoBehaviour {
 				_navMeshAgent.Stop ();
 				StartCoroutine (onCoolDown());
 				transform.LookAt (new Vector3 (_enemyTarget.transform.position.x, this.transform.position.y, _enemyTarget.transform.position.z));
-				_animator.SetTrigger ("WeaponAttack");
-				attackSounds[Random.Range (0, attackSounds.Length)].Play ();
+				animator.SetInteger ("AttackType", 7);
+				animator.SetTrigger ("WeaponAttack");
+				//attackSounds[Random.Range (0, attackSounds.Length)].Play ();
 				if (!Input.GetMouseButton (0))
 					_enemyTargeting = false;
 			}
-<<<<<<< HEAD
-			if (!NoSkillSelected () && !currentSkill.onCoolDown)
-=======
 			if (!NoSkillSelected () && currentSkill.skillType == SkillScript.SkillType.DIRECT_ATTACK && !currentSkill.onCoolDown)
->>>>>>> new_afaucher
 			{
 				_navMeshAgent.Stop ();
 				currentSkill.UseSkill ();
@@ -213,18 +217,7 @@ public class PlayerScript : MonoBehaviour {
 
 	void RunAnimation ()
 	{
-		_animator.SetBool("Run", _navMeshAgent.velocity != Vector3.zero);
-	}
-
-	void RunSound()
-	{
-		if (_navMeshAgent.velocity != Vector3.zero)
-		{
-			if (!footstepsSound.isPlaying)
-				footstepsSound.Play ();
-		}
-		else
-			footstepsSound.Stop ();
+		animator.SetBool("Run", _navMeshAgent.velocity != Vector3.zero);
 	}
 
 	void DeathAnimation ()
@@ -232,8 +225,8 @@ public class PlayerScript : MonoBehaviour {
 		if (!_dead && current_hp <= 0)
 		{
 			_navMeshAgent.Stop ();
-			_animator.SetTrigger("Death");
-			_animator.SetInteger ("RandomDeath", Random.Range(0, 4));
+			animator.SetTrigger("Death");
+			animator.SetInteger ("RandomDeath", Random.Range(0, 4));
 			_dead = true;
 		}
 	}
@@ -264,14 +257,10 @@ public class PlayerScript : MonoBehaviour {
 
 	void SelectSkill(int index)
 	{
-<<<<<<< HEAD
-		if (!_attack && _skills[index] != null && _skills[index].SelectSkill())
-			currentSkill = _skills[index];
-=======
 		if (_attack || _skills[index] == null)
 			return ;
 		currentSkill = (_skills[index].SelectSkill()) ? _skills[index] : null;
->>>>>>> new_afaucher
+		Debug.Log (currentSkill);
 	}
 
 	void ManageSkills ()
@@ -284,21 +273,21 @@ public class PlayerScript : MonoBehaviour {
 			SelectSkill (2);
 		if (Input.GetKeyDown (KeyCode.Alpha4))
 			SelectSkill (3);
+		if (Input.GetKeyDown ("e"))
+		    animator.SetTrigger ("Equip");
 	}
 	
 	// Update is called once per frame
 	void Update () {
+		if (_dead)
+			return ;
 		ManageSkills();
-<<<<<<< HEAD
-=======
 		UpdateRange();
->>>>>>> new_afaucher
 		AttackEnemy ();
 		FollowMouse();
 		DeathAnimation();
 		//UpdateSpeed ();
 		RunAnimation();
-		RunSound();
 	}
 
 	void LateUpdate()

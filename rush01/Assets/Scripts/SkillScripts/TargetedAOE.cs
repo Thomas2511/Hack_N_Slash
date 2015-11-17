@@ -39,14 +39,6 @@ public class TargetedAOE : SkillScript {
 		clone = Instantiate(spellAOE);
 		clone.onMouseClick += onMouseClick;
 		clone.onCancel += onCancel;
-<<<<<<< HEAD
-		return true;
-	}
-
-	public override void ApplyEffect (Vector3 target, Vector3 playerPos)
-	{
-		Instantiate (spell, AOEtarget + new Vector3(0, 0.5f, 0), Quaternion.LookRotation(Vector3.up));
-=======
 		clone.range = AOE;
 		return true;
 	}
@@ -56,12 +48,6 @@ public class TargetedAOE : SkillScript {
 		GameObject clone = Instantiate (spell, AOEtarget + new Vector3(0, 0.5f, 0), Quaternion.LookRotation(Vector3.up)) as GameObject;
 		clone.GetComponent<AOEAttackScript>().damage = damage;
 		clone.GetComponent<AOEAttackScript>().radius = AOE / 2.0f;
->>>>>>> new_afaucher
 	}
 
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
 }

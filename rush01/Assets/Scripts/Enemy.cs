@@ -5,6 +5,7 @@ public class Enemy : MonoBehaviour {
 
 	public delegate void  EnemyEvent();
 	public event EnemyEvent OnDeath;
+	public string enemyName;
 	public uint str;
 	public uint agi;
 	public uint con;
@@ -46,23 +47,18 @@ public class Enemy : MonoBehaviour {
 				case Curves.Stat.STRENGTH:
 					str = Curves.ApplyCurve(statCurve.curve, level, str);
 					break;
-
 				case Curves.Stat.AGILITY:
 					agi = Curves.ApplyCurve(statCurve.curve, level, agi);
 					break;
-
 				case Curves.Stat.CONSTITUTION:
 					con = Curves.ApplyCurve(statCurve.curve, level, con);
 					break;
-
 				case Curves.Stat.ARMOR:
 					armor = Curves.ApplyCurve(statCurve.curve, level, armor);
 					break;
-
 				case Curves.Stat.EXPERIENCE:
 					expGiven = Curves.ApplyCurve(statCurve.curve, level, expGiven);
 					break;
-
 				default:
 					break;
 			}

@@ -5,14 +5,6 @@ public class DirectAttackScript : SkillScript
 {
 	public ProjectileScript			projectile;
 
-<<<<<<< HEAD
-
-	}
-
-	public override bool SelectSkill ()
-	{
-		return true;
-=======
 	public override bool SelectSkill ()
 	{
 		if ((PlayerScript.instance.weapon == null && !spellAttack) || PlayerScript.instance.current_mana < manaCost)
@@ -27,6 +19,7 @@ public class DirectAttackScript : SkillScript
 			Instantiate (projectile, origin.transform.position, Quaternion.LookRotation(target - origin.transform.position));
 			projectile.damage = damage;
 		}
->>>>>>> new_afaucher
+		else
+			PlayerScript.instance._enemyTarget.GetComponent<Enemy>().RecieveDamage (PlayerScript.instance.GetDamage ());
 	}
 }

@@ -25,22 +25,6 @@ public class AOEAttackScript : SimpleEffectScript {
 		this.sphereCollider.radius = radius;
 	}
 
-	protected virtual void Destroy()
-	{
-		StopAllCoroutines ();
-		Destroy (gameObject);
-		Destroy (this);
-	}
-
-	protected virtual IEnumerator FadeIntensity ()
-	{
-		while (true)
-		{
-			yield return new WaitForEndOfFrame();
-			lightComponent.intensity -= 0.05f;
-		}
-	}
-
 	void OnTriggerEnter(Collider col)
 	{
 		if (col.gameObject.tag == "Enemy")
