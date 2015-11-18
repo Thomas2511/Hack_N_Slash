@@ -5,36 +5,87 @@ using System.Collections;
 
 public class InventorySlotScript : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IDropHandler
 {
-	public WeaponScript		weapon;
-	public Image			weaponIcon;
+	public WeaponScript			weapon = null;
+	public GameObject			weaponIcon = null;
+	public static GameObject	iconBeingDragged = null;
+	public static WeaponScript	weaponBeingDragged = null;
+	private Vector3				startPosition;
 
 	public bool addWeapon (WeaponScript weapon)
 	{
+
 		this.weapon = weapon;
-		this.weaponIcon = Instantiate(this.weapon.weaponIcon).GetComponent<Image>();
+		this.weaponIcon = Instantiate(this.weapon.weaponIcon);
 		weaponIcon.transform.SetParent (this.transform);
 		weaponIcon.transform.localPosition = Vector3.zero;
-		this.weapon.gameObject.SetActive (false);
+		if (PlayerScript.instance.weapon == null) PlayerScript.instance.attachWeapon (weapon);
+		else this.weapon.gameObject.SetActive (false);
 		return true;
 	}
 	
 	public void OnBeginDrag (PointerEventData eventData)
 	{
-		throw new System.NotImplementedException ();
+		if (weaponIcon != null)
+		{
+			iconBeingDragged = weaponIcon;
+			weaponBeingDragged = weapon;
+			startPosition = iconBeingDragged.transform.position;
+		}
 	}
 	
 	public void OnDrag (PointerEventData eventData)
 	{
-		throw new System.NotImplementedException ();
+		if (iconBeingDragged != null)
+			iconBeingDragged.transform.position = Input.mousePosition;
 	}
 
 	public void OnEndDrag (PointerEventData eventData)
 	{
-		throw new System.NotImplementedException ();
+		if (iconBeingDragged != null)
+		{
+			RaycastHit hit;
+			if (Physics.Raycast (Camera.main.ScreenPointToRay(Input.mousePosition), out hit) && !(PlayerScript.instance.weapon == weapon && weapon.equipped))
+			{
+				if (hit.collider.tag == "Ground")
+				{
+					if (PlayerScript.instance.weapon == weapon)
+					{
+						weapon.transform.SetParent (null);
+						PlayerScript.instance.weapon = null;
+					}
+					weapon.gameObject.SetActive (true);
+					weapon.GetComponent<Rigidbody>().isKinematic = false;
+					weapon.GetComponent<Rigidbody>().position = hit.point;
+					weapon.GetComponent<Rigidbody>().velocity = Vector3.zero;
+					weapon = null;
+					Destroy (weaponIcon);
+					return ;
+				}
+			}
+			if (iconBeingDragged.transform.parent == this.transform)
+				iconBeingDragged.transform.position = startPosition;
+			iconBeingDragged = null;
+		}
 	}
 	
 	public void OnDrop (PointerEventData eventData)
 	{
-		throw new System.NotImplementedException ();
+		if (iconBeingDragged != null && iconBeingDragged.transform.parent.gameObject != this.gameObject)
+		{
+			GameObject parent = iconBeingDragged.transform.parent.gameObject;
+			GameObject weaponIcon = this.weaponIcon;
+			WeaponScript weapon = this.weapon;
+			iconBeingDragged.transform.SetParent (this.transform);
+			iconBeingDragged.transform.localPosition = Vector3.zero;
+			this.weapon = weaponBeingDragged;
+			this.weaponIcon = iconBeingDragged;
+			if (weaponIcon != null)
+			{
+				weaponIcon.transform.SetParent (parent.transform);
+				weaponIcon.transform.localPosition = Vector3.zero;
+			}
+			parent.GetComponent<InventorySlotScript>().weapon = weapon;
+			parent.GetComponent<InventorySlotScript>().weaponIcon = weaponIcon;
+		}
 	}
 }

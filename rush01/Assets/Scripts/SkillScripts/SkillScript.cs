@@ -14,34 +14,34 @@ public abstract class SkillScript : MonoBehaviour, IBeginDragHandler, IDragHandl
 		DIRECT_ATTACK,
 		PASSIVE,
 	}
-	public SkillType		skillType;
-	public bool				spellAttack;
+	public SkillType			skillType;
+	public bool					spellAttack;
 	[Range(-1, 4)]
-	public int				level;
-	public string			Skillname;
-	public int				range { get { return skillStats[level].range; }}
-	public int				manaCost { get { return skillStats[level].manaCost; }}
-	public float			coolDown { get { return skillStats[level].coolDown; }}
-	public int				damage { get { return skillStats[level].damage; }}
-	public int				AOE { get { return skillStats[level].AOE; }}
-	public int				attackAnimationIndex { get { return skillStats[level].attackAnimationIndex; }}
-	public float			damageMultiplier { get { return skillStats[level].damageMultiplier; }}
-	public bool				onCoolDown;
-	public string			toolTip;
-	public bool				manaOverTime;
-	public int				levelUnlocked;
+	public int					level;
+	public string				Skillname;
+	public int					range { get { return skillStats[level].range; }}
+	public int					manaCost { get { return skillStats[level].manaCost; }}
+	public float				coolDown { get { return skillStats[level].coolDown; }}
+	public int					damage { get { return skillStats[level].damage; }}
+	public int					AOE { get { return skillStats[level].AOE; }}
+	public int					attackAnimationIndex { get { return skillStats[level].attackAnimationIndex; }}
+	public float				damageMultiplier { get { return skillStats[level].damageMultiplier; }}
+	public bool					onCoolDown;
+	public string				toolTip;
+	public bool					manaOverTime;
+	public int					levelUnlocked;
 
 	// UI
-	public GameObject		button;
-	public GameObject       dragging_icon;
+	public GameObject			button;
+	public GameObject       	dragging_icon;
 	public static GameObject    itemBeingDragged;
-	public float			timeOfCooldown;
-	public float			timeSinceCooldown { get { return Time.time - timeOfCooldown; }}
+	public float				timeOfCooldown;
+	public float				timeSinceCooldown { get { return Time.time - timeOfCooldown; }}
 
 
-	public SkillStat[]		skillStats = new SkillStat[5];
-	public abstract bool	SelectSkill();
-	public abstract	void	ApplyEffect(Vector3 target, GameObject origin);
+	public SkillStat[]			skillStats = new SkillStat[5];
+	public abstract bool		SelectSkill();
+	public abstract	void		ApplyEffect(Vector3 target, GameObject origin);
 
 	protected virtual void	Start()
 	{

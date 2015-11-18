@@ -44,7 +44,7 @@ public class SkillPanelScript : MonoBehaviour, IDropHandler {
 	{
 		text.text = (skillScript != null) ? skillScript.Skillname : _defaultText;
 		text.color = (skillScript != null && skillScript == PlayerScript.instance.currentSkill) ? Color.red : Color.black;
-		GetComponent<Image>().color = (ScriptIsToggledPassive()) ? Color.blue : _defaultColor;
+		GetComponent<Image>().color = (ScriptIsToggledPassive()) ? new Color(0, 0, 1, GetComponent<Image>().color.a) : _defaultColor;
 	}
 
 	void UpdateCooldownPanel()
@@ -61,6 +61,13 @@ public class SkillPanelScript : MonoBehaviour, IDropHandler {
 			if (draggingIcon != null)
 				draggingIcon.GetComponent<Image>().color = new Color(1, 1, 1, 0.1f);
 			cooldownPanel.fillAmount = ((skillScript.coolDown - skillScript.timeSinceCooldown) / skillScript.coolDown);
+		}
+	}
+
+	public void OnClick()
+	{
+		if (Input.GetMouseButtonDown (1))
+		{
 		}
 	}
 

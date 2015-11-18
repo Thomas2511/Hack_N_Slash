@@ -66,10 +66,10 @@ public class PlayerScript : MonoBehaviour {
 	public	int					maxDamage { get { return minDamage + weaponDamage;}}
 	public	int					hpMax { get { return 5 * con + bonus_hp; } }
 	public	int					manaMax { get { return 100 + bonus_mana; }}
-	public	int					weaponDamage { get { return weapon == null && weapon.equipped ? 0 : weapon.damage; }}
-	public	int					armorValue { get { return armor == null && weapon.equipped ? 0 : armor.armorValue; }} 
-	public	float				weaponCoolDown { get { return weapon == null && weapon.equipped ? 2.5f : weapon.coolDown; }}
-	public	float				weaponRange { get { return weapon == null && weapon.equipped ? 2f : weapon.range; }}
+	public	int					weaponDamage { get { return weapon == null || !weapon.equipped ? 0 : weapon.damage; }}
+	public	int					armorValue { get { return armor == null || !weapon.equipped ? 0 : armor.armorValue; }} 
+	public	float				weaponCoolDown { get { return weapon == null || !weapon.equipped ? 2.5f : weapon.coolDown; }}
+	public	float				weaponRange { get { return weapon == null || !weapon.equipped ? 2f : weapon.range; }}
 
 	// Use this for initialization
 	void Start () {
@@ -138,9 +138,7 @@ public class PlayerScript : MonoBehaviour {
 					_navMeshAgent.Resume();
 				}
 				else if (hit.collider.tag == "Weapon")
-				{
 					InventoryScript.instance.addWeapon (hit.collider.gameObject.GetComponent<WeaponScript>());
-				}
 			}
 		}
 	}
@@ -185,18 +183,36 @@ public class PlayerScript : MonoBehaviour {
 
 	public void equip ()
 	{
-		weapon.transform.SetParent (playerRightHand.transform);
-		weapon.transform.localPosition = new Vector3(0, 0, 0);
-		weapon.equipped = true;
-		animator.SetBool ("HasWeapon", true);
+		if (weapon != null)
+		{
+			weapon.transform.SetParent (playerRightHand.transform);
+			weapon.transform.localPosition = new Vector3(0, 0, 0);
+			weapon.equipped = true;
+			animator.SetBool ("HasWeapon", true);
+		}
 	}
 
 	public void unequip()
 	{
+		if (weapon != null)
+		{
+			weapon.transform.SetParent (playerChest.transform);
+			weapon.transform.localPosition = new Vector3(-0.063f, 0.099f, -0.43f);
+			weapon.equipped = false;
+			animator.SetBool ("HasWeapon", false);
+		}
+	}
+
+	public void attachWeapon(WeaponScript weapon)
+	{
 		weapon.transform.SetParent (playerChest.transform);
-		weapon.transform.localPosition = new Vector3(-0.063f, 0.099f, -0.43f);
+		weapon.transform.localPosition = new Vector3(0.016f, 0.153f, -0.428f);
+		weapon.transform.localRotation = Quaternion.Euler (276.4f, 161.7201f, 14.6008f);
+		weapon.GetComponent<Rigidbody>().isKinematic = true;
 		weapon.equipped = false;
-		animator.SetBool ("HasWeapon", false);
+		this.weapon = weapon;
+		if (!animator.GetBool("HasWeapon"))
+			animator.SetTrigger("Equip");
 	}
 
 	void AttackEnemy()
@@ -281,7 +297,7 @@ public class PlayerScript : MonoBehaviour {
 			SelectSkill (2);
 		if (Input.GetKeyDown (KeyCode.Alpha4))
 			SelectSkill (3);
-		if (Input.GetKeyDown ("e"))
+		if (weapon != null && Input.GetKeyDown ("e"))
 		    animator.SetTrigger ("Equip");
 	}
 	
