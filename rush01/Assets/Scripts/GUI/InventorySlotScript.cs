@@ -95,7 +95,7 @@ public class InventorySlotScript : MonoBehaviour, IBeginDragHandler, IDragHandle
 	
 	public void OnPointerClick (PointerEventData eventData)
 	{
-		if (weapon != null && eventData.button == PointerEventData.InputButton.Right)
+		if (weapon != null && weapon != PlayerScript.instance.weapon && eventData.button == PointerEventData.InputButton.Right)
 		{
 			weapon.gameObject.SetActive(true);
 			PlayerScript.instance.attachWeapon (weapon);
