@@ -33,7 +33,10 @@ public class Enemy : MonoBehaviour {
 	public Animator animator;
 	public NavMeshAgent agent;
 	public AudioSource aS;
+	public AudioSource swordS;
 	public AudioClip death;
+	public AudioClip move;
+	public AudioClip attack;
 	public Curves.StatCurve[] statCurves;
 
 	private uint _framesToWait = 600;
@@ -111,9 +114,14 @@ public class Enemy : MonoBehaviour {
 	void CheckAggroRange () {
 		if (intruder != null) {
 			agent.SetDestination (intruder.transform.position);
+			if (!aS.isPlaying) {
+				aS.clip = move;
+				aS.Play ();
+			}
 			animator.SetBool ("Move", true);
 		} else {
 			agent.SetDestination (this.transform.position);
+			aS.Stop ();
 			animator.SetBool ("Move", false);
 		}
 
@@ -136,9 +144,19 @@ public class Enemy : MonoBehaviour {
 		}
 	}
 
+	public void AttackSound () {
+		aS.clip = attack;
+		aS.Play ();
+	}
+
 	public void Damage () {
-		if (Vector3.Distance (this.transform.position, intruder.transform.position) <= 2.0)
+		int val = 75 + agi - PlayerScript.instance.agi - Random.Range (1, 101);
+		bool hit = val > 0 ? true : false;
+
+		if (Vector3.Distance (this.transform.position, intruder.transform.position) <= 2.0 && hit) {
 			PlayerScript.instance.current_hp = Mathf.Clamp ((PlayerScript.instance.current_hp - GetDamage ()), 0, PlayerScript.instance.hpMax);
+			swordS.Play ();
+		}
 	}
 
 	public int GetDamage()
