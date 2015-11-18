@@ -88,7 +88,7 @@ public class PlayerScript : MonoBehaviour {
 
 	public long GetNextLevelXp()
 	{
-		return (level + 2 > experienceCurve.Length) ? long.MaxValue : experienceCurve[level + 1];
+		return (level > experienceCurve.Length) ? long.MaxValue : experienceCurve[level - 1];
 	}
 
 	public int GetDamage()
@@ -146,7 +146,7 @@ public class PlayerScript : MonoBehaviour {
 					_enemyTargeting = true;
 					_navMeshAgent.Resume();
 				}
-				else if (hit.collider.tag == "Weapon")
+				else if (hit.collider.tag == "Weapon" && hit.collider.gameObject.GetComponent<WeaponScript>() != weapon)
 					InventoryScript.instance.addWeapon (hit.collider.gameObject.GetComponent<WeaponScript>());
 			}
 		}
@@ -166,19 +166,21 @@ public class PlayerScript : MonoBehaviour {
 
 	public void applyDamage()
 	{
-		int dodge = Random.Range (1, 101);
+		if (NoSkillSelected ()) {
+			if (_enemyTarget != null)
+			{
+				int val = 75 + agi - _enemyTarget.GetComponent<Enemy> ().agi - Random.Range (1, 101);
+				bool hit = val > 0 ? true : false;
 
-		if (dodge <= (100 + agi - _enemyTarget.GetComponent<Enemy> ().agi)) {
-			if (NoSkillSelected ()) {
-				if (_enemyTarget != null)
+				if (hit)
 					_enemyTarget.GetComponent<Enemy> ().ReceiveDamage (GetDamage ());
-			} else if (CurrentSkillIsDirectAttack ())
-				currentSkill.ApplyEffect (_enemyTarget.transform.position, playerRightHand);
-			else if (currentSkill.skillType == SkillScript.SkillType.SELF_AOE
-				|| currentSkill.skillType == SkillScript.SkillType.PASSIVE_AOE
-				|| currentSkill.skillType == SkillScript.SkillType.TARGETED_AOE)
-				currentSkill.ApplyEffect (this.transform.position, gameObject);
-		}
+			}
+		} else if (CurrentSkillIsDirectAttack ())
+			currentSkill.ApplyEffect (_enemyTarget.transform.position, playerRightHand);
+		else if (currentSkill.skillType == SkillScript.SkillType.SELF_AOE
+			|| currentSkill.skillType == SkillScript.SkillType.PASSIVE_AOE
+			|| currentSkill.skillType == SkillScript.SkillType.TARGETED_AOE)
+			currentSkill.ApplyEffect (this.transform.position, gameObject);
 	}
 
 	public void attackOver()
@@ -342,7 +344,7 @@ public class PlayerScript : MonoBehaviour {
 	void CheatCode () 
 	{
 		if (Input.GetKeyUp ("l"))
-			xp += 10000;
+			xp += GetNextLevelXp();
 	}
 
 	void LevelUp()
