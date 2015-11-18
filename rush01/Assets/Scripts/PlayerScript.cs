@@ -337,6 +337,12 @@ public class PlayerScript : MonoBehaviour {
 		    animator.SetTrigger ("Equip");
 	}
 
+	void CheatCode () 
+	{
+		if (Input.GetKeyUp ("l"))
+			xp += 10000;
+	}
+
 	void LevelUp()
 	{
 		if (xp > GetNextLevelXp ())
@@ -373,6 +379,7 @@ public class PlayerScript : MonoBehaviour {
 		LevelUp();
 		//UpdateSpeed ();
 		RunAnimation();
+		CheatCode ();
 	}
 
 	void LateUpdate()
