@@ -7,6 +7,7 @@ public class InventorySlotScript : MonoBehaviour, IBeginDragHandler, IDragHandle
 {
 	public WeaponScript			weapon = null;
 	public GameObject			weaponIcon = null;
+	public GameObject			tooltip;
 	public static GameObject	iconBeingDragged = null;
 	public static WeaponScript	weaponBeingDragged = null;
 	private Vector3				startPosition;
@@ -100,5 +101,26 @@ public class InventorySlotScript : MonoBehaviour, IBeginDragHandler, IDragHandle
 			weapon.gameObject.SetActive(true);
 			PlayerScript.instance.attachWeapon (weapon);
 		}
+	}
+
+	public void OnPointerEnter (PointerEventData data) {
+		Debug.Log ("pouet");
+		tooltip.transform.parent = this.transform;
+		tooltip.GetComponent<Image>().enabled = true;
+		tooltip.GetComponentInChildren<Text>().enabled = true;
+		if (weapon != null) {
+			tooltip.GetComponentInChildren<Text> ().text = "Damage = " + weapon.damage.ToString ();
+			tooltip.GetComponentInChildren<Text> ().text += "Cooldown = " + weapon.coolDown.ToString ();
+			tooltip.GetComponentInChildren<Text> ().text += "Attack Speed = " + weapon.attackSpeed.ToString ();
+			tooltip.GetComponentInChildren<Text> ().text += "Range = " + weapon.range.ToString ();
+			tooltip.GetComponentInChildren<Text> ().text += "Rarity = " + weapon.rarity.ToString ();
+		} else {
+			tooltip.GetComponentInChildren<Text> ().text = "";
+		}
+	}
+
+	public void OnPointerExit (PointerEventData data) {
+		tooltip.GetComponent<Image>().enabled = false;
+		tooltip.GetComponentInChildren<Text>().enabled = false;
 	}
 }
