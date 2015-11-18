@@ -204,15 +204,30 @@ public class PlayerScript : MonoBehaviour {
 	}
 
 	public void attachWeapon(WeaponScript weapon)
-	{
-		weapon.transform.SetParent (playerChest.transform);
-		weapon.transform.localPosition = new Vector3(0.016f, 0.153f, -0.428f);
-		weapon.transform.localRotation = Quaternion.Euler (276.4f, 161.7201f, 14.6008f);
+	{	if (this.weapon != null)
+		{
+			this.weapon.transform.SetParent(null);
+			this.weapon.GetComponent<Rigidbody>().isKinematic = false;
+			this.weapon.equipped = false;
+			this.weapon.gameObject.SetActive(false);
+		}
 		weapon.GetComponent<Rigidbody>().isKinematic = true;
-		weapon.equipped = false;
 		this.weapon = weapon;
-		if (!animator.GetBool("HasWeapon"))
+		if (animator.GetBool("HasWeapon"))
+		{
+			weapon.transform.SetParent (playerRightHand.transform);
+			weapon.transform.localPosition = Vector3.zero;
+			weapon.transform.localRotation = Quaternion.Euler (69.72504f, 54.6933f, 209.1173f);
+			weapon.equipped = true;
+		}
+		else
+		{
+			weapon.transform.SetParent (playerChest.transform);
+			weapon.transform.localPosition = new Vector3(0.016f, 0.153f, -0.428f);
+			weapon.transform.localRotation = Quaternion.Euler (276.4f, 161.7201f, 14.6008f);
+			weapon.equipped = false;
 			animator.SetTrigger("Equip");
+		}
 	}
 
 	void AttackEnemy()

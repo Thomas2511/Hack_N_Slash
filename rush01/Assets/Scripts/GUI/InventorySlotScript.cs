@@ -3,7 +3,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using System.Collections;
 
-public class InventorySlotScript : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IDropHandler
+public class InventorySlotScript : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IDropHandler, IPointerClickHandler
 {
 	public WeaponScript			weapon = null;
 	public GameObject			weaponIcon = null;
@@ -54,6 +54,7 @@ public class InventorySlotScript : MonoBehaviour, IBeginDragHandler, IDragHandle
 						PlayerScript.instance.weapon = null;
 					}
 					weapon.gameObject.SetActive (true);
+					weapon.equipped = false;
 					weapon.GetComponent<Rigidbody>().isKinematic = false;
 					weapon.GetComponent<Rigidbody>().position = hit.point;
 					weapon.GetComponent<Rigidbody>().velocity = Vector3.zero;
@@ -86,6 +87,15 @@ public class InventorySlotScript : MonoBehaviour, IBeginDragHandler, IDragHandle
 			}
 			parent.GetComponent<InventorySlotScript>().weapon = weapon;
 			parent.GetComponent<InventorySlotScript>().weaponIcon = weaponIcon;
+		}
+	}
+	
+	public void OnPointerClick (PointerEventData eventData)
+	{
+		if (weapon != null && eventData.button == PointerEventData.InputButton.Right)
+		{
+			weapon.gameObject.SetActive(true);
+			PlayerScript.instance.attachWeapon (weapon);
 		}
 	}
 }
