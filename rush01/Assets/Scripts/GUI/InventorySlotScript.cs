@@ -53,12 +53,15 @@ public class InventorySlotScript : MonoBehaviour, IBeginDragHandler, IDragHandle
 						weapon.transform.SetParent (null);
 						PlayerScript.instance.weapon = null;
 					}
-					weapon.gameObject.SetActive (true);
-					weapon.equipped = false;
-					weapon.GetComponent<Rigidbody>().isKinematic = false;
-					weapon.GetComponent<Rigidbody>().position = hit.point;
-					weapon.GetComponent<Rigidbody>().velocity = Vector3.zero;
-					weapon = null;
+					if (weapon != null)
+					{
+						weapon.gameObject.SetActive (true);
+						weapon.equipped = false;
+						weapon.GetComponent<Rigidbody>().isKinematic = false;
+						weapon.GetComponent<Rigidbody>().position = hit.point;
+						weapon.GetComponent<Rigidbody>().velocity = Vector3.zero;
+						weapon = null;
+					}
 					Destroy (weaponIcon);
 					return ;
 				}

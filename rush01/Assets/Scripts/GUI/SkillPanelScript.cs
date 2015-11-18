@@ -23,7 +23,10 @@ public class SkillPanelScript : MonoBehaviour, IDropHandler {
 		if (eventData.pointerDrag && SkillScript.itemBeingDragged != null)
 		{
 			if (draggingIcon != null)
+			{
+				Destroy (draggingIcon.gameObject);
 				Destroy (draggingIcon);
+			}
 			draggingIcon = SkillScript.itemBeingDragged.GetComponent<DraggingIconScript>();
 			draggingIcon.transform.SetParent (this.transform);
 			draggingIcon.transform.localPosition = Vector3.zero;
@@ -61,13 +64,6 @@ public class SkillPanelScript : MonoBehaviour, IDropHandler {
 			if (draggingIcon != null)
 				draggingIcon.GetComponent<Image>().color = new Color(1, 1, 1, 0.1f);
 			cooldownPanel.fillAmount = ((skillScript.coolDown - skillScript.timeSinceCooldown) / skillScript.coolDown);
-		}
-	}
-
-	public void OnClick()
-	{
-		if (Input.GetMouseButtonDown (1))
-		{
 		}
 	}
 

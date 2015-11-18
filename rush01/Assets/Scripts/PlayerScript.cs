@@ -87,7 +87,7 @@ public class PlayerScript : MonoBehaviour {
 
 	public long GetNextLevelXp()
 	{
-		return (level > experienceCurve.Length + 1) ? 0 : experienceCurve[level + 1];
+		return (level + 2 > experienceCurve.Length) ? long.MaxValue : experienceCurve[level + 1];
 	}
 
 	public int GetDamage()
