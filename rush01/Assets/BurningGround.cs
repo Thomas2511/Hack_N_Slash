@@ -41,7 +41,7 @@ public class BurningGround : MonoBehaviour {
 	void OnTriggerStay(Collider col)
 	{
 		if (col.tag == "Player" && !onCoolDown)
-			PlayerScript.instance.current_hp = Mathf.Clamp(PlayerScript.instance.current_hp - damage, 0, PlayerScript.instance.hpMax);
+			PlayerScript.instance.current_hp = Mathf.Clamp(PlayerScript.instance.current_hp - Mathf.RoundToInt(PlayerScript.instance.current_hp * 0.05f), 0, PlayerScript.instance.hpMax);
 	}
 	
 	protected virtual IEnumerator FadeIntensity ()

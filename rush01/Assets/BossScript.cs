@@ -9,7 +9,7 @@ public class BossScript : Enemy {
 		StartCoroutine(BurningGround());
 	}
 
-	public void Damage () {
+	public override void Damage () {
 		int val = 75 + agi - PlayerScript.instance.agi - Random.Range (1, 101);
 		bool hit = val > 0 ? true : false;
 		
