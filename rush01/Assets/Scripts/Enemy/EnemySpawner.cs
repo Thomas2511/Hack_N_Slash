@@ -16,9 +16,12 @@ public class EnemySpawner : MonoBehaviour {
 
 	void SelectEnemyPrefab () {
 		switch (type) {
+			case Enemy.EnemyType.SKELETON:
+				_spawn = enemies[0];
+				break;
 			default: //type = NONE
 				_spawn = enemies[0];
-			break;
+				break;
 		}
 	}
 
@@ -32,10 +35,7 @@ public class EnemySpawner : MonoBehaviour {
 			_clone = Instantiate (_spawn, position, Quaternion.Euler(0f, 0f + Random.Range(0, 360), 0f)) as Enemy;
 			_clone.OnDeath += OnEnemyDeathListener;
 			_clone.type = type;
-			if (PlayerScript.instance != null)					// <--- TO REMOVE
-				_clone.level = (uint) PlayerScript.instance.level;
-			else 												// <--- TO REMOVE
-				_clone.level = 1; 								// <--- TO REMOVE
+			_clone.level = PlayerScript.instance.level;
 		}
 		_spawnCount = density;
 	}

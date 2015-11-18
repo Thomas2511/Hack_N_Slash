@@ -28,6 +28,6 @@ public class AOEAttackScript : SimpleEffectScript {
 	void OnTriggerEnter(Collider col)
 	{
 		if (col.gameObject.tag == "Enemy")
-			col.gameObject.GetComponent<Enemy>().RecieveDamage(damage);
+			col.gameObject.GetComponent<Enemy>().ReceiveDamage(damage);
 	}
 }

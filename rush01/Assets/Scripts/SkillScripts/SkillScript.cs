@@ -83,12 +83,14 @@ public abstract class SkillScript : MonoBehaviour, IBeginDragHandler, IDragHandl
 		animator.SetInteger("AttackType", attackAnimationIndex);
 		if (spellAttack)
 		{
+			PlayerScript.instance.StopMoving ();
 			if (animator.GetBool ("HasWeapon"))
 				animator.SetTrigger ("Equip");
 			animator.SetTrigger ("SpellAttack");
 		}
 		else
 		{
+			PlayerScript.instance.StopMoving ();
 			if (!animator.GetBool ("HasWeapon"))
 				animator.SetTrigger ("Equip");
 			animator.SetTrigger ("WeaponAttack");
