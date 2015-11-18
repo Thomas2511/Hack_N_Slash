@@ -36,11 +36,11 @@ public class PassiveScript : SkillScript {
 		StopAllCoroutines ();
 		PlayerScript player = PlayerScript.instance;
 		if (conBoost)
-			player.base_con -= damage;
+			player.con -= damage;
 		if (strBoost)
-			player.base_str -= damage;
+			player.str -= damage;
 		if (agiBoost)
-			player.base_agi -= damage;
+			player.agi -= damage;
 		if (damageBoost)
 			player.bonus_damage -= damage;
 		if (hpBoost)
@@ -62,11 +62,11 @@ public class PassiveScript : SkillScript {
 			StartCoroutine (UseMana ());
 		PlayerScript player = PlayerScript.instance;
 		if (conBoost)
-			player.base_con += damage;
+			player.con += damage;
 		if (strBoost)
-			player.base_str += damage;
+			player.str += damage;
 		if (agiBoost)
-			player.base_agi += damage;
+			player.agi += damage;
 		if (damageBoost)
 			player.bonus_damage += damage;
 		if (hpBoost)

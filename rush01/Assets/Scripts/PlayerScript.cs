@@ -36,13 +36,10 @@ public class PlayerScript : MonoBehaviour {
 
 	// Stats
 	public	int					current_hp;
-	public	int					base_str;
 	public	int					str;
-	public	int					base_agi;
 	public	int					agi;
-	public	int					base_con;	
 	public	int					con;
-	public	int					xp;
+	public	long				xp;
 	public	int					money;
 	[Range(1, 50)]
 	public	int					level;
@@ -51,7 +48,10 @@ public class PlayerScript : MonoBehaviour {
 	public	int					bonus_hp;
 	public	int					bonus_mana;
 	[Range(0, 49)]
-	public	int					skillPoints;	
+	public	int					skillPoints;
+	[Range(0, 2500)]
+	public	int					statPoints;
+	public	long[]				experienceCurve;
 
 	// Skills
 	public	SkillScript[]		skills;
@@ -59,20 +59,22 @@ public class PlayerScript : MonoBehaviour {
 
 	// Equipment
 	public	WeaponScript		weapon;
-	public	ArmorScript			armor;
 
-	// Calculated Stats
+	// Calculated Stat
 	public	int					minDamage { get { return str / 2 + bonus_damage;}}
 	public	int					maxDamage { get { return minDamage + weaponDamage;}}
 	public	int					hpMax { get { return 5 * con + bonus_hp; } }
 	public	int					manaMax { get { return 100 + bonus_mana; }}
 	public	int					weaponDamage { get { return weapon == null || !weapon.equipped ? 0 : weapon.damage; }}
-	public	int					armorValue { get { return armor == null || !weapon.equipped ? 0 : armor.armorValue; }} 
 	public	float				weaponCoolDown { get { return weapon == null || !weapon.equipped ? 2.5f : weapon.coolDown; }}
 	public	float				weaponRange { get { return weapon == null || !weapon.equipped ? 2f : weapon.range; }}
 
 	// Use this for initialization
 	void Start () {
+		experienceCurve = new long[49];
+		experienceCurve[0] = 15;
+		for (long i = 1; i < experienceCurve.Length; i++)
+			experienceCurve[i] = (int)(experienceCurve[i - 1] * 1.25f);
 		current_hp = hpMax;
 		instance = this;
 		_attackType = AttackType.NONE;
@@ -80,6 +82,11 @@ public class PlayerScript : MonoBehaviour {
 		animator = GetComponentInChildren<Animator>();
 		_sphereCollider = GetComponentInChildren<SphereCollider>();
 		skills = new SkillScript[4];
+	}
+
+	public long GetNextLevelXp()
+	{
+		return (level > experienceCurve.Length + 1) ? 0 : experienceCurve[level + 1];
 	}
 
 	public int GetDamage()
@@ -315,6 +322,17 @@ public class PlayerScript : MonoBehaviour {
 		if (weapon != null && Input.GetKeyDown ("e"))
 		    animator.SetTrigger ("Equip");
 	}
+
+	void LevelUp()
+	{
+		if (xp > GetNextLevelXp ())
+		{
+			xp -= GetNextLevelXp ();
+			level++;
+			skillPoints++;
+			statPoints += 5; 
+		}
+	}
 	
 	// Update is called once per frame
 	void Update () {
@@ -325,6 +343,7 @@ public class PlayerScript : MonoBehaviour {
 		AttackEnemy ();
 		FollowMouse();
 		DeathAnimation();
+		LevelUp();
 		//UpdateSpeed ();
 		RunAnimation();
 	}

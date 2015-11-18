@@ -5,6 +5,6 @@ using System.Collections;
 public class AgiScript : MonoBehaviour {
 
 	void Update () {
-		GetComponent<Text> ().text = PlayerScript.instance.agi.ToString();
+		GetComponent<Text> ().text = "AGI : " + PlayerScript.instance.agi.ToString();
 	}
 }

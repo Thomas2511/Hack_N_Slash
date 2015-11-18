@@ -5,6 +5,6 @@ using System.Collections;
 public class ExpScript : MonoBehaviour {
 
 	void Update () {
-		GetComponent<Text> ().text = PlayerScript.instance.xp.ToString () + " / TODO NEXT LEVEL EXP";
+		GetComponent<Text> ().text = "XP : " + PlayerScript.instance.xp.ToString () + " / " + PlayerScript.instance.GetNextLevelXp ();
 	}
 }
