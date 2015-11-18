@@ -83,6 +83,7 @@ public class PlayerScript : MonoBehaviour {
 		animator = GetComponentInChildren<Animator>();
 		_sphereCollider = GetComponentInChildren<SphereCollider>();
 		skills = new SkillScript[4];
+		StartCoroutine (RegenMana ());
 	}
 
 	public long GetNextLevelXp()
@@ -168,7 +169,7 @@ public class PlayerScript : MonoBehaviour {
 		if (NoSkillSelected())
 		{
 			if (_enemyTarget != null)
-				_enemyTarget.GetComponent<Enemy>().RecieveDamage(GetDamage ());
+				_enemyTarget.GetComponent<Enemy>().ReceiveDamage(GetDamage ());
 		}
 		else if (CurrentSkillIsDirectAttack())
 			currentSkill.ApplyEffect (_enemyTarget.transform.position, playerRightHand);
@@ -276,7 +277,14 @@ public class PlayerScript : MonoBehaviour {
 			animator.SetTrigger("Death");
 			animator.SetInteger ("RandomDeath", Random.Range(0, 4));
 			_dead = true;
+			StartCoroutine (PrepareToReload());
 		}
+	}
+
+	IEnumerator PrepareToReload ()
+	{
+		yield return new WaitForSeconds (5.0f);
+		Application.LoadLevel (Application.loadedLevel);
 	}
 
 	public bool isInRange(GameObject target)
@@ -286,7 +294,12 @@ public class PlayerScript : MonoBehaviour {
 
 	void OnTriggerEnter(Collider col)
 	{
-		_enemyTargetsInRange.Add (col.gameObject);
+		if (col.gameObject.tag == "Enemy") 
+			_enemyTargetsInRange.Add (col.gameObject);
+		if (col.gameObject.tag == "Potion") {
+			current_hp = Mathf.Clamp (current_hp + (int) (hpMax * 0.30), 0, hpMax);
+			Destroy (col.gameObject);
+		}
 	}
 	
 	void OnTriggerExit(Collider col)
@@ -331,10 +344,23 @@ public class PlayerScript : MonoBehaviour {
 			xp -= GetNextLevelXp ();
 			level++;
 			skillPoints++;
-			statPoints += 5; 
+			statPoints += 5;
+			current_hp = hpMax;
 		}
 	}
-	
+
+	IEnumerator RegenMana () {
+		while (true) {
+			yield return new WaitForSeconds(1.0f);
+			current_mana = Mathf.Clamp(current_mana + 1, 0, 100);
+		}
+	}
+
+	public void StopMoving()
+	{
+		this._navMeshAgent.Stop ();
+	}
+
 	// Update is called once per frame
 	void Update () {
 		if (_dead)

@@ -34,7 +34,7 @@ public class ProjectileScript : MonoBehaviour
 		StartCoroutine (FadeIntensity());
 		if (other.tag == "Enemy")
 		{
-			other.GetComponent<Enemy>().RecieveDamage(damage);
+			other.GetComponent<Enemy>().ReceiveDamage(damage);
 		}
 	}
 }

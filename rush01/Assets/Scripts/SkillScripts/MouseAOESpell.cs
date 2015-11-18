@@ -7,16 +7,11 @@ public class MouseAOESpell : MonoBehaviour {
 	public event MouseEvent		onCancel;
 	public LayerMask			layerMask;
 	public int					range;
-	// Use this for initialization
-	void Start () {
-	
-	}
 
 	void FollowMouse ()
 	{
 		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 		RaycastHit hit;
-		
 		if (Physics.Raycast(ray, out hit, Mathf.Infinity, layerMask))
 		{
 			transform.position = hit.point + new Vector3(0, 80, 0);

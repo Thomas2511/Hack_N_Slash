@@ -41,7 +41,7 @@ public class FollowTargetAOEScript : MonoBehaviour
 	void OnTriggerStay(Collider col)
 	{
 		if (col.tag == "Enemy" && !onCoolDown)
-			col.gameObject.GetComponent<Enemy>().RecieveDamage (damage);
+			col.gameObject.GetComponent<Enemy>().ReceiveDamage (damage);
 	}
 
 	protected virtual IEnumerator FadeIntensity ()

@@ -1,27 +1,34 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class Enemy : MonoBehaviour {
 
 	public delegate void  EnemyEvent();
 	public event EnemyEvent OnDeath;
 	public string enemyName;
-	public uint str;
-	public uint agi;
-	public uint con;
-	public uint armor;
-	public uint level;
-	public uint expGiven;
-	public uint moneyGiven;
-	public uint hp { get { return con * 5; } }
-	public uint currentHp;
-	public uint minDamage { get { return (uint) Mathf.RoundToInt (str / 2); }}
-	public uint maxDamage { get { return minDamage + str; }}
+	public int[] spawnStats;
+	public int str;
+	public int agi;
+	public int con;
+	public int armor;
+	public int level;
+	public int expGiven;
+	public int moneyGiven;
+	public int hp { get { return con * 5; } }
+	public int currentHp;
+	public int minDamage { get { return Mathf.RoundToInt (str / 2); }}
+	public int maxDamage { get { return minDamage + str; }}
 	public bool dead;
 	public GameObject intruder;
 	public enum EnemyType {
+		SKELETON,
 		NONE
 	}
+	public Dictionary<EnemyType, int[]> baseStats = new Dictionary<EnemyType, int[]>
+	{
+		{EnemyType.SKELETON, new int[5] {1, 1, 1, 5, 5}}
+	};
 	public EnemyType type;
 	public Animator animator;
 	public NavMeshAgent agent;
@@ -59,6 +66,9 @@ public class Enemy : MonoBehaviour {
 				case Curves.Stat.EXPERIENCE:
 					expGiven = Curves.ApplyCurve(statCurve.curve, level, expGiven);
 					break;
+				case Curves.Stat.MONEY:
+					moneyGiven = Curves.ApplyCurve(statCurve.curve, level, moneyGiven);
+					break;
 				default:
 					break;
 			}
@@ -70,9 +80,10 @@ public class Enemy : MonoBehaviour {
 			dead = true;
 			OnDeath();
 			animator.SetTrigger ("Death");
-			animator.SetInteger ("RandomDeath", Random.Range(0, 4));
 			aS.clip = death;
 			aS.Play ();
+			PlayerScript.instance.xp += expGiven;
+			LootManager.instance.DropLoot(this);
 			StartCoroutine (BodyDissolve());
 		}
 	}
@@ -86,7 +97,7 @@ public class Enemy : MonoBehaviour {
 		float length = 0.0f;
 		foreach (AnimatorClipInfo animinfo in animator.GetCurrentAnimatorClipInfo(0))
 		{
-			if (animinfo.clip.name.StartsWith ("Standing_React_Death_"))
+			if (animinfo.clip.name.StartsWith ("Death"))
 				length = animinfo.clip.length;
 		}
 		yield return new WaitForSeconds (length);
@@ -100,10 +111,10 @@ public class Enemy : MonoBehaviour {
 	void CheckAggroRange () {
 		if (intruder != null) {
 			agent.SetDestination (intruder.transform.position);
-			animator.SetBool ("Run", true);
+			animator.SetBool ("Move", true);
 		} else {
 			agent.SetDestination (this.transform.position);
-			animator.SetBool ("Run", false);
+			animator.SetBool ("Move", false);
 		}
 
 	}
@@ -119,26 +130,37 @@ public class Enemy : MonoBehaviour {
 				Vector3 targetPosition = new Vector3 (intruder.transform.position.x, this.transform.position.y, intruder.transform.position.z);
 				
 				this.transform.LookAt (targetPosition);
-				animator.SetBool ("Run", false);
+				animator.SetBool ("Move", false);
 				animator.SetTrigger ("Attack");
-				Damage ();
 			}
 		}
 	}
 
-	void Damage ()
-	{
+	public void Damage () {
+		if (Vector3.Distance (this.transform.position, intruder.transform.position) <= 2.0)
+			PlayerScript.instance.current_hp = Mathf.Clamp ((PlayerScript.instance.current_hp - GetDamage ()), 0, PlayerScript.instance.hpMax);
 	}
 
-	public void RecieveDamage (int damage) {
-		this.currentHp = (uint)Mathf.Clamp(this.currentHp - damage, 0, this.hp);
+	public int GetDamage()
+	{
+		return Random.Range (minDamage, maxDamage + 1);
+	}
+
+	public void ReceiveDamage (int damage) {
+		this.currentHp = (int) Mathf.Clamp(this.currentHp - damage, 0, this.hp);
 	}
 
 	void Start () {
+		spawnStats = baseStats [type];
+		str = spawnStats [0];
+		agi = spawnStats [1];
+		con = spawnStats [2];
+		expGiven = spawnStats [3];
+		moneyGiven = spawnStats [4];
+		InstantiateStats ();
 		currentHp = hp;
 		dead = false;
-		agent.stoppingDistance = 2.5f;
-		InstantiateStats ();
+		agent.stoppingDistance = 2.0f;
 	}
 
 	void Update () {

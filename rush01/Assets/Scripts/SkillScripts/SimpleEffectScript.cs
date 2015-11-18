@@ -8,6 +8,7 @@ public class SimpleEffectScript : MonoBehaviour {
 		this.lightComponent = GetComponentInChildren<Light>();
 		if (lightComponent != null)
 			StartCoroutine (FadeIntensity());
+		Invoke ("Destroy", 3.0f);
 	}
 
 	protected virtual IEnumerator FadeIntensity ()
