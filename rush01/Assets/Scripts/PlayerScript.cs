@@ -46,6 +46,7 @@ public class PlayerScript : MonoBehaviour {
 	public	int					current_mana;
 	public	int					bonus_damage;
 	public	int					bonus_hp;
+	public	int					base_mana = 100;
 	public	int					bonus_mana;
 	[Range(0, 49)]
 	public	int					skillPoints;
@@ -64,7 +65,7 @@ public class PlayerScript : MonoBehaviour {
 	public	int					minDamage { get { return str / 2 + bonus_damage;}}
 	public	int					maxDamage { get { return minDamage + weaponDamage;}}
 	public	int					hpMax { get { return 5 * con + bonus_hp; } }
-	public	int					manaMax { get { return 100 + bonus_mana; }}
+	public	int					manaMax { get { return base_mana + bonus_mana; }}
 	public	int					weaponDamage { get { return weapon == null || !weapon.equipped ? 0 : weapon.damage; }}
 	public	float				weaponCoolDown { get { return weapon == null || !weapon.equipped ? 2.5f : weapon.coolDown; }}
 	public	float				weaponRange { get { return weapon == null || !weapon.equipped ? 2f : weapon.range; }}

@@ -31,7 +31,7 @@ public class Enemy : MonoBehaviour {
 
 	private uint _framesToWait = 600;
 
-	void OnTriggerStay (Collider col) {
+	void OnTriggerEnter (Collider col) {
 		if (col.gameObject.tag == "Player")
 			intruder = col.gameObject;
 	}
