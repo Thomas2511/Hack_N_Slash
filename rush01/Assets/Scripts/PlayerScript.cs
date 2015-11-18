@@ -166,17 +166,19 @@ public class PlayerScript : MonoBehaviour {
 
 	public void applyDamage()
 	{
-		if (NoSkillSelected())
-		{
-			if (_enemyTarget != null)
-				_enemyTarget.GetComponent<Enemy>().ReceiveDamage(GetDamage ());
+		int dodge = Random.Range (1, 101);
+
+		if (dodge <= (100 + agi - _enemyTarget.GetComponent<Enemy> ().agi)) {
+			if (NoSkillSelected ()) {
+				if (_enemyTarget != null)
+					_enemyTarget.GetComponent<Enemy> ().ReceiveDamage (GetDamage ());
+			} else if (CurrentSkillIsDirectAttack ())
+				currentSkill.ApplyEffect (_enemyTarget.transform.position, playerRightHand);
+			else if (currentSkill.skillType == SkillScript.SkillType.SELF_AOE
+				|| currentSkill.skillType == SkillScript.SkillType.PASSIVE_AOE
+				|| currentSkill.skillType == SkillScript.SkillType.TARGETED_AOE)
+				currentSkill.ApplyEffect (this.transform.position, gameObject);
 		}
-		else if (CurrentSkillIsDirectAttack())
-			currentSkill.ApplyEffect (_enemyTarget.transform.position, playerRightHand);
-		else if (currentSkill.skillType == SkillScript.SkillType.SELF_AOE
-		    || currentSkill.skillType == SkillScript.SkillType.PASSIVE_AOE
-		    || currentSkill.skillType == SkillScript.SkillType.TARGETED_AOE)
-			currentSkill.ApplyEffect (this.transform.position, gameObject);
 	}
 
 	public void attackOver()
