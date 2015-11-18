@@ -41,17 +41,17 @@ public class Enemy : MonoBehaviour {
 
 	private uint _framesToWait = 600;
 
-	void OnTriggerEnter (Collider col) {
+	protected void OnTriggerEnter (Collider col) {
 		if (col.gameObject.tag == "Player")
 			intruder = col.gameObject;
 	}
 
-	void OnTriggerExit (Collider col) {
+	protected void OnTriggerExit (Collider col) {
 		if (col.gameObject.tag == "Player")
 			intruder = null;
 	}
 
-	void InstantiateStats () {
+	protected void InstantiateStats () {
 		foreach (Curves.StatCurve statCurve in statCurves) {
 			switch (statCurve.stat) {
 				case Curves.Stat.STRENGTH:
@@ -78,7 +78,7 @@ public class Enemy : MonoBehaviour {
 		}
 	}
 
-	void CheckHealth () {
+	protected void CheckHealth () {
 		if (currentHp <= 0 && !dead) {
 			dead = true;
 			OnDeath();
@@ -91,7 +91,7 @@ public class Enemy : MonoBehaviour {
 		}
 	}
 
-	IEnumerator BodyDissolve ()
+	protected IEnumerator BodyDissolve ()
 	{
 		Destroy (agent);
 		Destroy (GetComponent<Rigidbody> ());
@@ -111,7 +111,7 @@ public class Enemy : MonoBehaviour {
 		Destroy (gameObject);
 	}
 
-	void CheckAggroRange () {
+	protected void CheckAggroRange () {
 		if (intruder != null) {
 			agent.SetDestination (intruder.transform.position);
 			if (!aS.isPlaying) {
@@ -127,7 +127,7 @@ public class Enemy : MonoBehaviour {
 
 	}
 
-	void Attack () {
+	protected void Attack () {
 		if (intruder) {
 			float distanceToTarget;
 			bool closeEnough = false;
@@ -149,7 +149,7 @@ public class Enemy : MonoBehaviour {
 		aS.Play ();
 	}
 
-	public void Damage () {
+	public virtual void Damage () {
 		int val = 75 + agi - PlayerScript.instance.agi - Random.Range (1, 101);
 		bool hit = val > 0 ? true : false;
 
@@ -168,7 +168,7 @@ public class Enemy : MonoBehaviour {
 		this.currentHp = (int) Mathf.Clamp(this.currentHp - damage, 0, this.hp);
 	}
 
-	void Start () {
+	protected virtual void Start () {
 		spawnStats = baseStats [type];
 		str = spawnStats [0];
 		agi = spawnStats [1];
@@ -181,7 +181,7 @@ public class Enemy : MonoBehaviour {
 		agent.stoppingDistance = 2.0f;
 	}
 
-	void Update () {
+	protected virtual void Update () {
 		CheckHealth ();
 		if (currentHp > 0) {
 			CheckAggroRange ();
