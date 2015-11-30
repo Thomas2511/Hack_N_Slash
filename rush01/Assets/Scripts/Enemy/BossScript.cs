@@ -2,7 +2,7 @@
 using System.Collections;
 
 public class BossScript : Enemy {
-	public BurningGround	burningGround;
+	public BurningGroundAOE	burningGround;
 	protected override void Start () {
 		dead = false;
 		agent.stoppingDistance = 12f;

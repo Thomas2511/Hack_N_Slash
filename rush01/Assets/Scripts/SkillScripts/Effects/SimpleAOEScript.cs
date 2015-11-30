@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class AOEAttackScript : SimpleEffectScript {
+public class SimpleAOEScript : SimpleEffectScript {
 
 	public SphereCollider	sphereCollider;
 	public int				damage;

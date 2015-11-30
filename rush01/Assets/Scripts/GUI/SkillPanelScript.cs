@@ -39,8 +39,8 @@ public class SkillPanelScript : MonoBehaviour, IDropHandler {
 
 	bool ScriptIsToggledPassive()
 	{
-		return (skillScript != null && ((skillScript.GetComponent<PassiveScript>() != null && skillScript.GetComponent<PassiveScript>().toggled)
-		        || (skillScript.GetComponent<PassiveAOESpellScript>() != null && skillScript.GetComponent<PassiveAOESpellScript>().toggled)));
+		return (skillScript != null && ((skillScript.GetComponent<PassiveSkillScript>() != null && skillScript.GetComponent<PassiveSkillScript>().toggled)
+		        || (skillScript.GetComponent<PassiveAOEScript>() != null && skillScript.GetComponent<PassiveAOEScript>().toggled)));
 	}
 
 	void UpdateText ()

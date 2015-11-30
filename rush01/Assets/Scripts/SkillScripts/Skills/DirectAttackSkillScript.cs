@@ -1,9 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class DirectAttackScript : SkillScript
+public class DirectAttackSkillScript : SkillScript
 {
-	public ProjectileScript			projectile;
+	public ProjectileEffectScript		projectile;
 
 	public override bool SelectSkill ()
 	{
@@ -14,6 +14,7 @@ public class DirectAttackScript : SkillScript
 
 	public override void ApplyEffect (Vector3 target, GameObject origin)
 	{
+		base.ApplyEffect (target, origin);
 		if (this.spellAttack)
 		{
 			Instantiate (projectile, origin.transform.position, Quaternion.LookRotation(target - origin.transform.position));

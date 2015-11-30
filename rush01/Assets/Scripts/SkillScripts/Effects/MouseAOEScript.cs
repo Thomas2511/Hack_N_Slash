@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class MouseAOESpell : MonoBehaviour {
+public class MouseAOEScript : MonoBehaviour {
 	public delegate void		MouseEvent(Vector3 pos);
 	public event MouseEvent		onMouseClick;
 	public event MouseEvent		onCancel;

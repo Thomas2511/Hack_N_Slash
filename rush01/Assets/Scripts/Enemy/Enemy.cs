@@ -154,7 +154,7 @@ public class Enemy : MonoBehaviour {
 		bool hit = val > 0 ? true : false;
 
 		if (intruder && Vector3.Distance (this.transform.position, intruder.transform.position) <= 2.0 && hit) {
-			PlayerScript.instance.current_hp = Mathf.Clamp ((PlayerScript.instance.current_hp - GetDamage ()), 0, PlayerScript.instance.hpMax);
+			PlayerScript.instance.DamagePlayer(GetDamage ());
 			swordS.Play ();
 		}
 	}

@@ -27,8 +27,8 @@ public abstract class SkillScript : MonoBehaviour, IBeginDragHandler, IDragHandl
 	public int					attackAnimationIndex { get { return skillStats[level].attackAnimationIndex; }}
 	public float				damageMultiplier { get { return skillStats[level].damageMultiplier; }}
 	public bool					onCoolDown;
+	public bool					animated = true;
 	public string				toolTip;
-	public bool					manaOverTime;
 	public int					levelUnlocked;
 
 	// UI
@@ -40,8 +40,10 @@ public abstract class SkillScript : MonoBehaviour, IBeginDragHandler, IDragHandl
 
 
 	public SkillStat[]			skillStats = new SkillStat[5];
+
+
+
 	public abstract bool		SelectSkill();
-	public abstract	void		ApplyEffect(Vector3 target, GameObject origin);
 
 	protected virtual void	Start()
 	{
@@ -76,25 +78,38 @@ public abstract class SkillScript : MonoBehaviour, IBeginDragHandler, IDragHandl
 	
 	public virtual void		UseSkill()
 	{
-		if (!manaOverTime)
-			PlayerScript.instance.current_mana = Mathf.Clamp(PlayerScript.instance.current_mana - manaCost, 0, PlayerScript.instance.manaMax);
-		StartCoroutine (doCoolDown ());
-		Animator animator = PlayerScript.instance.animator;
-		animator.SetInteger("AttackType", attackAnimationIndex);
-		if (spellAttack)
+		if (animated)
 		{
-			PlayerScript.instance.StopMoving ();
-			if (animator.GetBool ("HasWeapon"))
-				animator.SetTrigger ("Equip");
-			animator.SetTrigger ("SpellAttack");
+			Animator animator = PlayerScript.instance.animator;
+			animator.SetInteger("AttackType", attackAnimationIndex);
+			if (spellAttack)
+			{
+				PlayerScript.instance.StopMoving ();
+				if (animator.GetBool ("HasWeapon"))
+					animator.SetTrigger ("Equip");
+				animator.SetTrigger ("SpellAttack");
+			}
+			else
+			{
+				PlayerScript.instance.StopMoving ();
+				if (!animator.GetBool ("HasWeapon"))
+					animator.SetTrigger ("Equip");
+				animator.SetTrigger ("WeaponAttack");
+			}
 		}
 		else
-		{
-			PlayerScript.instance.StopMoving ();
-			if (!animator.GetBool ("HasWeapon"))
-				animator.SetTrigger ("Equip");
-			animator.SetTrigger ("WeaponAttack");
-		}
+			ApplyEffect (Vector3.zero, null);
+	}
+
+	public virtual void ApplyEffect(Vector3 target, GameObject origin)
+	{
+		SpendMana ();
+		StartCoroutine (doCoolDown ());
+	}
+
+	protected virtual void SpendMana()
+	{
+		PlayerScript.instance.current_mana = Mathf.Clamp(PlayerScript.instance.current_mana - manaCost, 0, PlayerScript.instance.manaMax);
 	}
 
 	protected virtual IEnumerator doCoolDown ()

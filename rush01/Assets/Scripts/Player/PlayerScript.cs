@@ -366,6 +366,11 @@ public class PlayerScript : MonoBehaviour {
 		}
 	}
 
+	public void DamagePlayer (int damage)
+	{
+		this.current_hp = Mathf.Clamp (this.current_hp - damage, 0, this.hpMax);
+	}
+
 	public void StopMoving()
 	{
 		this._navMeshAgent.Stop ();

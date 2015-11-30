@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class SelfTargetedAOEScript : SkillScript {
+public class SelfTargetedAOESkillScript : SkillScript {
 	public GameObject spell;
 
 	public override bool SelectSkill ()
@@ -14,6 +14,7 @@ public class SelfTargetedAOEScript : SkillScript {
 
 	public override void ApplyEffect (Vector3 target, GameObject origin)
 	{
+		base.ApplyEffect(target, origin);
 		Instantiate (spell, target + new Vector3(0, 1.5f, 0), Quaternion.identity);
 		if (origin.tag == "Player")
 		{

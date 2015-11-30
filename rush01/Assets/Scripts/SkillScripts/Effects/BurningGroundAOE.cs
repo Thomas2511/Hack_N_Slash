@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class BurningGround : MonoBehaviour {
+public class BurningGroundAOE: MonoBehaviour {
 	public Light				lightComponent;
 	public int					damage;
 	public float				coolDown;

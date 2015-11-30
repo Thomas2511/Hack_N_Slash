@@ -1,9 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class TargetedAOE : SkillScript {
-	public MouseAOESpell			spellAOE;
-	public static MouseAOESpell		clone;
+public class TargetedAOESkill : SkillScript {
+	public MouseAOEScript			spellAOE;
+	public static MouseAOEScript	clone;
 	public Vector3					AOEtarget;
 	public GameObject				spell;
 
@@ -46,9 +46,10 @@ public class TargetedAOE : SkillScript {
 
 	public override void ApplyEffect (Vector3 target, GameObject origin)
 	{
+		base.ApplyEffect (target, origin);
 		GameObject clone = Instantiate (spell, AOEtarget + new Vector3(0, 0.5f, 0), Quaternion.LookRotation(Vector3.up)) as GameObject;
-		clone.GetComponent<AOEAttackScript>().damage = damage;
-		clone.GetComponent<AOEAttackScript>().radius = AOE / 2.0f;
+		clone.GetComponent<SimpleAOEScript>().damage = damage;
+		clone.GetComponent<SimpleAOEScript>().radius = AOE / 2.0f;
 	}
 
 }

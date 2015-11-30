@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-public class ProjectileScript : MonoBehaviour
+public class ProjectileEffectScript : MonoBehaviour
 {
 	public Light		lightComponent;
 	public int			damage;
