@@ -40,7 +40,6 @@ public class TargetedAOESkill : SkillScript {
 		clone.onMouseClick += onMouseClick;
 		clone.onCancel += onCancel;
 		clone.range = AOE;
-		Debug.Log (clone);
 		return true;
 	}
 
