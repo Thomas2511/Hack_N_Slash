@@ -360,7 +360,6 @@ public class PlayerScript : MonoBehaviour {
 			level++;
 			skillPoints++;
 			statPoints += 5;
-			current_hp = hpMax;
 		}
 	}
 
