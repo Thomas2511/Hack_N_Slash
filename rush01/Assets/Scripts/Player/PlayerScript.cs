@@ -138,7 +138,7 @@ public class PlayerScript : MonoBehaviour {
 				else if (hit.collider.tag == "Enemy")
 				{
 					_navMeshAgent.destination = hit.point;
-					_navMeshAgent.stoppingDistance = _sphereCollider.radius;
+					_navMeshAgent.stoppingDistance = _sphereCollider.radius - 0.5f;
 					_enemyTarget = hit.collider.gameObject;
 					if (_enemyTarget == null || _enemyTarget != hit.collider.gameObject)
 						CancelAttackAnimation ();
@@ -270,6 +270,11 @@ public class PlayerScript : MonoBehaviour {
 
 	void RunAnimation ()
 	{
+		if (Mathf.Abs(_navMeshAgent.remainingDistance - _navMeshAgent.stoppingDistance) < 0.1f)
+		{
+			_navMeshAgent.Stop();
+			_navMeshAgent.velocity = Vector3.zero;
+		}
 		animator.SetBool("Run", _navMeshAgent.velocity != Vector3.zero);
 	}
 
@@ -383,11 +388,11 @@ public class PlayerScript : MonoBehaviour {
 		ManageSkills();
 		UpdateRange();
 		AttackEnemy ();
+		RunAnimation();
 		FollowMouse();
 		DeathAnimation();
 		LevelUp();
 		//UpdateSpeed ();
-		RunAnimation();
 		CheatCode ();
 	}
 
