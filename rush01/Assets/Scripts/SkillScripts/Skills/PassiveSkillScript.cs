@@ -11,10 +11,16 @@ public class PassiveSkillScript : ToggleSkillScript {
 
 	protected override void ToggleOff ()
 	{
+		float			hpProportion = 0.0f;
+
 		base.ToggleOff ();
 		PlayerScript player = PlayerScript.instance;
 		if (conBoost)
+		{
+			hpProportion = player.current_hp / (float)player.hpMax;
 			player.con = Mathf.Clamp (player.con - damage, 0, int.MaxValue);
+			player.current_hp = (int)Mathf.Clamp(player.hpMax * hpProportion, 0, player.hpMax);
+		}
 		if (strBoost)
 			player.str = Mathf.Clamp (player.str - damage, 0, int.MaxValue);
 		if (agiBoost)
@@ -24,21 +30,27 @@ public class PassiveSkillScript : ToggleSkillScript {
 		if (hpBoost)
 		{
 			player.bonus_hp = Mathf.Clamp (player.bonus_hp - damage, 0, int.MaxValue);
-			player.current_hp = Mathf.Clamp (player.current_hp - damage, 0, player.hpMax);
+			player.current_hp = Mathf.Clamp (player.current_hp, 0, player.hpMax);
 		}
 		if (mpBoost)
 		{
-			player.bonus_mana = Mathf.Clamp (player.current_mana - damage, 0, int.MaxValue);
+			player.bonus_mana = Mathf.Clamp (player.bonus_mana - damage, 0, player.manaMax);
 			player.current_mana = Mathf.Clamp (player.current_mana - damage, 0, player.manaMax);
 		}
 	}
 
 	protected override void ToggleOn ()
 	{
+		float			hpProportion = 0.0f;
+
 		base.ToggleOn ();
 		PlayerScript player = PlayerScript.instance;
 		if (conBoost)
+		{
+			hpProportion = player.current_hp / (float)player.hpMax;
 			player.con = Mathf.Clamp (player.con + damage, 0, int.MaxValue);
+			player.current_hp = (int)Mathf.Clamp(player.hpMax * hpProportion, 0, player.hpMax);
+		}
 		if (strBoost)
 			player.str = Mathf.Clamp (player.str + damage, 0, int.MaxValue);
 		if (agiBoost)
@@ -48,12 +60,12 @@ public class PassiveSkillScript : ToggleSkillScript {
 		if (hpBoost)
 		{
 			player.bonus_hp = Mathf.Clamp (player.bonus_hp + damage, 0, int.MaxValue);
-			player.current_hp = Mathf.Clamp (player.current_hp + damage, 0, player.hpMax);
+			player.current_hp = Mathf.Clamp(player.current_hp + damage, 0, player.hpMax);
 		}
 		if (mpBoost)
 		{
-			player.bonus_mana = Mathf.Clamp (player.current_mana + damage, 0, int.MaxValue);
-			player.current_mana = Mathf.Clamp (player.current_mana + damage, 0, player.manaMax);
+			player.bonus_mana = Mathf.Clamp (player.bonus_mana + damage, 0, int.MaxValue);
+			player.current_mana = Mathf.Clamp(player.current_mana + damage, 0, player.manaMax);
 		}
 	}
 }

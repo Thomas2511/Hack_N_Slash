@@ -3,12 +3,15 @@ using System.Collections;
 
 public abstract class ToggleSkillScript: SkillScript {
 	public bool								toggled;
+
 	public override bool SelectSkill ()
 	{
-		if (onCoolDown || PlayerScript.instance.current_mana < manaCost)
+		if (toggled)
+			ToggleOff ();
+		if (onCoolDown || PlayerScript.instance.current_mana < manaCost || toggled)
 			return false;
 		UseSkill ();
-		return false;
+		return animated;
 	}
 
 	protected IEnumerator UseMana ()
@@ -41,9 +44,6 @@ public abstract class ToggleSkillScript: SkillScript {
 
 	public override void ApplyEffect (Vector3 target, GameObject origin)
 	{
-		if (toggled)
-			ToggleOff();
-		else
-			ToggleOn ();
+		ToggleOn ();
 	}
 }
