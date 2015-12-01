@@ -2,7 +2,8 @@
 using System.Collections;
 
 public class SelfTargetedAOESkillScript : SkillScript {
-	public GameObject spell;
+	public GameObject 	spell;
+	public bool			percentDamage = false;
 
 	public override bool SelectSkill ()
 	{
@@ -19,7 +20,8 @@ public class SelfTargetedAOESkillScript : SkillScript {
 		if (origin.tag == "Player")
 		{
 			PlayerScript player = origin.GetComponent<PlayerScript>();
-			player.current_hp = Mathf.Clamp (player.current_hp - damage, 0, player.hpMax);
+			player.current_hp = percentDamage ? (int)Mathf.Clamp(player.current_hp - (player.hpMax *  damage / 100.0f), 0, player.hpMax) :
+				Mathf.Clamp (player.current_hp - damage, 0, player.hpMax);
 		}
 	}
 }
