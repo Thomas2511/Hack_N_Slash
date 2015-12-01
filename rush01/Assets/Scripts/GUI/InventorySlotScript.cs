@@ -104,7 +104,6 @@ public class InventorySlotScript : MonoBehaviour, IBeginDragHandler, IDragHandle
 	}
 
 	public void OnPointerEnter (PointerEventData data) {
-		Debug.Log ("pouet");
 		tooltip.transform.parent = this.transform;
 		tooltip.GetComponent<Image>().enabled = true;
 		tooltip.GetComponentInChildren<Text>().enabled = true;

@@ -202,6 +202,7 @@ public class PlayerScript : MonoBehaviour {
 			weapon.transform.localPosition = new Vector3(0, 0, 0);
 			weapon.equipped = true;
 			animator.SetBool ("HasWeapon", true);
+			animator.SetFloat("AttackSpeed", weapon.attackSpeed);
 		}
 	}
 
@@ -213,6 +214,7 @@ public class PlayerScript : MonoBehaviour {
 			weapon.transform.localPosition = new Vector3(-0.063f, 0.099f, -0.43f);
 			weapon.equipped = false;
 			animator.SetBool ("HasWeapon", false);
+			animator.SetFloat ("AttackSpeed", 0);
 		}
 	}
 
@@ -226,6 +228,7 @@ public class PlayerScript : MonoBehaviour {
 		}
 		weapon.GetComponent<Rigidbody>().isKinematic = true;
 		this.weapon = weapon;
+		animator.SetFloat ("AttackSpeed", weapon.attackSpeed);
 		if (animator.GetBool("HasWeapon"))
 		{
 			weapon.transform.SetParent (playerRightHand.transform);
