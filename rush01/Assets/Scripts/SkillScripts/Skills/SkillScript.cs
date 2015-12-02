@@ -144,6 +144,10 @@ public abstract class SkillScript : MonoBehaviour, IBeginDragHandler, IDragHandl
 		public int			coolDown;
 		public int			manaCost;
 		public int			damage;
+		public int			damage2;
+		public int			damage3;
+		public int			damage4;
+		public int			damage5;
 		public int			AOE;
 		public int			attackAnimationIndex;
 		public float		damageMultiplier = 1.0f;

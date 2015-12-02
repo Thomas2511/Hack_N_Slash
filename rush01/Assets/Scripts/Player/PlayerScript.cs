@@ -36,12 +36,19 @@ public class PlayerScript : MonoBehaviour {
 
 	// Stats
 	public	int					current_hp;
+	[Tooltip("Strength value")]
 	public	int					str;
+	[Tooltip("Agility value")]
 	public	int					agi;
+	[Tooltip("Constitution value")]
 	public	int					con;
+	[Tooltip("Intelligence value")]
 	public	int					intel;
+	[Tooltip("Experience value")]
 	public	long				xp;
+	[Tooltip("Money value")]
 	public	int					money;
+	[Tooltip("Level value between 1 and 50")]
 	[Range(1, 50)]
 	public	int					level;
 	public	int					current_mana;
@@ -65,7 +72,7 @@ public class PlayerScript : MonoBehaviour {
 	public	int					minDamage { get { return str / 2 + bonus_damage;}}
 	public	int					maxDamage { get { return minDamage + weaponDamage;}}
 	public	int					hpMax { get { return 5 * con + bonus_hp; } }
-	public	int					manaMax { get { return 100 + 5 * intel + bonus_mana; }}
+	public	int					manaMax { get { return 50 + 5 * intel + bonus_mana; }}
 	public	int					weaponDamage { get { return weapon == null || !weapon.equipped ? 0 : weapon.damage; }}
 	public	float				weaponCoolDown { get { return weapon == null || !weapon.equipped ? 2.5f : weapon.coolDown; }}
 	public	float				weaponRange { get { return weapon == null || !weapon.equipped ? 2f : weapon.range; }}
@@ -151,13 +158,6 @@ public class PlayerScript : MonoBehaviour {
 					InventoryScript.instance.addWeapon (hit.collider.gameObject.GetComponent<WeaponScript>());
 			}
 		}
-	}
-
-	IEnumerator onCoolDown ()
-	{
-		_onCoolDown = true;
-		yield return new WaitForSeconds(weaponCoolDown);
-		_onCoolDown = false;
 	}
 
 	bool targetInRange()
@@ -294,12 +294,6 @@ public class PlayerScript : MonoBehaviour {
 		}
 	}
 
-	IEnumerator PrepareToReload ()
-	{
-		yield return new WaitForSeconds (5.0f);
-		Application.LoadLevel (Application.loadedLevel);
-	}
-
 	public bool isInRange(GameObject target)
 	{
 		return (_enemyTargetsInRange.Find (x => x == target) != null);
@@ -372,6 +366,19 @@ public class PlayerScript : MonoBehaviour {
 			yield return new WaitForSeconds(1.0f);
 			current_mana = Mathf.Clamp(current_mana + 1, 0, manaMax);
 		}
+	}
+
+	IEnumerator PrepareToReload ()
+	{
+		yield return new WaitForSeconds (5.0f);
+		Application.LoadLevel (Application.loadedLevel);
+	}
+
+	IEnumerator onCoolDown ()
+	{
+		_onCoolDown = true;
+		yield return new WaitForSeconds(weaponCoolDown);
+		_onCoolDown = false;
 	}
 
 	public void DamagePlayer (int damage)

@@ -6,12 +6,14 @@ public class PassiveSkillScript : ToggleSkillScript {
 	public bool			strBoost;
 	public bool			agiBoost;
 	public bool			damageBoost;
+	public bool			intelBoost;
 	public bool			hpBoost;
 	public bool			mpBoost;
 
 	protected override void ToggleOff ()
 	{
 		float			hpProportion = 0.0f;
+		float			mpProportion = 0.0f;
 
 		base.ToggleOff ();
 		PlayerScript player = PlayerScript.instance;
@@ -27,6 +29,12 @@ public class PassiveSkillScript : ToggleSkillScript {
 			player.agi = Mathf.Clamp (player.agi - damage, 0, int.MaxValue);
 		if (damageBoost)
 			player.bonus_damage = Mathf.Clamp (player.bonus_damage - damage, 0, int.MaxValue);
+		if (intelBoost)
+		{
+			mpProportion = player.current_mana / (float)player.manaMax;
+			player.intel = Mathf.Clamp (player.intel - damage, 0, int.MaxValue);
+			player.current_mana = (int)Mathf.Clamp (player.manaMax * mpProportion, 0, int.MaxValue);
+		}
 		if (hpBoost)
 		{
 			player.bonus_hp = Mathf.Clamp (player.bonus_hp - damage, 0, int.MaxValue);
@@ -42,6 +50,7 @@ public class PassiveSkillScript : ToggleSkillScript {
 	protected override void ToggleOn ()
 	{
 		float			hpProportion = 0.0f;
+		float			mpProportion = 0.0f;
 
 		base.ToggleOn ();
 		PlayerScript player = PlayerScript.instance;
@@ -57,6 +66,12 @@ public class PassiveSkillScript : ToggleSkillScript {
 			player.agi = Mathf.Clamp (player.agi + damage, 0, int.MaxValue);
 		if (damageBoost)
 			player.bonus_damage = Mathf.Clamp (player.bonus_damage + damage, 0, int.MaxValue);
+		if (intelBoost)
+		{
+			mpProportion = player.current_mana / (float)player.manaMax;
+			player.intel = Mathf.Clamp (player.intel + damage, 0, int.MaxValue);
+			player.current_mana = (int)Mathf.Clamp (player.manaMax * mpProportion, 0, int.MaxValue);
+		}
 		if (hpBoost)
 		{
 			player.bonus_hp = Mathf.Clamp (player.bonus_hp + damage, 0, int.MaxValue);

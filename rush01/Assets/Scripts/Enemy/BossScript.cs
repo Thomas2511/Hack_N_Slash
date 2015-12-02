@@ -14,7 +14,7 @@ public class BossScript : Enemy {
 		bool hit = val > 0 ? true : false;
 		
 		if (Vector3.Distance (this.transform.position, intruder.transform.position) <= 15.0f && hit) {
-			PlayerScript.instance.current_hp = Mathf.Clamp ((PlayerScript.instance.current_hp - GetDamage ()), 0, PlayerScript.instance.hpMax);
+			PlayerScript.instance.DamagePlayer (GetDamage ());
 			swordS.Play ();
 		}
 	}
