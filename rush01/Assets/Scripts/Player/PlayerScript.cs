@@ -39,6 +39,7 @@ public class PlayerScript : MonoBehaviour {
 	public	int					str;
 	public	int					agi;
 	public	int					con;
+	public	int					intel;
 	public	long				xp;
 	public	int					money;
 	[Range(1, 50)]
@@ -46,7 +47,6 @@ public class PlayerScript : MonoBehaviour {
 	public	int					current_mana;
 	public	int					bonus_damage;
 	public	int					bonus_hp;
-	public	int					base_mana = 100;
 	public	int					bonus_mana;
 	[Range(0, 49)]
 	public	int					skillPoints;
@@ -65,7 +65,7 @@ public class PlayerScript : MonoBehaviour {
 	public	int					minDamage { get { return str / 2 + bonus_damage;}}
 	public	int					maxDamage { get { return minDamage + weaponDamage;}}
 	public	int					hpMax { get { return 5 * con + bonus_hp; } }
-	public	int					manaMax { get { return base_mana + bonus_mana; }}
+	public	int					manaMax { get { return 100 + 5 * intel + bonus_mana; }}
 	public	int					weaponDamage { get { return weapon == null || !weapon.equipped ? 0 : weapon.damage; }}
 	public	float				weaponCoolDown { get { return weapon == null || !weapon.equipped ? 2.5f : weapon.coolDown; }}
 	public	float				weaponRange { get { return weapon == null || !weapon.equipped ? 2f : weapon.range; }}
@@ -77,6 +77,7 @@ public class PlayerScript : MonoBehaviour {
 		for (long i = 1; i < experienceCurve.Length; i++)
 			experienceCurve[i] = (int)(experienceCurve[i - 1] * 1.25f);
 		current_hp = hpMax;
+		current_mana = manaMax;
 		instance = this;
 		_attackType = AttackType.NONE;
 		_navMeshAgent = GetComponent<NavMeshAgent>();
@@ -369,7 +370,7 @@ public class PlayerScript : MonoBehaviour {
 	IEnumerator RegenMana () {
 		while (true) {
 			yield return new WaitForSeconds(1.0f);
-			current_mana = Mathf.Clamp(current_mana + 1, 0, 100);
+			current_mana = Mathf.Clamp(current_mana + 1, 0, manaMax);
 		}
 	}
 
