@@ -3,8 +3,9 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
-public abstract class SkillScript : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
+public abstract class SkillScript : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerEnterHandler, IPointerExitHandler
 {
 	public enum SkillType
 	{
@@ -27,8 +28,9 @@ public abstract class SkillScript : MonoBehaviour, IBeginDragHandler, IDragHandl
 	public int					attackAnimationIndex { get { return skillStats[level].attackAnimationIndex; }}
 	public float				damageMultiplier { get { return skillStats[level].damageMultiplier; }}
 	public bool					onCoolDown;
+	public int					tooltipTextIndex;
+	private string				_toolTipText;
 	public bool					animated = true;
-	public string				toolTip;
 	public int					levelUnlocked;
 
 	// UI
@@ -41,13 +43,14 @@ public abstract class SkillScript : MonoBehaviour, IBeginDragHandler, IDragHandl
 
 	public SkillStat[]			skillStats = new SkillStat[5];
 
-
-
 	public abstract bool		SelectSkill();
 
 	protected virtual void	Start()
 	{
 		button = GetComponentInChildren<Button>().gameObject;
+		TextAsset textAsset = Resources.Load("Skilltext") as TextAsset;
+		string[] file = Regex.Split(textAsset.text, @"#\[[0-9]+\]#\n");
+		_toolTipText = (file.Length > tooltipTextIndex) ? file[tooltipTextIndex] : "<i>This text is a placeholder.</i>";
 	}
 
 	public void OnBeginDrag (PointerEventData eventData)
@@ -120,6 +123,15 @@ public abstract class SkillScript : MonoBehaviour, IBeginDragHandler, IDragHandl
 		onCoolDown = false;
 	}
 
+	public void activeTooltip()
+	{
+		GameObject tooltip = GameObject.FindGameObjectWithTag("Tooltip");
+		tooltip.GetComponent<CanvasGroup>().alpha = 1;
+		tooltip.GetComponentInChildren<Text>().text = _toolTipText;
+		tooltip.transform.SetParent (this.transform);
+		tooltip.transform.localPosition = new Vector3(0, -60, 0);
+	}
+
 	protected virtual void Update()
 	{
 		Image image = GetComponent<Image>();
@@ -135,6 +147,18 @@ public abstract class SkillScript : MonoBehaviour, IBeginDragHandler, IDragHandl
 			PlayerScript.instance.skillPoints--;
 			level++;
 		}
+	}
+
+	public void OnPointerEnter (PointerEventData data) {
+		Invoke ("activeTooltip", 1);
+	}
+	
+	public void OnPointerExit (PointerEventData data) {
+		GameObject tooltip = GameObject.FindGameObjectWithTag("Tooltip");
+		CancelInvoke ("activeTooltip");
+		tooltip.GetComponent<CanvasGroup>().alpha = 0;
+		tooltip.GetComponentInChildren<Text>().text = "";
+		tooltip.transform.SetParent (null);
 	}
 
 	[System.Serializable]

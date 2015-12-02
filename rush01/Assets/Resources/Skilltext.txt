@@ -1,0 +1,20 @@
+<size=12><color=aqua>Heal</color></size>
+<i>Heals your wounds through pure light energy.</i>#[0]#
+<size=12><color=blue>Melee Combo</color></size>
+<i>A succession of sword attacks. A sword is required to use this skill.</i>#[1]#
+<size=12><color=orange>Fire Cloud</color></size>
+<i>When activated, surrounds you with a fire cloud. Damages enemies over time.</i>#[2]#
+<size=12><color=orange>Fire Ball</color></size>
+<i>Replace your physical attack by a ranged fire attack.</i>#[3]#
+<size=12><color=orange>Fire Burst</color></size>
+<i>Burns all enemies in the selected area.</i>#[4]#
+<size=12><color=fushia>Enhance Muscles</color></size>
+<i>When activated, does exactly what it says it does.</i>#[5]#
+<size=12><color=blue>Jump Attack</color></size>
+<i>An impressive, but terribly animated jump attack. A sword  is required to use this skill.</i>#[6]#
+<size=12><color=fushia>Witch Ward</color></size>
+<i>When activated, increase your defense and your intelligence.</i>#[7]#
+<size=12><color=lightblue>Lightning Strike</color></size>
+<i>Shocks all enemies in the selected area.</i>#[8]#
+<size=12><color=lime>Tornado</color></size>
+<i>When activated, surrounds you with a powerful tornado. Damages enemies over time.</i>#[9]#
