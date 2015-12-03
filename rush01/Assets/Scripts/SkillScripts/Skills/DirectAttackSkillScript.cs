@@ -21,6 +21,6 @@ public class DirectAttackSkillScript : SkillScript
 			projectile.damage = damage;
 		}
 		else
-			PlayerScript.instance._enemyTarget.GetComponent<Enemy>().ReceiveDamage (PlayerScript.instance.GetDamage ());
+			PlayerScript.instance._enemyTarget.GetComponent<Enemy>().ReceiveDamage ((int)(PlayerScript.instance.GetDamage () * damageMultiplier));
 	}
 }

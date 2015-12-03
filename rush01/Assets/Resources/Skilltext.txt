@@ -1,11 +1,11 @@
 <size=12><color=aqua>Heal <<level>></color></size>
 <<mana_cost>>
 <<cooldown>>
-<i>Heals your wounds (<<damage>> % of your max hp) through pure light energy.</i>#[0]#
+<i>Heals your wounds (<<damage>>  of your max hp) with pure light energy.</i>#[0]#
 <size=12><color=blue>Melee Combo <<level>></color></size>
 <<mana_cost>>
 <<cooldown>>
-<i>A succession of sword attacks. A sword is required to use this skill.</i>#[1]#
+<i>A succession of sword attacks. Deals <<damage_modifier>> damage each strike. You gain an additionnal attack at level 3 of this skill. A sword is required to use this skill.</i>#[1]#
 <size=12><color=orange>Fire Cloud <<level>></color></size>
 <<mana_cost>>
 <<cooldown>>
@@ -18,10 +18,10 @@
 <<mana_cost>>
 <<cooldown>>
 <i>Burns all enemies in the selected area for <<damage>> damage.</i>#[4]#
-<size=12><color=fushia>Enhance Muscles <<level>></color></size>
+<size=12><color=fushia>Rage <<level>></color></size>
 <<mana_cost>>
 <<cooldown>>
-<i>When activated, does exactly what it says it does.</i>#[5]#
+<i>When activated, increase your muscle mass. You gain bonuses in Constitution (<<damage>>), Strength (<<damage2>>) and Agility (<<damage3>>), but you lose <<damage4>> of your intelligence in the process.</i>#[5]#
 <size=12><color=blue>Jump Attack <<level>></color></size>
 <<mana_cost>>
 <<cooldown>>
