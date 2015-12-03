@@ -5,7 +5,7 @@ using System.Collections;
 public class IntelScript : MonoBehaviour {
 
 	void Update () {
-		GetComponent<Text> ().text = "INT : " + PlayerScript.instance.intel.ToString();
+		GetComponent<Text> ().text = "INT : " + PlayerScript.instance.intel.ToString("0");
 	}
 
 	public void IncreaseIntel()

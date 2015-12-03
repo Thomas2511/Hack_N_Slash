@@ -142,7 +142,24 @@ public abstract class SkillScript : MonoBehaviour, IBeginDragHandler, IDragHandl
 
 	protected string damageText(int damageValue, DamageType damageTypeValue)
 	{
-		return "<b><color=" + ((damageValue >= 0) ? "red" : "lime") + ">" + Mathf.Abs (damageValue).ToString() + ((damageTypeValue == DamageType.PERCENT) ? " %" : "") + "</color></b>";
+		string colorstr = "white";
+
+		switch (damageTypeValue)
+		{
+			case DamageType.MAGICAL:
+			colorstr = "cyan";
+			break;
+			case DamageType.PERCENT:
+			colorstr = "lime";
+			break;
+			case DamageType.PHYSICAL:
+			colorstr = "orange";
+			break;
+			case DamageType.UNTYPED:
+			colorstr = "yellow";
+			break;
+		}
+		return "<b><color=" + colorstr + ">" + Mathf.Abs (damageValue).ToString() + ((damageTypeValue == DamageType.PERCENT) ? " %" : "") + "</color></b>";
 	}
 
 	protected string replaceVariables(string tooltipText)
@@ -206,10 +223,6 @@ public abstract class SkillScript : MonoBehaviour, IBeginDragHandler, IDragHandl
 		public int			coolDown;
 		public int			manaCost;
 		public int			damage;
-		public int			damage2;
-		public int			damage3;
-		public int			damage4;
-		public int			damage5;
 		public int			AOE;
 		public int			attackAnimationIndex;
 		public float		damageMultiplier = 1.0f;

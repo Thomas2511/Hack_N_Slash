@@ -5,7 +5,7 @@ using System.Collections;
 public class ConScript : MonoBehaviour {
 
 	void Update () {
-		GetComponent<Text> ().text = "CON : " + PlayerScript.instance.con.ToString ();
+		GetComponent<Text> ().text = "CON : " + PlayerScript.instance.con.ToString ("0");
 	}
 
 	public void IncreaseCon()

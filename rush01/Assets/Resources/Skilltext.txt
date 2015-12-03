@@ -29,7 +29,7 @@
 <size=12><color=fushia>Witch Ward <<level>></color></size>
 <<mana_cost>>
 <<cooldown>>
-<i>When activated, increase your defense and your intelligence.</i>#[7]#
+<i>When activated, increase your Constitution by <<damage>> and your Intelligence by <<damage2>> .</i>#[7]#
 <size=12><color=lightblue>Lightning Strike <<level>></color></size>
 <<mana_cost>>
 <<cooldown>>

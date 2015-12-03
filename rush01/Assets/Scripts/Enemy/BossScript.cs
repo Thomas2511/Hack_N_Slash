@@ -10,7 +10,7 @@ public class BossScript : Enemy {
 	}
 
 	public override void Damage () {
-		int val = 75 + agi - PlayerScript.instance.agi - Random.Range (1, 101);
+		float val = 75 + agi - PlayerScript.instance.agi - Random.Range (1, 101);
 		bool hit = val > 0 ? true : false;
 		
 		if (Vector3.Distance (this.transform.position, intruder.transform.position) <= 15.0f && hit) {
