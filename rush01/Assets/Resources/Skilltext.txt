@@ -9,7 +9,7 @@
 <size=12><color=orange>Fire Cloud <<level>></color></size>
 <<mana_cost>>
 <<cooldown>>
-<i>When activated, surrounds you with a fire cloud. Deals <<damage> damage to all enemies around you every second.</i>#[2]#
+<i>When activated, surrounds you with a fire cloud. Deals <<damage>> damage to all enemies around you every second.</i>#[2]#
 <size=12><color=orange>Fire Ball <<level>></color></size>
 <<mana_cost>>
 <<cooldown>>

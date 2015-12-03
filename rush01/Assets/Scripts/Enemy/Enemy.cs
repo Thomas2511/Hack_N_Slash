@@ -97,9 +97,9 @@ public class Enemy : MonoBehaviour {
 
 	protected IEnumerator BodyDissolve ()
 	{
-		Destroy (agent);
-		Destroy (GetComponent<Rigidbody> ());
-		Destroy (GetComponent<BoxCollider> ());
+		agent.enabled = false;
+		GetComponent<Rigidbody>().isKinematic = true;
+		GetComponent<BoxCollider> ().enabled = false;
 		Destroy (GetComponentInChildren<Canvas> ().gameObject);
 		float length = 0.0f;
 		foreach (AnimatorClipInfo animinfo in animator.GetCurrentAnimatorClipInfo(0))

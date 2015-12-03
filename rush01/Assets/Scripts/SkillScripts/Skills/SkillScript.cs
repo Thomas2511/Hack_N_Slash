@@ -128,7 +128,7 @@ public abstract class SkillScript : MonoBehaviour, IBeginDragHandler, IDragHandl
 	{
 		string newText = tooltipText;
 		newText = newText.Replace ("<<level>>", (level + 1 > 0) ? "(Level " + (level + 1).ToString () + ")" : "");
-		newText = newText.Replace ("<<damage>>", "<b><color=" + ((damage >= 0) ? "red" : "lime") + ">" + damage.ToString() + "</color></b>");
+		newText = newText.Replace ("<<damage>>", "<b><color=" + ((damage >= 0) ? "red" : "lime") + ">" + Mathf.Abs (damage).ToString() + "</color></b>");
 		newText = newText.Replace ("<<cooldown>>", coolDown > 0.0f ? coolDown.ToString ("0.0") + " sec Cooldown" : "No Cooldown");
 		newText = newText.Replace ("<<mana_cost>>", (manaCost > 0) ? manaCost.ToString () + " Mana" + (manaOverTime ? " Per Second" : "") : "No Mana Cost");
 		return newText;
