@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
+[RequireComponent(typeof(Image))]
 public abstract class SkillScript : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerEnterHandler, IPointerExitHandler
 {
 	public enum SkillType
@@ -20,17 +21,18 @@ public abstract class SkillScript : MonoBehaviour, IBeginDragHandler, IDragHandl
 	[Range(-1, 4)]
 	public int					level;
 	public string				Skillname;
-	public int					range { get { return skillStats[level].range; }}
-	public int					manaCost { get { return skillStats[level].manaCost; }}
-	public float				coolDown { get { return skillStats[level].coolDown; }}
-	public int					damage { get { return skillStats[level].damage; }}
-	public int					AOE { get { return skillStats[level].AOE; }}
-	public int					attackAnimationIndex { get { return skillStats[level].attackAnimationIndex; }}
-	public float				damageMultiplier { get { return skillStats[level].damageMultiplier; }}
+	public int					range { get { return skillStats[Mathf.Clamp (level, 0, 4)].range; }}
+	public int					manaCost { get { return skillStats[Mathf.Clamp (level, 0, 4)].manaCost; }}
+	public float				coolDown { get { return skillStats[Mathf.Clamp (level, 0, 4)].coolDown; }}
+	public int					damage { get { return skillStats[Mathf.Clamp (level, 0, 4)].damage; }}
+	public int					AOE { get { return skillStats[Mathf.Clamp (level, 0, 4)].AOE; }}
+	public int					attackAnimationIndex { get { return skillStats[Mathf.Clamp (level, 0, 4)].attackAnimationIndex; }}
+	public float				damageMultiplier { get { return skillStats[Mathf.Clamp (level, 0, 4)].damageMultiplier; }}
 	public bool					onCoolDown;
 	public int					tooltipTextIndex;
-	private string				_toolTipText;
+	private string				_tooltipText;
 	public bool					animated = true;
+	public bool					manaOverTime;
 	public int					levelUnlocked;
 
 	// UI
@@ -50,7 +52,7 @@ public abstract class SkillScript : MonoBehaviour, IBeginDragHandler, IDragHandl
 		button = GetComponentInChildren<Button>().gameObject;
 		TextAsset textAsset = Resources.Load("Skilltext") as TextAsset;
 		string[] file = Regex.Split(textAsset.text, @"#\[[0-9]+\]#\n");
-		_toolTipText = (file.Length > tooltipTextIndex) ? file[tooltipTextIndex] : "<i>This text is a placeholder.</i>";
+		_tooltipText = (file.Length > tooltipTextIndex) ? file[tooltipTextIndex] : "<i>This text is a placeholder.</i>";
 	}
 
 	public void OnBeginDrag (PointerEventData eventData)
@@ -103,7 +105,6 @@ public abstract class SkillScript : MonoBehaviour, IBeginDragHandler, IDragHandl
 		else
 			ApplyEffect (Vector3.zero, null);
 	}
-
 	public virtual void ApplyEffect(Vector3 target, GameObject origin)
 	{
 		SpendMana ();
@@ -123,11 +124,22 @@ public abstract class SkillScript : MonoBehaviour, IBeginDragHandler, IDragHandl
 		onCoolDown = false;
 	}
 
+	public string replaceVariables(string tooltipText)
+	{
+		string newText = tooltipText;
+		newText = newText.Replace ("<<level>>", (level + 1 > 0) ? "(Level " + (level + 1).ToString () + ")" : "");
+		newText = newText.Replace ("<<damage>>", "<b><color=" + ((damage >= 0) ? "red" : "lime") + ">" + damage.ToString() + "</color></b>");
+		newText = newText.Replace ("<<cooldown>>", coolDown > 0.0f ? coolDown.ToString ("0.0") + " sec Cooldown" : "No Cooldown");
+		newText = newText.Replace ("<<mana_cost>>", (manaCost > 0) ? manaCost.ToString () + " Mana" + (manaOverTime ? " Per Second" : "") : "No Mana Cost");
+		return newText;
+	}
+
 	public void activeTooltip()
 	{
 		GameObject tooltip = GameObject.FindGameObjectWithTag("Tooltip");
 		tooltip.GetComponent<CanvasGroup>().alpha = 1;
-		tooltip.GetComponentInChildren<Text>().text = _toolTipText;
+		Text text = tooltip.GetComponentInChildren<Text>();
+		text.text = replaceVariables(_tooltipText);
 		tooltip.transform.SetParent (this.transform);
 		tooltip.transform.localPosition = new Vector3(0, -60, 0);
 	}
