@@ -145,14 +145,14 @@ public class BuffScript
 		if (psc.intel != 0)
 			mpProportion = player.current_mana / (float)player.manaMax;
 		buffs.Add (psc);
-		if (psc.con != 0)
-			player.current_hp = Mathf.RoundToInt (Mathf.Clamp (player.hpMax * hpProportion, 0, int.MaxValue));
-		if (psc.intel != 0)
-			player.current_mana = Mathf.RoundToInt (Mathf.Clamp (player.manaMax * mpProportion, 0, int.MaxValue));
 		if (psc.hp != 0)
 			player.current_hp = Mathf.Clamp (player.current_hp + psc.hp, 0, int.MaxValue);
 		if (psc.mana != 0)
 			player.current_mana = Mathf.Clamp (player.current_mana + psc.mana, 0, int.MaxValue);
+		if (psc.con != 0)
+			player.current_hp = Mathf.RoundToInt (Mathf.Clamp (player.hpMax * hpProportion, 0, int.MaxValue));
+		if (psc.intel != 0)
+			player.current_mana = Mathf.RoundToInt (Mathf.Clamp (player.manaMax * mpProportion, 0, int.MaxValue));
 	}
 
 	public void RemoveBuff(PassiveStatChange psc)
@@ -168,14 +168,14 @@ public class BuffScript
 		if (psc.intel != 0)
 			mpProportion = player.current_mana / (float)player.manaMax;
 		buffs.Remove(psc);
-		if (psc.con != 0)
-			player.current_hp = Mathf.RoundToInt (Mathf.Clamp (player.hpMax * hpProportion, 0, int.MaxValue));
-		if (psc.intel != 0)
-			player.current_mana = Mathf.RoundToInt (Mathf.Clamp (player.manaMax * mpProportion, 0, int.MaxValue));
 		if (psc.hp != 0)
 			player.current_hp = Mathf.Clamp (player.current_hp - psc.hp, 0, int.MaxValue);
 		if (psc.mana != 0)
 			player.current_mana = Mathf.Clamp (player.current_mana - psc.mana, 0, int.MaxValue);
+		if (psc.con != 0)
+			player.current_hp = Mathf.RoundToInt (Mathf.Clamp (player.hpMax * hpProportion, 0, int.MaxValue));
+		if (psc.intel != 0)
+			player.current_mana = Mathf.RoundToInt (Mathf.Clamp (player.manaMax * mpProportion, 0, int.MaxValue));
 	}
 	
 }

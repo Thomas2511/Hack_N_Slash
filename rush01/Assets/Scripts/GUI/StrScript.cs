@@ -5,7 +5,8 @@ using System.Collections;
 public class StrScript : MonoBehaviour {
 
 	void Update () {
-		GetComponent<Text> ().text = "STR : " + PlayerScript.instance.str.ToString ("0");
+		GetComponent<Text> ().text = "STR : " + PlayerScript.instance.str.ToString("0")
+			+ ((PlayerScript.instance.buffs.str != 0) ? " (" + ((PlayerScript.instance.buffs.str > 0) ? "+" : "") + PlayerScript.instance.buffs.str + ")" : "");
 	}
 
 	public void IncreaseStr()

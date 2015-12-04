@@ -5,7 +5,8 @@ using System.Collections;
 public class AgiScript : MonoBehaviour {
 
 	void Update () {
-		GetComponent<Text> ().text = "AGI : " + PlayerScript.instance.agi.ToString("0");
+		GetComponent<Text> ().text = "AGI : " + PlayerScript.instance.agi.ToString("0")
+			+ ((PlayerScript.instance.buffs.agi != 0) ? " (" + ((PlayerScript.instance.buffs.agi > 0) ? "+" : "") + PlayerScript.instance.buffs.agi + ")" : "");
 	}
 
 	public void IncreaseAgi()
