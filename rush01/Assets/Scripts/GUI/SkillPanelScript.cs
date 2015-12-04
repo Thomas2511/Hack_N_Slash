@@ -14,6 +14,11 @@ public class SkillPanelScript : MonoBehaviour, IDropHandler {
 	// Use this for initialization
 	void Start () {
 		text = GetComponentInChildren<Text>();
+		foreach(Image image in GetComponentsInChildren<Image>())
+		{
+			if (image.gameObject.name == "CooldownPanel")
+				cooldownPanel = image;
+		}
 		_defaultColor = GetComponent<Image>().color;
 		_defaultText = text.text;
 	}

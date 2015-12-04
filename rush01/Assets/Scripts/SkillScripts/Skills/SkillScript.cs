@@ -28,6 +28,8 @@ public abstract class SkillScript : MonoBehaviour, IBeginDragHandler, IDragHandl
 	[Range(-1, 4)]
 	public int					level;
 	public string				Skillname;
+
+	// Skill stats
 	public int					range { get { return skillStats[Mathf.Clamp (level, 0, 4)].range; }}
 	public int					manaCost { get { return skillStats[Mathf.Clamp (level, 0, 4)].manaCost; }}
 	public float				coolDown { get { return skillStats[Mathf.Clamp (level, 0, 4)].coolDown; }}
@@ -37,14 +39,12 @@ public abstract class SkillScript : MonoBehaviour, IBeginDragHandler, IDragHandl
 	public DamageType			damage2Type;
 	public int					damage3 { get { return skillStats[Mathf.Clamp (level, 0, 4)].damage3; }}
 	public DamageType			damage3Type;
-	public int					damage4 { get { return skillStats[Mathf.Clamp (level, 0, 4)].damage4; }}
-	public DamageType			damage4Type;
-	public int					damage5 { get { return skillStats[Mathf.Clamp (level, 0, 4)].damage5; }}
-	public DamageType			damage5Type;
 	public int					AOE { get { return skillStats[Mathf.Clamp (level, 0, 4)].AOE; }}
 	public int					attackAnimationIndex { get { return skillStats[Mathf.Clamp (level, 0, 4)].attackAnimationIndex; }}
 	public float				damageMultiplier { get { return skillStats[Mathf.Clamp (level, 0, 4)].damageMultiplier; }}
 	public bool					onCoolDown;
+	public PassiveStatTemplate	passiveStatTemplate { get { return skillStats[Mathf.Clamp (level, 0, 4)].passiveStatTemplate; }}
+	
 	public int					tooltipTextIndex;
 	private string				_tooltipText;
 	public bool					animated = true;
@@ -140,7 +140,7 @@ public abstract class SkillScript : MonoBehaviour, IBeginDragHandler, IDragHandl
 		onCoolDown = false;
 	}
 
-	protected string damageText(int damageValue, DamageType damageTypeValue)
+	protected string damageText(float damageValue, DamageType damageTypeValue)
 	{
 		string colorstr = "white";
 
@@ -169,8 +169,22 @@ public abstract class SkillScript : MonoBehaviour, IBeginDragHandler, IDragHandl
 		newText = newText.Replace ("<<damage>>", damageText (damage, damageType));
 		newText = newText.Replace ("<<damage2>>", damageText (damage2, damage2Type));
 		newText = newText.Replace ("<<damage3>>", damageText (damage3, damage3Type));
-		newText = newText.Replace ("<<damage4>>", damageText (damage4, damage4Type));
-		newText = newText.Replace ("<<damage5>>", damageText (damage5, damage5Type));
+		newText = newText.Replace ("<<str>>", damageText (passiveStatTemplate.str, DamageType.UNTYPED));
+		newText = newText.Replace ("<<con>>", damageText (passiveStatTemplate.con, DamageType.UNTYPED));
+		newText = newText.Replace ("<<agi>>", damageText (passiveStatTemplate.agi, DamageType.UNTYPED));
+		newText = newText.Replace ("<<intel>>", damageText (passiveStatTemplate.intel, DamageType.UNTYPED));
+		newText = newText.Replace ("<<bonus_damage>>", damageText (passiveStatTemplate.damage, DamageType.UNTYPED));
+		newText = newText.Replace ("<<hp>>", damageText (passiveStatTemplate.hp, DamageType.UNTYPED));
+		newText = newText.Replace ("<<mana>>", damageText (passiveStatTemplate.mana, DamageType.UNTYPED));
+		newText = newText.Replace ("<<attack_speed>>", damageText (passiveStatTemplate.attackSpeed, DamageType.UNTYPED));
+		newText = newText.Replace ("<<cooldown_reduction>>", damageText (passiveStatTemplate.cooldownReduction, DamageType.UNTYPED));
+		newText = newText.Replace ("<<p_str>>", damageText (passiveStatTemplate.pStr, DamageType.PERCENT));
+		newText = newText.Replace ("<<p_con>>", damageText (passiveStatTemplate.pCon, DamageType.PERCENT));
+		newText = newText.Replace ("<<p_agi>>", damageText (passiveStatTemplate.pAgi, DamageType.PERCENT));
+		newText = newText.Replace ("<<p_intel>>", damageText (passiveStatTemplate.pIntel, DamageType.PERCENT));
+		newText = newText.Replace ("<<p_bonus_damage>>", damageText (passiveStatTemplate.pDamage, DamageType.PERCENT));
+		newText = newText.Replace ("<<p_hp>>", damageText (passiveStatTemplate.pHp, DamageType.PERCENT));
+		newText = newText.Replace ("<<p_mp>>", damageText (passiveStatTemplate.pMp, DamageType.PERCENT));
 		newText = newText.Replace ("<<damage_modifier>>", "<b><color=orange>(" + ((int)(PlayerScript.instance.minDamage * damageMultiplier)).ToString () + " - " + ((int)(PlayerScript.instance.maxDamage * damageMultiplier)).ToString () + ")</color></b>");
 		newText = newText.Replace ("<<cooldown>>", coolDown > 0.0f ? coolDown.ToString ("0.0") + " sec Cooldown" : "No Cooldown");
 		newText = newText.Replace ("<<mana_cost>>", (manaCost > 0) ? manaCost.ToString () + " Mana" + (manaOverTime ? " Per Second" : "") : "No Mana Cost");
@@ -223,10 +237,25 @@ public abstract class SkillScript : MonoBehaviour, IBeginDragHandler, IDragHandl
 		public int			coolDown;
 		public int			manaCost;
 		public int			damage;
+		public int			damage2;
+		public int			damage3;
 		public int			AOE;
 		public int			attackAnimationIndex;
 		public float		damageMultiplier = 1.0f;
 		public float		duration;
+		public PassiveStatTemplate passiveStatTemplate;
+	}
+
+	[System.Serializable]
+	public class PassiveStatTemplate : BuffScript.PassiveStatChange
+	{
+		public int			pCon;
+		public int			pStr;
+		public int			pAgi;
+		public int			pIntel;
+		public int			pDamage;
+		public int			pHp;
+		public int			pMp;
 	}
 }
 

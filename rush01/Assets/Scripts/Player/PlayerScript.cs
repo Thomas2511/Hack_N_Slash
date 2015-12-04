@@ -70,17 +70,16 @@ public class PlayerScript : MonoBehaviour {
 	public	WeaponScript		weapon;
 
 	// Calculated Stat
-	public	int					minDamage { get { return (int)str / 2 + (int)bonus_damage;}}
-	public	int					maxDamage { get { return minDamage + weaponDamage;}}
-	public	int					hpMax { get { return 5 * (int)con + (int)bonus_hp; } }
-	public	int					manaMax { get { return 50 + 5 * (int)intel + (int)bonus_mana; }}
+	public	int					minDamage { get { return (str + buffs.str) / 2 + buffs.damage;}}
+	public	int					maxDamage { get { return minDamage + weaponDamage + buffs.damage;}}
+	public	int					hpMax { get { return 5 * (con + buffs.con) + buffs.hp ; } }
+	public	int					manaMax { get { return 50 + 5 * (intel + buffs.intel) + buffs.mana; }}
 	public	int					weaponDamage { get { return weapon == null || !weapon.equipped ? 0 : weapon.damage; }}
 	public	float				weaponCoolDown { get { return weapon == null || !weapon.equipped ? 2.5f : weapon.coolDown; }}
 	public	float				weaponRange { get { return weapon == null || !weapon.equipped ? 2f : weapon.range; }}
 
-	public
-
-
+	public	BuffScript			buffs = new BuffScript();
+	
 	public class PassiveStatChange
 	{
 		int			str;

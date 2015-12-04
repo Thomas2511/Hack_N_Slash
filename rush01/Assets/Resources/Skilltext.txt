@@ -21,7 +21,7 @@
 <size=12><color=fushia>Rage <<level>></color></size>
 <<mana_cost>>
 <<cooldown>>
-<i>When activated, increase your muscle mass. You gain bonuses in Constitution (<<damage>>), Strength (<<damage2>>) and Agility (<<damage3>>), but you lose <<damage4>> of your intelligence in the process.</i>#[5]#
+<i>When activated, increase your muscle mass. You gain bonuses in Constitution (<<con>>), Strength (<<str>>) and Agility (<<agi>>), but you lose <<p_intel>> of your intelligence in the process.</i>#[5]#
 <size=12><color=blue>Jump Attack <<level>></color></size>
 <<mana_cost>>
 <<cooldown>>
@@ -29,7 +29,7 @@
 <size=12><color=fushia>Witch Ward <<level>></color></size>
 <<mana_cost>>
 <<cooldown>>
-<i>When activated, increase your Constitution by <<damage>> and your Intelligence by <<damage2>> .</i>#[7]#
+<i>When activated, increase your Constitution by <<p_con>> and your Health by <<p_hp>> .</i>#[7]#
 <size=12><color=lightblue>Lightning Strike <<level>></color></size>
 <<mana_cost>>
 <<cooldown>>
