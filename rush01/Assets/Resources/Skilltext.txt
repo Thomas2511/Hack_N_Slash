@@ -21,7 +21,7 @@
 <size=12><color=fushia>Rage <<level>></color></size>
 <<mana_cost>>
 <<cooldown>>
-<i>When activated, increase your muscle mass. You gain bonuses in Constitution (<<con>>), Strength (<<str>>) and Agility (<<agi>>), but you lose <<p_intel>> of your intelligence in the process.</i>#[5]#
+<i>When activated, increase your muscle mass. You gain bonuses in Constitution (<<con>>), Strength (<<str>>), Agility (<<agi>>) and Damage (<<bonus_damage>>), but you lose <<p_intel>> of your intelligence in the process.</i>#[5]#
 <size=12><color=blue>Jump Attack <<level>></color></size>
 <<mana_cost>>
 <<cooldown>>

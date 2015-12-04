@@ -2,11 +2,26 @@
 using UnityEngine.UI;
 using System.Collections;
 
-public class ConScript : MonoBehaviour {
+public class ConScript : StatScript {
 
-	void Update () {
-		GetComponent<Text> ().text = "CON : " + PlayerScript.instance.con.ToString("0")
-			+ ((PlayerScript.instance.buffs.con != 0) ? " (" + ((PlayerScript.instance.buffs.con > 0) ? "+" : "") + PlayerScript.instance.buffs.con + ")" : "");
+	void Start()
+	{
+		stringStat = "CON";
+	}
+	
+	protected override void Update ()
+	{
+		UpdateStats ();
+		base.Update ();
+	}
+	
+	protected override void UpdateStats ()
+	{
+		baseStat = PlayerScript.instance.con;
+		totalStat = PlayerScript.instance.conTotal;
+		bonusStat = PlayerScript.instance.buffs.con;
+		percentStat = PlayerScript.instance.buffs.pCon;
+		
 	}
 
 	public void IncreaseCon()

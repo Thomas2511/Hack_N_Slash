@@ -1,12 +1,28 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using UnityEngine.EventSystems;
 
-public class AgiScript : MonoBehaviour {
+public class AgiScript : StatScript {
 
-	void Update () {
-		GetComponent<Text> ().text = "AGI : " + PlayerScript.instance.agi.ToString("0")
-			+ ((PlayerScript.instance.buffs.agi != 0) ? " (" + ((PlayerScript.instance.buffs.agi > 0) ? "+" : "") + PlayerScript.instance.buffs.agi + ")" : "");
+	void Start()
+	{
+		stringStat = "AGI";
+	}
+
+	protected override void Update ()
+	{
+		UpdateStats ();
+		base.Update ();
+	}
+
+	protected override void UpdateStats ()
+	{
+		baseStat = PlayerScript.instance.agi;
+		totalStat = PlayerScript.instance.agiTotal;
+		bonusStat = PlayerScript.instance.buffs.agi;
+		percentStat = PlayerScript.instance.buffs.pAgi;
+
 	}
 
 	public void IncreaseAgi()

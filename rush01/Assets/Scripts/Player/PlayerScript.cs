@@ -70,10 +70,14 @@ public class PlayerScript : MonoBehaviour {
 	public	WeaponScript		weapon;
 
 	// Calculated Stat
-	public	int					minDamage { get { return (str + buffs.str) / 2 + buffs.damage;}}
-	public	int					maxDamage { get { return minDamage + weaponDamage + buffs.damage;}}
-	public	int					hpMax { get { return 5 * (con + buffs.con) + buffs.hp ; } }
-	public	int					manaMax { get { return 50 + 5 * (intel + buffs.intel) + buffs.mana; }}
+	public	int					strTotal { get  { return (int)(str + buffs.str + str * (buffs.pStr / 100.0f)); }}
+	public	int					agiTotal { get	{ return (int)(agi + buffs.agi + agi * (buffs.pAgi / 100.0f)); }}
+	public	int					conTotal { get	{ return (int)(con + buffs.con + con * (buffs.pCon / 100.0f)); }}
+	public	int					intelTotal { get { return (int)(intel + buffs.intel + intel * (buffs.pIntel / 100.0f)); }}
+	public	int					minDamage { get { return (int)((strTotal / 2.0f) + (strTotal / 2.0f) * (buffs.pDamage / 100.0f) + buffs.damage);}}
+	public	int					maxDamage { get { return minDamage + weaponDamage;}}
+	public	int					hpMax { get { return (int)((5 * conTotal) + (5 * conTotal) * (buffs.pHp / 100.0f) + buffs.hp); } }
+	public	int					manaMax { get { return (int)((50 + 5 * (intelTotal)) + (50 + 5 * (intelTotal)) * (buffs.pMp / 100.0f) + buffs.mana); }}
 	public	int					weaponDamage { get { return weapon == null || !weapon.equipped ? 0 : weapon.damage; }}
 	public	float				weaponCoolDown { get { return weapon == null || !weapon.equipped ? 2.5f : weapon.coolDown; }}
 	public	float				weaponRange { get { return weapon == null || !weapon.equipped ? 2f : weapon.range; }}

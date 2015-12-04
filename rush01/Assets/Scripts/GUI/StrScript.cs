@@ -2,13 +2,27 @@
 using UnityEngine.UI;
 using System.Collections;
 
-public class StrScript : MonoBehaviour {
+public class StrScript : StatScript {
 
-	void Update () {
-		GetComponent<Text> ().text = "STR : " + PlayerScript.instance.str.ToString("0")
-			+ ((PlayerScript.instance.buffs.str != 0) ? " (" + ((PlayerScript.instance.buffs.str > 0) ? "+" : "") + PlayerScript.instance.buffs.str + ")" : "");
+	void Start()
+	{
+		stringStat = "STR";
 	}
-
+	
+	protected override void Update ()
+	{
+		UpdateStats ();
+		base.Update ();
+	}
+	
+	protected override void UpdateStats ()
+	{
+		baseStat = PlayerScript.instance.str;
+		totalStat = PlayerScript.instance.strTotal;
+		bonusStat = PlayerScript.instance.buffs.str;
+		percentStat = PlayerScript.instance.buffs.pStr;
+		
+	}
 	public void IncreaseStr()
 	{
 		if (PlayerScript.instance.statPoints > 0)

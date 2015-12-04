@@ -2,11 +2,25 @@
 using UnityEngine.UI;
 using System.Collections;
 
-public class IntelScript : MonoBehaviour {
+public class IntelScript : StatScript {
 
-	void Update () {
-		GetComponent<Text> ().text = "INT : " + PlayerScript.instance.intel.ToString("0")
-			+ ((PlayerScript.instance.buffs.intel != 0) ? " (" + ((PlayerScript.instance.buffs.intel > 0) ? "+" : "-") + PlayerScript.instance.buffs.intel + ")" : "");
+	void Start()
+	{
+		stringStat = "INT";
+	}
+	
+	protected override void Update ()
+	{
+		UpdateStats ();
+		base.Update ();
+	}
+	
+	protected override void UpdateStats ()
+	{
+		baseStat = PlayerScript.instance.intel;
+		totalStat = PlayerScript.instance.intelTotal;
+		bonusStat = PlayerScript.instance.buffs.intel;
+		percentStat = PlayerScript.instance.buffs.pIntel;
 	}
 
 	public void IncreaseIntel()
