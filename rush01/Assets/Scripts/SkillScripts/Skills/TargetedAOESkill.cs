@@ -14,6 +14,7 @@ public class TargetedAOESkill : SkillScript {
 		clone.onMouseClick -= onMouseClick;
 		clone.onCancel -= onCancel;
 		clone = null;
+		PlayerScript.instance.AOETargeting = false;
 		UseSkill ();
 	}
 
@@ -22,6 +23,7 @@ public class TargetedAOESkill : SkillScript {
 		clone.onMouseClick -= onMouseClick;
 		clone.onCancel -= onCancel;
 		clone = null;
+		PlayerScript.instance.AOETargeting = false;
 		PlayerScript.instance.currentSkill = null;
 	}
 
@@ -40,6 +42,7 @@ public class TargetedAOESkill : SkillScript {
 		clone.onMouseClick += onMouseClick;
 		clone.onCancel += onCancel;
 		clone.range = AOE;
+		PlayerScript.instance.AOETargeting = true;
 		return true;
 	}
 

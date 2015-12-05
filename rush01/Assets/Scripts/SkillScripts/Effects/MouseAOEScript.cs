@@ -7,6 +7,15 @@ public class MouseAOEScript : MonoBehaviour {
 	public event MouseEvent		onCancel;
 	public LayerMask			layerMask;
 	public int					range;
+	public Projector[]			projectors;
+
+	void Start()
+	{
+		projectors = GetComponentsInChildren<Projector> ();
+		foreach (Projector projector in projectors) {
+			projector.orthographicSize = range;
+		}
+	}
 
 	void FollowMouse ()
 	{
@@ -14,8 +23,7 @@ public class MouseAOEScript : MonoBehaviour {
 		RaycastHit hit;
 		if (Physics.Raycast(ray, out hit, Mathf.Infinity, layerMask))
 		{
-			transform.position = hit.point + new Vector3(0, 80, 0);
-			GetComponent<Light>().cookieSize = range;
+			transform.position = hit.point + new Vector3(0, 10, 0);
 		}
 	}
 
@@ -23,7 +31,7 @@ public class MouseAOEScript : MonoBehaviour {
 	{
 		if (Input.GetMouseButtonUp (0))
 		{
-			onMouseClick(this.transform.position - new Vector3(0, 80, 0));
+			onMouseClick(this.transform.position - new Vector3(0, 10, 0));
 			StartCoroutine (DestroyMe());
 		}
 		if (Input.GetMouseButtonUp (1))

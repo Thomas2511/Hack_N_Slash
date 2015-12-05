@@ -25,6 +25,7 @@ public class PlayerScript : MonoBehaviour {
 	public 	bool				_dead;
 	public	bool				_attack;
 	public	bool				_enemyTargeting;
+	public 	bool				AOETargeting;
 	public	bool				_onCoolDown;
 	public 	GameObject			_enemyTarget;
 
@@ -61,6 +62,7 @@ public class PlayerScript : MonoBehaviour {
 	[Range(0, 2500)]
 	public	int					statPoints;
 	public	long[]				experienceCurve;
+	public	LayerMask			raycastLayerMask;
 
 	// Skills
 	public	SkillScript[]		skills;
@@ -147,13 +149,17 @@ public class PlayerScript : MonoBehaviour {
 
 	void FollowMouse ()
 	{
-		if (CurrentSkillIsDirectAttack() && Input.GetMouseButtonDown (0) && !UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject())
+		if (!AOETargeting && Input.GetMouseButtonDown (0) && !UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject())
 		{
 			RaycastHit hit;
-			if (Physics.Raycast (Camera.main.ScreenPointToRay(Input.mousePosition), out hit))
+			Debug.Log ("Click");
+			if (Physics.Raycast (Camera.main.ScreenPointToRay(Input.mousePosition), out hit, raycastLayerMask))
 			{
+				Debug.Log (hit.collider.tag);
+				Debug.Log (hit.collider.gameObject);
 				if (hit.collider.tag == "Ground")
 				{
+					Debug.Log ("Ground");
 					_navMeshAgent.destination = hit.point;
 					_navMeshAgent.stoppingDistance = 0.0f;
 					CancelAttackAnimation ();
