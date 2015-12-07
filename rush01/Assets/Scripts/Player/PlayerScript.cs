@@ -37,7 +37,6 @@ public class PlayerScript : MonoBehaviour {
 	// Audio
 	public AudioSource			footstepsSound;
 	public AudioSource[]		attackSounds;
-	
 
 	// Stats
 	public	int					current_hp;
@@ -198,6 +197,8 @@ public class PlayerScript : MonoBehaviour {
 
 				if (hit)
 					_enemyTarget.GetComponent<Enemy> ().ReceiveDamage (GetDamage ());
+				else
+					_enemyTarget.GetComponent<Enemy>().ReceiveDamage (0, true);
 			}
 		} else if (CurrentSkillIsDirectAttack ())
 			currentSkill.ApplyEffect (_enemyTarget.transform.position, playerRightHand);
@@ -327,7 +328,7 @@ public class PlayerScript : MonoBehaviour {
 		if (col.gameObject.tag == "Enemy") 
 			_enemyTargetsInRange.Add (col.gameObject);
 		if (col.gameObject.tag == "Potion") {
-			current_hp = Mathf.Clamp (current_hp + (int) (hpMax * 0.30), 0, hpMax);
+			DamagePlayer ((int)-(hpMax * 0.3f), false, true);
 			Destroy (col.gameObject);
 		}
 	}
@@ -404,8 +405,10 @@ public class PlayerScript : MonoBehaviour {
 		_onCoolDown = false;
 	}
 
-	public void DamagePlayer (int damage)
+	public void DamagePlayer (int damage, bool miss = false, bool heal = false)
 	{
+		GameObject clone = Instantiate (Resources.Load ("Prefabs/GUI/DamageText", typeof(GameObject)) as GameObject, this.transform.position + new Vector3(0, this._navMeshAgent.height, 0), Quaternion.identity) as GameObject;
+		clone.GetComponent<DamageTextScript>().SetText ((!miss) ? Mathf.Abs (damage).ToString () : "Miss", heal);
 		this.current_hp = Mathf.Clamp (this.current_hp - damage, 0, this.hpMax);
 	}
 

@@ -13,7 +13,7 @@ public class DamageTextScript : MonoBehaviour {
 		Invoke ("Destroy", 2);
 	}
 
-	void SetText(string text, bool heal)
+	public void SetText(string text, bool heal)
 	{
 		this.text.text = text;
 		if (heal)
@@ -31,7 +31,7 @@ public class DamageTextScript : MonoBehaviour {
 		this.transform.LookAt (Camera.main.transform.position - this.transform.position);
 		this.transform.localRotation = Camera.main.transform.rotation;
 		this.transform.Translate(Vector3.up * speed);
-		speed = Mathf.Lerp (speed, 0, 0.2f);
-		this.text.color = new Color(this.text.color.r, this.text.color.g, this.text.color.b, Mathf.Lerp (this.text.color.a, 0, 0.4f));
+		speed = Mathf.Lerp (speed, 0, 0.1f);
+		this.text.color = new Color(this.text.color.r, this.text.color.g, this.text.color.b, Mathf.Lerp (this.text.color.a, 0, 0.2f));
 	}
 }

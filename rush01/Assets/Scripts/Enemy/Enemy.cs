@@ -19,8 +19,8 @@ public class Enemy : MonoBehaviour {
 	public int level;
 	public int expGiven;
 	public int moneyGiven;
-	public int hp { get { return con * 5; } }
-	public int currentHp;
+	public int hpMax { get { return con * 5; } }
+	public int current_hp;
 	public int minDamage { get { return Mathf.RoundToInt (str / 2); }}
 	public int maxDamage { get { return minDamage + str; }}
 	public bool dead;
@@ -42,6 +42,8 @@ public class Enemy : MonoBehaviour {
 	public AudioClip move;
 	public AudioClip attack;
 	public Curves.StatCurve[] statCurves;
+
+	public GameObject		damageText;
 
 	private uint _framesToWait = 600;
 
@@ -83,7 +85,7 @@ public class Enemy : MonoBehaviour {
 	}
 
 	protected void CheckHealth () {
-		if (currentHp <= 0 && !dead) {
+		if (current_hp <= 0 && !dead) {
 			dead = true;
 			OnDeath();
 			animator.SetTrigger ("Death");
@@ -158,8 +160,10 @@ public class Enemy : MonoBehaviour {
 		bool hit = val > 0 ? true : false;
 
 		if (intruder && Vector3.Distance (this.transform.position, intruder.transform.position) <= 2.0 && hit) {
-			PlayerScript.instance.DamagePlayer(GetDamage ());
+			PlayerScript.instance.DamagePlayer (GetDamage ());
 			swordS.Play ();
+		} else {
+			PlayerScript.instance.DamagePlayer (0, true);
 		}
 	}
 
@@ -168,8 +172,10 @@ public class Enemy : MonoBehaviour {
 		return Random.Range (minDamage, maxDamage + 1);
 	}
 
-	public void ReceiveDamage (int damage) {
-		this.currentHp = (int) Mathf.Clamp(this.currentHp - damage, 0, this.hp);
+	public void ReceiveDamage (int damage, bool miss = false, bool heal = false) {
+		GameObject clone = Instantiate (Resources.Load ("Prefabs/GUI/DamageText", typeof(GameObject)) as GameObject, this.transform.position + new Vector3(0, this.agent.height, 0), Quaternion.identity) as GameObject;
+		clone.GetComponent<DamageTextScript>().SetText ((!miss) ? damage.ToString () : "Miss", false);
+		this.current_hp = Mathf.Clamp (this.current_hp - damage, 0, this.hpMax);
 	}
 
 	protected virtual void Start () {
@@ -180,14 +186,14 @@ public class Enemy : MonoBehaviour {
 		expGiven = spawnStats [3];
 		moneyGiven = spawnStats [4];
 		InstantiateStats ();
-		currentHp = hp;
+		current_hp = hpMax;
 		dead = false;
 		agent.stoppingDistance = 2.0f;
 	}
 
 	protected virtual void Update () {
 		CheckHealth ();
-		if (currentHp > 0) {
+		if (current_hp > 0) {
 			CheckAggroRange ();
 			Attack ();
 		}
