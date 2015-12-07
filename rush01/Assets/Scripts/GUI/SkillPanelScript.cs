@@ -3,7 +3,7 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System.Collections;
 
-public class SkillPanelScript : MonoBehaviour, IDropHandler {
+public class SkillPanelScript : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPointerExitHandler {
 	public SkillScript			skillScript;
 	public DraggingIconScript	draggingIcon;
 	public Image				cooldownPanel;
@@ -69,6 +69,20 @@ public class SkillPanelScript : MonoBehaviour, IDropHandler {
 			if (draggingIcon != null)
 				draggingIcon.GetComponent<Image>().color = new Color(1, 1, 1, 0.1f);
 			cooldownPanel.fillAmount = ((skillScript.coolDown - skillScript.timeSinceCooldown) / skillScript.coolDown);
+		}
+	}
+
+	public void OnPointerEnter (PointerEventData eventData)
+	{
+		if (skillScript != null) {
+			skillScript.activeTooltip (new Vector3(0, 200, 0), this.transform);
+		}
+	}
+	
+	public void OnPointerExit (PointerEventData eventData)
+	{
+		if (skillScript != null) {
+			skillScript.OnPointerExit(eventData);
 		}
 	}
 

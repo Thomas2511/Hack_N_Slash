@@ -152,11 +152,8 @@ public class PlayerScript : MonoBehaviour {
 		if (!AOETargeting && Input.GetMouseButtonDown (0) && !UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject())
 		{
 			RaycastHit hit;
-			Debug.Log ("Click");
 			if (Physics.Raycast (Camera.main.ScreenPointToRay(Input.mousePosition), out hit, raycastLayerMask))
 			{
-				Debug.Log (hit.collider.tag);
-				Debug.Log (hit.collider.gameObject);
 				if (hit.collider.tag == "Ground")
 				{
 					Debug.Log ("Ground");

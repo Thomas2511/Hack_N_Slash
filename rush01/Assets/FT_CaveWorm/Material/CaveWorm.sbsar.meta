@@ -1,5 +1,7 @@
 fileFormatVersion: 2
 guid: 72dfe8b6245e9e248894ac8809582773
+timeCreated: 1449521116
+licenseType: Free
 SubstanceImporter:
   serializedVersion: 5
   materialInstances:
@@ -97,7 +99,7 @@ SubstanceImporter:
         texture: {instanceID: 0}
     - name: $randomseed
       value:
-        scalar[0]: 0
+        scalar[0]: 9761
         scalar[1]: 0
         scalar[2]: 0
         scalar[3]: 0
@@ -158,15 +160,14 @@ SubstanceImporter:
           first:
             name: _MainTex
           second:
-            texture: {fileID: 818147663, guid: 00000000000000000000000000000000, type: 0}
+            texture: {instanceID: 0}
             scale: {x: 1, y: 1}
             offset: {x: 0, y: 0}
         data:
           first:
             name: _BumpMap
           second:
-            texture: {fileID: 2060357252, guid: 00000000000000000000000000000000,
-              type: 0}
+            texture: {instanceID: 0}
             scale: {x: 1, y: 1}
             offset: {x: 0, y: 0}
       floats:

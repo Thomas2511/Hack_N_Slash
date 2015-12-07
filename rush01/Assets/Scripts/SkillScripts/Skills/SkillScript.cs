@@ -31,22 +31,34 @@ public abstract class SkillScript : MonoBehaviour, IBeginDragHandler, IDragHandl
 
 	// Skill stats
 	public int					range { get { return skillStats[Mathf.Clamp (level, 0, 4)].range; }}
+	public int					rangeNext { get { return skillStats [Mathf.Clamp (level + 1, 0, 4)].range; } }
 	public int					manaCost { get { return skillStats[Mathf.Clamp (level, 0, 4)].manaCost; }}
+	public int					manaCostNext { get { return skillStats[Mathf.Clamp (level + 1, 0, 4)].manaCost; }}
 	public float				coolDown { get { return skillStats[Mathf.Clamp (level, 0, 4)].coolDown; }}
+	public float				coolDownNext { get { return skillStats[Mathf.Clamp (level + 1, 0, 4)].coolDown; }}
 	public int					damage { get { return skillStats[Mathf.Clamp (level, 0, 4)].damage; }}
+	public int					damageNext { get { return skillStats[Mathf.Clamp (level + 1, 0, 4)].damage; }}
 	public DamageType			damageType;
 	public int					damage2 { get { return skillStats[Mathf.Clamp (level, 0, 4)].damage2; }}
+	public int					damage2Next { get { return skillStats[Mathf.Clamp (level + 1, 0, 4)].damage2; }}
 	public DamageType			damage2Type;
 	public int					damage3 { get { return skillStats[Mathf.Clamp (level, 0, 4)].damage3; }}
+	public int					damage3Next { get { return skillStats[Mathf.Clamp (level + 1, 0, 4)].damage3; }}
 	public DamageType			damage3Type;
 	public int					AOE { get { return skillStats[Mathf.Clamp (level, 0, 4)].AOE; }}
+	public int					AOENext { get { return skillStats[Mathf.Clamp (level + 1, 0, 4)].AOE; }}
 	public int					attackAnimationIndex { get { return skillStats[Mathf.Clamp (level, 0, 4)].attackAnimationIndex; }}
+	public int					attackAnimationIndexNext { get { return skillStats[Mathf.Clamp (level, 0, 4)].attackAnimationIndex; }}
 	public float				damageMultiplier { get { return skillStats[Mathf.Clamp (level, 0, 4)].damageMultiplier; }}
+	public float				damageMultiplierNext { get { return skillStats[Mathf.Clamp (level, 0, 4)].damageMultiplier; }}
 	public bool					onCoolDown;
 	public BuffScript.PassiveStatChange	psc { get { return skillStats[Mathf.Clamp (level, 0, 4)].passiveStatTemplate; }}
-	
+	public BuffScript.PassiveStatChange	pscNext { get { return skillStats[Mathf.Clamp (level + 1, 0, 4)].passiveStatTemplate; }}
+
 	public int					tooltipTextIndex;
 	private string				_tooltipText;
+	public bool					tooltipEnabled = true;
+
 	public bool					animated = true;
 	public bool					manaOverTime;
 	public int					levelUnlocked;
@@ -162,6 +174,38 @@ public abstract class SkillScript : MonoBehaviour, IBeginDragHandler, IDragHandl
 		return "<b><color=" + colorstr + ">" + Mathf.Abs (damageValue).ToString() + ((damageTypeValue == DamageType.PERCENT) ? " %" : "") + "</color></b>";
 	}
 
+	protected string replaceNextLevelVariables(string tooltipText)
+	{
+		string newText = tooltipText;
+		if (level + 1 >= 5 || level + 1 <= 0)
+			return replaceVariables (tooltipText);
+		newText = newText.Replace ("<<level>>", "(Level " + (level + 1).ToString() + " => " + (level + 2).ToString() + ")");
+		newText = newText.Replace ("<<damage>>", damageText (damage, damageType) + " => " + damageText (damageNext, damageType));
+		newText = newText.Replace ("<<damage2>>", damageText (damage2, damage2Type) + " => " + damageText (damage2Next, damage2Type));
+		newText = newText.Replace ("<<damage3>>", damageText (damage3, damage3Type) + " => " + damageText (damage3Next, damage3Type));
+		newText = newText.Replace ("<<str>>", damageText (psc.str, DamageType.UNTYPED) + " => " + damageText (pscNext.str, DamageType.UNTYPED));
+		newText = newText.Replace ("<<con>>", damageText (psc.con, DamageType.UNTYPED) + " => " + damageText (pscNext.con, DamageType.UNTYPED));
+		newText = newText.Replace ("<<agi>>", damageText (psc.agi, DamageType.UNTYPED) + " => " + damageText (pscNext.agi, DamageType.UNTYPED));
+		newText = newText.Replace ("<<intel>>", damageText (psc.intel, DamageType.UNTYPED) + " => " + damageText (pscNext.intel, DamageType.UNTYPED));
+		newText = newText.Replace ("<<bonus_damage>>", damageText (psc.intel, DamageType.UNTYPED) + " => " + damageText (pscNext.intel, DamageType.UNTYPED));
+		newText = newText.Replace ("<<hp>>", damageText (psc.hp, DamageType.UNTYPED) + " => " + damageText (pscNext.hp, DamageType.UNTYPED));
+		newText = newText.Replace ("<<mana>>", damageText (psc.mana, DamageType.UNTYPED) + " => " + damageText (pscNext.mana, DamageType.UNTYPED));
+		newText = newText.Replace ("<<attack_speed>>", damageText (psc.attackSpeed, DamageType.UNTYPED) + " => " + damageText (pscNext.attackSpeed, DamageType.UNTYPED));
+		newText = newText.Replace ("<<cooldown_reduction>>", damageText (psc.cooldownReduction, DamageType.UNTYPED) + " => " + damageText (pscNext.cooldownReduction, DamageType.UNTYPED));
+		newText = newText.Replace ("<<p_str>>", damageText (psc.pStr, DamageType.PERCENT) + " => " + damageText (pscNext.pStr, DamageType.PERCENT));
+		newText = newText.Replace ("<<p_con>>", damageText (psc.pStr, DamageType.PERCENT) + " => " + damageText (pscNext.pStr, DamageType.PERCENT));
+		newText = newText.Replace ("<<p_agi>>", damageText (psc.pAgi, DamageType.PERCENT) + " => " + damageText (pscNext.pAgi, DamageType.PERCENT));
+		newText = newText.Replace ("<<p_intel>>", damageText (psc.pIntel, DamageType.PERCENT) + " => " + damageText (pscNext.pIntel, DamageType.PERCENT));
+		newText = newText.Replace ("<<p_bonus_damage>>",damageText (psc.pDamage, DamageType.PERCENT) + " => " + damageText (pscNext.pDamage, DamageType.PERCENT));
+		newText = newText.Replace ("<<p_hp>>", damageText (psc.pHp, DamageType.PERCENT) + " => " + damageText (pscNext.pHp, DamageType.PERCENT));
+		newText = newText.Replace ("<<p_mp>>", damageText (psc.pMp, DamageType.PERCENT) + " => " + damageText (pscNext.pMp, DamageType.PERCENT));
+		newText = newText.Replace ("<<damage_modifier>>", "<b><color=orange>(" + ((int)(PlayerScript.instance.minDamage * damageMultiplier)).ToString () + " => " + ((int)(PlayerScript.instance.minDamage * damageMultiplierNext)).ToString () +
+			" - " + ((int)(PlayerScript.instance.maxDamage * damageMultiplier)).ToString () + " => " + ((int)(PlayerScript.instance.maxDamage * damageMultiplierNext)).ToString () + ")</color></b>");
+		newText = newText.Replace ("<<cooldown>>", coolDown > 0.0f ? coolDown.ToString ("0.0") + " => " + coolDownNext.ToString ("0.0") + " sec Cooldown" : "No Cooldown");
+		newText = newText.Replace ("<<mana_cost>>", (manaCost > 0) ? manaCost.ToString () + " => " + manaCostNext.ToString () + " Mana" + (manaOverTime ? " Per Second" : "") : "No Mana Cost");
+		return newText;
+	}
+
 	protected string replaceVariables(string tooltipText)
 	{
 		string newText = tooltipText;
@@ -191,14 +235,38 @@ public abstract class SkillScript : MonoBehaviour, IBeginDragHandler, IDragHandl
 		return newText;
 	}
 
-	protected void activeTooltip()
+	public GameObject UpdateTooltip(bool nextLevel)
 	{
-		GameObject tooltip = GameObject.FindGameObjectWithTag("Tooltip");
-		tooltip.GetComponent<CanvasGroup>().alpha = 1;
+		GameObject tooltip = GameObject.FindGameObjectWithTag ("Tooltip");
+		tooltip.GetComponent<CanvasGroup> ().alpha = 1;
 		Text text = tooltip.GetComponentInChildren<Text>();
-		text.text = replaceVariables(_tooltipText);
-		tooltip.transform.SetParent (this.transform);
-		tooltip.transform.localPosition = new Vector3(0, -60, 0);
+		if (!nextLevel)
+			text.text = replaceVariables (_tooltipText);
+		else
+			text.text = replaceNextLevelVariables (_tooltipText);
+		return tooltip;
+	}
+
+	public void activeTooltip(Vector3 offset, Transform parent, bool nextLevel)
+	{
+		GameObject tooltip = UpdateTooltip (nextLevel);
+		tooltip.transform.SetParent (parent);
+		tooltip.transform.localPosition = offset;
+	}
+
+	public void activeTooltip(Vector3 offset, Transform parent)
+	{
+		activeTooltip (offset, parent, false);
+	}
+
+	public void activeTooltip(bool nextLevel)
+	{
+		activeTooltip (new Vector3 (0, -60, 0), this.transform, nextLevel);
+	}
+
+	public void activeTooltip()
+	{
+		activeTooltip (false);
 	}
 
 	protected virtual void Update()
@@ -218,8 +286,15 @@ public abstract class SkillScript : MonoBehaviour, IBeginDragHandler, IDragHandl
 		}
 	}
 
+	protected virtual IEnumerator waitForTooltip()
+	{
+		yield return new WaitForSeconds (0.5f);
+		if (tooltipEnabled)
+			activeTooltip ();
+	}
+
 	public void OnPointerEnter (PointerEventData data) {
-		Invoke ("activeTooltip", 1);
+		StartCoroutine (waitForTooltip());
 	}
 	
 	public void OnPointerExit (PointerEventData data) {
