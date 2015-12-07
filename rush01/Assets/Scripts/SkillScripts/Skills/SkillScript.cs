@@ -78,7 +78,7 @@ public abstract class SkillScript : MonoBehaviour, IBeginDragHandler, IDragHandl
 	protected virtual void	Start()
 	{
 		button = GetComponentInChildren<Button>().gameObject;
-		TextAsset textAsset = Resources.Load("Skilltext") as TextAsset;
+		TextAsset textAsset = Resources.Load("Text/Skilltext") as TextAsset;
 		string[] file = Regex.Split(textAsset.text, @"#\[[0-9]+\]#\n");
 		_tooltipText = (file.Length > tooltipTextIndex) ? file[tooltipTextIndex] : "<i>This text is a placeholder.</i>";
 	}
