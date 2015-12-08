@@ -27,7 +27,12 @@ public class NextLevelButtonScript : MonoBehaviour, IPointerEnterHandler, IPoint
 		GetComponentInParent<SkillScript> ().SpendSkillPoint ();
 		GetComponentInParent<SkillScript> ().UpdateTooltip (true);
 	}
-	
+
+	void OnDisable()
+	{
+		GetComponentInParent<SkillScript> ().tooltipEnabled = true;
+	}
+
 	// Update is called once per frame
 	void Update () {
 	

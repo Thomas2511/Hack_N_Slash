@@ -250,8 +250,7 @@ public abstract class SkillScript : MonoBehaviour, IBeginDragHandler, IDragHandl
 	public void activeTooltip(Vector3 offset, Transform parent, bool nextLevel)
 	{
 		GameObject tooltip = UpdateTooltip (nextLevel);
-		tooltip.transform.SetParent (parent);
-		tooltip.transform.localPosition = offset;
+		tooltip.transform.position = parent.position + offset;
 	}
 
 	public void activeTooltip(Vector3 offset, Transform parent)
@@ -302,7 +301,6 @@ public abstract class SkillScript : MonoBehaviour, IBeginDragHandler, IDragHandl
 		CancelInvoke ("activeTooltip");
 		tooltip.GetComponent<CanvasGroup>().alpha = 0;
 		tooltip.GetComponentInChildren<Text>().text = "";
-		tooltip.transform.SetParent (null);
 	}
 
 	[System.Serializable]
