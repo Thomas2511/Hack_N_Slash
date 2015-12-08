@@ -48,9 +48,9 @@ public abstract class SkillScript : MonoBehaviour, IBeginDragHandler, IDragHandl
 	public int					AOE { get { return skillStats[Mathf.Clamp (level, 0, 4)].AOE; }}
 	public int					AOENext { get { return skillStats[Mathf.Clamp (level + 1, 0, 4)].AOE; }}
 	public int					attackAnimationIndex { get { return skillStats[Mathf.Clamp (level, 0, 4)].attackAnimationIndex; }}
-	public int					attackAnimationIndexNext { get { return skillStats[Mathf.Clamp (level, 0, 4)].attackAnimationIndex; }}
+	public int					attackAnimationIndexNext { get { return skillStats[Mathf.Clamp (level + 1, 0, 4)].attackAnimationIndex; }}
 	public float				damageMultiplier { get { return skillStats[Mathf.Clamp (level, 0, 4)].damageMultiplier; }}
-	public float				damageMultiplierNext { get { return skillStats[Mathf.Clamp (level, 0, 4)].damageMultiplier; }}
+	public float				damageMultiplierNext { get { return skillStats[Mathf.Clamp (level + 1, 0, 4)].damageMultiplier; }}
 	public bool					onCoolDown;
 	public BuffScript.PassiveStatChange	psc { get { return skillStats[Mathf.Clamp (level, 0, 4)].passiveStatTemplate; }}
 	public BuffScript.PassiveStatChange	pscNext { get { return skillStats[Mathf.Clamp (level + 1, 0, 4)].passiveStatTemplate; }}
@@ -199,8 +199,8 @@ public abstract class SkillScript : MonoBehaviour, IBeginDragHandler, IDragHandl
 		newText = newText.Replace ("<<p_bonus_damage>>",damageText (psc.pDamage, DamageType.PERCENT) + " => " + damageText (pscNext.pDamage, DamageType.PERCENT));
 		newText = newText.Replace ("<<p_hp>>", damageText (psc.pHp, DamageType.PERCENT) + " => " + damageText (pscNext.pHp, DamageType.PERCENT));
 		newText = newText.Replace ("<<p_mp>>", damageText (psc.pMp, DamageType.PERCENT) + " => " + damageText (pscNext.pMp, DamageType.PERCENT));
-		newText = newText.Replace ("<<damage_modifier>>", "<b><color=orange>(" + ((int)(PlayerScript.instance.minDamage * damageMultiplier)).ToString () + " => " + ((int)(PlayerScript.instance.minDamage * damageMultiplierNext)).ToString () +
-			" - " + ((int)(PlayerScript.instance.maxDamage * damageMultiplier)).ToString () + " => " + ((int)(PlayerScript.instance.maxDamage * damageMultiplierNext)).ToString () + ")</color></b>");
+		newText = newText.Replace ("<<damage_modifier>>", "<b><color=orange>(" + ((int)(PlayerScript.instance.minDamage * damageMultiplier)).ToString () + " - " + ((int)(PlayerScript.instance.maxDamage * damageMultiplier)).ToString () +
+		                           " => " + ((int)(PlayerScript.instance.minDamage * damageMultiplierNext)).ToString ()  + " - " + ((int)(PlayerScript.instance.maxDamage * damageMultiplierNext)).ToString () + ")</color></b>");
 		newText = newText.Replace ("<<cooldown>>", coolDown > 0.0f ? coolDown.ToString ("0.0") + " => " + coolDownNext.ToString ("0.0") + " sec Cooldown" : "No Cooldown");
 		newText = newText.Replace ("<<mana_cost>>", (manaCost > 0) ? manaCost.ToString () + " => " + manaCostNext.ToString () + " Mana" + (manaOverTime ? " Per Second" : "") : "No Mana Cost");
 		return newText;
@@ -288,7 +288,7 @@ public abstract class SkillScript : MonoBehaviour, IBeginDragHandler, IDragHandl
 
 	protected virtual IEnumerator waitForTooltip()
 	{
-		yield return new WaitForSeconds (0.5f);
+		yield return new WaitForSeconds (0.35f);
 		if (tooltipEnabled)
 			activeTooltip ();
 	}
