@@ -6,31 +6,17 @@ using System.Collections.Generic;
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(AudioSource))]
 [RequireComponent(typeof(Animator))]
-public class PlayerScript : MonoBehaviour {
-	public enum AttackType
-	{
-		WEAPON_ATTACK,
-		SPELL_ATTACK,
-		NONE
-	}
+public class PlayerScript : CharacterScript {
 	// Singleton
 	public static PlayerScript	instance;
-
-	// Components
-	private NavMeshAgent		_navMeshAgent;
-	public	Animator			animator;
-	private SphereCollider		_sphereCollider;
 
 	// Utility
 	public 	bool				_dead;
 	public	bool				_attack;
-	public	bool				_enemyTargeting;
+	public	bool				enemyTargeting;
 	public 	bool				AOETargeting;
-	public	bool				_onCoolDown;
-	public 	GameObject			_enemyTarget;
 
-	public	List<GameObject>	_enemyTargetsInRange;
-	public	AttackType			_attackType;
+	public	List<CharacterScript>	enemyTargetsInRange;
 	public	GameObject			playerRightHand;
 	public	GameObject			playerChest;
 
@@ -39,29 +25,11 @@ public class PlayerScript : MonoBehaviour {
 	public AudioSource[]		attackSounds;
 
 	// Stats
-	public	int					current_hp;
-	[Tooltip("Strength value")]
-	public	int					str;
-	[Tooltip("Agility value")]
-	public	int					agi;
-	[Tooltip("Constitution value")]
-	public	int					con;
-	[Tooltip("Intelligence value")]
-	public	int					intel;
-	[Tooltip("Experience value")]
-	public	long				xp;
-	[Tooltip("Money value")]
-	public	int					money;
-	[Tooltip("Level value between 1 and 50")]
-	[Range(1, 50)]
-	public	int					level;
-	public	int					current_mana;
 	[Range(0, 49)]
 	public	int					skillPoints;
 	[Range(0, 2500)]
 	public	int					statPoints;
 	public	long[]				experienceCurve;
-	public	LayerMask			raycastLayerMask;
 
 	// Skills
 	public	SkillScript[]		skills;
@@ -71,58 +39,41 @@ public class PlayerScript : MonoBehaviour {
 	public	WeaponScript		weapon;
 
 	// Calculated Stat
-	public	int					strTotal { get  { return (int)(str + buffs.str + str * (buffs.pStr / 100.0f)); }}
-	public	int					agiTotal { get	{ return (int)(agi + buffs.agi + agi * (buffs.pAgi / 100.0f)); }}
-	public	int					conTotal { get	{ return (int)(con + buffs.con + con * (buffs.pCon / 100.0f)); }}
-	public	int					intelTotal { get { return (int)(intel + buffs.intel + intel * (buffs.pIntel / 100.0f)); }}
-	public	int					minDamage { get { return (int)((strTotal / 2.0f) + (strTotal / 2.0f) * (buffs.pDamage / 100.0f) + buffs.damage);}}
-	public	int					maxDamage { get { return minDamage + weaponDamage;}}
-	public	int					hpMax { get { return (int)((5 * conTotal) + (5 * conTotal) * (buffs.pHp / 100.0f) + buffs.hp); } }
-	public	int					manaMax { get { return (int)((50 + 5 * (intelTotal)) + (50 + 5 * (intelTotal)) * (buffs.pMp / 100.0f) + buffs.mana); }}
-	public	int					weaponDamage { get { return weapon == null || !weapon.equipped ? 0 : weapon.damage; }}
-	public	float				weaponCoolDown { get { return weapon == null || !weapon.equipped ? 2.5f : weapon.coolDown; }}
+
+	public override int			weaponDamage { get { return weapon == null || !weapon.equipped ? 0 : weapon.damage; }}
+	public override float		attackCooldown { get { return weapon == null || !weapon.equipped ? 2.5f : weapon.coolDown; }}
 	public	float				weaponRange { get { return weapon == null || !weapon.equipped ? 2f : weapon.range; }}
 
-	public	BuffScript			buffs = new BuffScript();
-	
-	public class PassiveStatChange
-	{
-		int			str;
-		int			agi;
-		int			con;
-		int			intel;
-		int			hp;
-		int			mana;
-		int			damage;
-		int			attackSpeed;
-		float		cooldownReduction;
-	}
-
 	// Use this for initialization
-	void Start () {
+	protected override void Start () {
+		base.Start ();
 		experienceCurve = new long[49];
 		experienceCurve[0] = 15;
 		for (long i = 1; i < experienceCurve.Length; i++)
 			experienceCurve[i] = (int)(experienceCurve[i - 1] * 1.25f);
-		current_hp = hpMax;
-		current_mana = manaMax;
+
 		instance = this;
-		_attackType = AttackType.NONE;
-		_navMeshAgent = GetComponent<NavMeshAgent>();
-		animator = GetComponentInChildren<Animator>();
-		_sphereCollider = GetComponentInChildren<SphereCollider>();
 		skills = new SkillScript[4];
-		StartCoroutine (RegenMana ());
+	}
+
+	public override bool isInRange (CharacterScript target)
+	{
+		return (enemyTargetsInRange.Find (x => x == target) != null);
+	}
+
+	public override void AttackSound ()
+	{
+		return;
+	}
+
+	public override void DamageSound ()
+	{
+		return;
 	}
 
 	public long GetNextLevelXp()
 	{
 		return (level > experienceCurve.Length) ? long.MaxValue : experienceCurve[level - 1];
-	}
-
-	public int GetDamage()
-	{
-		return Random.Range (minDamage, maxDamage + 1);
 	}
 
 	bool CurrentSkillIsDirectAttack()
@@ -140,7 +91,8 @@ public class PlayerScript : MonoBehaviour {
 		if (_attack)
 		{
 			currentSkill = null;
-			_sphereCollider.radius = weaponRange;
+			sphereCollider.radius = weaponRange;
+			enemyTargeting = false;
 			animator.SetTrigger ("Cancel");
 			_attack = false;
 		}
@@ -155,26 +107,27 @@ public class PlayerScript : MonoBehaviour {
 			{
 				if (hit.collider.tag == "Ground")
 				{
-					Debug.Log ("Ground");
-					_navMeshAgent.destination = hit.point;
-					_navMeshAgent.stoppingDistance = 0.0f;
+					navMeshAgent.destination = hit.point;
+					navMeshAgent.stoppingDistance = 0.0f;
 					CancelAttackAnimation ();
 					currentSkill = null;
 					_attack = false;
-					_enemyTargeting = false;
-					_enemyTarget = null;
-					_navMeshAgent.Resume ();
+					enemyTargeting = false;
+					enemyTarget = null;
+					navMeshAgent.Resume ();
 				}
 				else if (hit.collider.tag == "Enemy")
 				{
-					_navMeshAgent.destination = hit.point;
-					_navMeshAgent.stoppingDistance = _sphereCollider.radius - 0.5f;
-					_enemyTarget = hit.collider.gameObject;
-					if (_enemyTarget == null || _enemyTarget != hit.collider.gameObject)
+					navMeshAgent.destination = hit.point;
+					navMeshAgent.stoppingDistance = sphereCollider.radius - 0.5f;
+					enemyTarget = hit.collider.gameObject.GetComponent<CharacterScript>();
+					if (enemyTarget == null || enemyTarget != hit.collider.gameObject)
 						CancelAttackAnimation ();
 					_attack = false;
-					_enemyTargeting = true;
-					_navMeshAgent.Resume();
+					enemyTargeting = true;
+					navMeshAgent.Resume();
+					if (weapon != null && !weapon.equipped)
+						animator.SetTrigger("Equip");
 				}
 				else if (hit.collider.tag == "Weapon" && hit.collider.gameObject.GetComponent<WeaponScript>() != weapon)
 					InventoryScript.instance.addWeapon (hit.collider.gameObject.GetComponent<WeaponScript>());
@@ -184,24 +137,24 @@ public class PlayerScript : MonoBehaviour {
 
 	bool targetInRange()
 	{
-		return (_enemyTarget != null && isInRange(_enemyTarget));
+		return (enemyTarget != null && isInRange(enemyTarget));
 	}
 
 	public void applyDamage()
 	{
 		if (NoSkillSelected ()) {
-			if (_enemyTarget != null)
+			if (enemyTarget != null)
 			{
-				float val = 75 + agi - _enemyTarget.GetComponent<Enemy> ().agi - Random.Range (1, 101);
+				float val = 75 + agi - enemyTarget.GetComponent<Enemy> ().agi - Random.Range (1, 101);
 				bool hit = val > 0 ? true : false;
 
 				if (hit)
-					_enemyTarget.GetComponent<Enemy> ().ReceiveDamage (GetDamage ());
+					enemyTarget.GetComponent<Enemy> ().ReceiveDamage (GetDamage ());
 				else
-					_enemyTarget.GetComponent<Enemy>().ReceiveDamage (0, true);
+					enemyTarget.GetComponent<Enemy>().ReceiveDamage (0, true);
 			}
 		} else if (CurrentSkillIsDirectAttack ())
-			currentSkill.ApplyEffect (_enemyTarget.transform.position, playerRightHand);
+			currentSkill.ApplyEffect (enemyTarget.transform.position, playerRightHand);
 		else if (currentSkill.skillType == SkillScript.SkillType.SELF_AOE
 			|| currentSkill.skillType == SkillScript.SkillType.PASSIVE_AOE
 			|| currentSkill.skillType == SkillScript.SkillType.TARGETED_AOE)
@@ -212,6 +165,8 @@ public class PlayerScript : MonoBehaviour {
 	{
 		_attack = false;
 		currentSkill = null;
+		if (!Input.GetMouseButton (0))
+			enemyTargeting = false;
 	}
 
 	public void attackBegin()
@@ -271,46 +226,54 @@ public class PlayerScript : MonoBehaviour {
 		}
 	}
 
+	protected override IEnumerator onCoolDown ()
+	{
+		_onCoolDown = true;
+		yield return new WaitForSeconds(attackCooldown);
+		_onCoolDown = false;
+		if (!Input.GetMouseButton (0))
+			enemyTargeting = false;
+	}
+
 	void AttackEnemy()
 	{
-		if (!_attack && _enemyTargeting && targetInRange () && _navMeshAgent.velocity == Vector3.zero)
+		if (!_attack && enemyTargeting && targetInRange () && navMeshAgent.velocity == Vector3.zero)
 		{
 			if (NoSkillSelected () && !_onCoolDown)
 			{
-				_navMeshAgent.Stop ();
+				navMeshAgent.Stop ();
 				StartCoroutine (onCoolDown());
-				transform.LookAt (new Vector3 (_enemyTarget.transform.position.x, this.transform.position.y, _enemyTarget.transform.position.z));
+				transform.LookAt (new Vector3 (enemyTarget.transform.position.x, this.transform.position.y, enemyTarget.transform.position.z));
 				animator.SetInteger ("AttackType", 7);
 				animator.SetTrigger ("WeaponAttack");
-				//attackSounds[Random.Range (0, attackSounds.Length)].Play ();
 				if (!Input.GetMouseButton (0))
-					_enemyTargeting = false;
+					enemyTargeting = false;
 			}
 			if (!NoSkillSelected () && currentSkill.skillType == SkillScript.SkillType.DIRECT_ATTACK && !currentSkill.onCoolDown)
 			{
-				_navMeshAgent.Stop ();
+				navMeshAgent.Stop ();
 				currentSkill.UseSkill ();
-				transform.LookAt (new Vector3 (_enemyTarget.transform.position.x, this.transform.position.y, _enemyTarget.transform.position.z));
-				_enemyTargeting = false;
+				transform.LookAt (new Vector3 (enemyTarget.transform.position.x, this.transform.position.y, enemyTarget.transform.position.z));
+				enemyTargeting = false;
 			}
 		}
 	}
 
 	void RunAnimation ()
 	{
-		if (Mathf.Abs(_navMeshAgent.remainingDistance - _navMeshAgent.stoppingDistance) < 0.1f)
+		if (Mathf.Abs(navMeshAgent.remainingDistance - navMeshAgent.stoppingDistance) < 0.1f)
 		{
-			_navMeshAgent.Stop();
-			_navMeshAgent.velocity = Vector3.zero;
+			navMeshAgent.Stop();
+			navMeshAgent.velocity = Vector3.zero;
 		}
-		animator.SetBool("Run", _navMeshAgent.velocity != Vector3.zero);
+		animator.SetBool("Run", navMeshAgent.velocity != Vector3.zero);
 	}
 
 	void DeathAnimation ()
 	{
 		if (!_dead && current_hp <= 0)
 		{
-			_navMeshAgent.Stop ();
+			navMeshAgent.Stop ();
 			animator.SetTrigger("Death");
 			animator.SetInteger ("RandomDeath", Random.Range(0, 4));
 			_dead = true;
@@ -320,31 +283,31 @@ public class PlayerScript : MonoBehaviour {
 
 	public bool isInRange(GameObject target)
 	{
-		return (_enemyTargetsInRange.Find (x => x == target) != null);
+		return (enemyTargetsInRange.Find (x => x == target) != null);
 	}
 
 	void OnTriggerEnter(Collider col)
 	{
 		if (col.gameObject.tag == "Enemy") 
-			_enemyTargetsInRange.Add (col.gameObject);
+			enemyTargetsInRange.Add (col.gameObject.GetComponent<CharacterScript>());
 		if (col.gameObject.tag == "Potion") {
-			DamagePlayer ((int)-(hpMax * 0.3f), false, true);
+			this.ReceiveDamage((int)-(hpMax * 0.3f), false);
 			Destroy (col.gameObject);
 		}
 	}
 	
 	void OnTriggerExit(Collider col)
 	{
-		_enemyTargetsInRange.Remove (col.gameObject);
+		enemyTargetsInRange.Remove (col.gameObject.GetComponent<CharacterScript>());
 	}
 
 
 	void UpdateRange ()
 	{
 		if (!NoSkillSelected () && CurrentSkillIsDirectAttack())
-			_sphereCollider.radius = currentSkill.range;
+			sphereCollider.radius = currentSkill.range;
 		else
-			_sphereCollider.radius = weaponRange;
+			sphereCollider.radius = weaponRange;
 	}
 
 	void SelectSkill(int index)
@@ -385,12 +348,6 @@ public class PlayerScript : MonoBehaviour {
 		}
 	}
 
-	IEnumerator RegenMana () {
-		while (true) {
-			yield return new WaitForSeconds(1.0f);
-			current_mana = Mathf.Clamp(current_mana + 1, 0, manaMax);
-		}
-	}
 
 	IEnumerator PrepareToReload ()
 	{
@@ -398,23 +355,9 @@ public class PlayerScript : MonoBehaviour {
 		Application.LoadLevel (Application.loadedLevel);
 	}
 
-	IEnumerator onCoolDown ()
-	{
-		_onCoolDown = true;
-		yield return new WaitForSeconds(weaponCoolDown);
-		_onCoolDown = false;
-	}
-
-	public void DamagePlayer (int damage, bool miss = false, bool heal = false)
-	{
-		GameObject clone = Instantiate (Resources.Load ("Prefabs/GUI/DamageText", typeof(GameObject)) as GameObject, this.transform.position + new Vector3(0, this._navMeshAgent.height, 0), Quaternion.identity) as GameObject;
-		clone.GetComponent<DamageTextScript>().SetText ((!miss) ? Mathf.Abs (damage).ToString () : "Miss", heal);
-		this.current_hp = Mathf.Clamp (this.current_hp - damage, 0, this.hpMax);
-	}
-
 	public void StopMoving()
 	{
-		this._navMeshAgent.Stop ();
+		this.navMeshAgent.Stop ();
 	}
 
 	// Update is called once per frame

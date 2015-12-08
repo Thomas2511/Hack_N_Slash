@@ -293,12 +293,11 @@ public abstract class SkillScript : MonoBehaviour, IBeginDragHandler, IDragHandl
 	}
 
 	public void OnPointerEnter (PointerEventData data) {
-		StartCoroutine (waitForTooltip());
+		StartCoroutine ("waitForTooltip", waitForTooltip());
 	}
 	
 	public void OnPointerExit (PointerEventData data) {
 		GameObject tooltip = GameObject.FindGameObjectWithTag("Tooltip");
-		CancelInvoke ("activeTooltip");
 		tooltip.GetComponent<CanvasGroup>().alpha = 0;
 		tooltip.GetComponentInChildren<Text>().text = "";
 	}

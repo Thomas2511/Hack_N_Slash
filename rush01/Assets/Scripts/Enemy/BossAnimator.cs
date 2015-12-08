@@ -4,7 +4,7 @@ using System.Collections;
 public class BossAnimator : MonoBehaviour {
 	
 	void ApplyDamage () {
-		GetComponentInParent<BossScript> ().Damage ();
+		GetComponentInParent<BossScript> ().DamageCharacter();
 	}
 	
 	void AttackSound () {

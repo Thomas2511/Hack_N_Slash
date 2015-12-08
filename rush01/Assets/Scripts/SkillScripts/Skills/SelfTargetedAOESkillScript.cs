@@ -20,7 +20,7 @@ public class SelfTargetedAOESkillScript : SkillScript {
 		if (origin.tag == "Player")
 		{
 			PlayerScript player = origin.GetComponent<PlayerScript>();
-			player.DamagePlayer (percentDamage ? (int)(player.hpMax *  damage / 100.0f) : (int)damage, false, damage < 0);
+			player.ReceiveDamage(percentDamage ? (int)(player.hpMax *  damage / 100.0f) : damage);
 		}
 	}
 }

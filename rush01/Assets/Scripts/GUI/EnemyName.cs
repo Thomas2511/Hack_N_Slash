@@ -5,6 +5,6 @@ using System.Collections;
 public class EnemyName: MonoBehaviour {
 	
 	void Update () {
-		GetComponent<Text> ().text = (PlayerScript.instance._enemyTarget != null) ? PlayerScript.instance._enemyTarget.GetComponent<Enemy>().enemyName : "";
+		GetComponent<Text> ().text = (PlayerScript.instance.enemyTarget != null) ? PlayerScript.instance.enemyTarget.GetComponent<Enemy>().enemyName : "";
 	}
 }

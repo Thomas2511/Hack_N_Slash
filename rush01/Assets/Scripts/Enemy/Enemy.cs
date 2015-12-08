@@ -6,25 +6,14 @@ using System.Collections.Generic;
 [RequireComponent(typeof(NavMeshAgent))]
 [RequireComponent(typeof(AudioSource))]
 [RequireComponent(typeof(Rigidbody))]
-public class Enemy : MonoBehaviour {
+public class Enemy : CharacterScript {
 
 	public delegate void  EnemyEvent();
 	public event EnemyEvent OnDeath;
 	public string enemyName;
 	public int[] spawnStats;
-	public int str;
-	public int agi;
-	public int con;
-	public int armor;
-	public int level;
 	public int expGiven;
-	public int moneyGiven;
-	public int hpMax { get { return con * 5; } }
-	public int current_hp;
-	public int minDamage { get { return Mathf.RoundToInt (str / 2); }}
-	public int maxDamage { get { return minDamage + str; }}
-	public bool dead;
-	public GameObject intruder;
+	
 	public enum EnemyType {
 		SKELETON,
 		NONE
@@ -34,8 +23,6 @@ public class Enemy : MonoBehaviour {
 		{EnemyType.SKELETON, new int[5] {1, 1, 1, 5, 5}}
 	};
 	public EnemyType type;
-	public Animator animator;
-	public NavMeshAgent agent;
 	public AudioSource aS;
 	public AudioSource swordS;
 	public AudioClip death;
@@ -43,18 +30,16 @@ public class Enemy : MonoBehaviour {
 	public AudioClip attack;
 	public Curves.StatCurve[] statCurves;
 
-	public GameObject		damageText;
-
 	private uint _framesToWait = 600;
 
 	protected void OnTriggerEnter (Collider col) {
 		if (col.gameObject.tag == "Player")
-			intruder = col.gameObject;
+			enemyTarget = col.gameObject.GetComponent<CharacterScript>();
 	}
 
 	protected void OnTriggerExit (Collider col) {
 		if (col.gameObject.tag == "Player")
-			intruder = null;
+			enemyTarget = null;
 	}
 
 	protected void InstantiateStats () {
@@ -69,14 +54,11 @@ public class Enemy : MonoBehaviour {
 				case Curves.Stat.CONSTITUTION:
 					con = Curves.ApplyCurve(statCurve.curve, level, con);
 					break;
-				case Curves.Stat.ARMOR:
-					armor = Curves.ApplyCurve(statCurve.curve, level, armor);
-					break;
 				case Curves.Stat.EXPERIENCE:
 					expGiven = Curves.ApplyCurve(statCurve.curve, level, expGiven);
 					break;
 				case Curves.Stat.MONEY:
-					moneyGiven = Curves.ApplyCurve(statCurve.curve, level, moneyGiven);
+					money = Curves.ApplyCurve(statCurve.curve, level, money);
 					break;
 				default:
 					break;
@@ -99,7 +81,7 @@ public class Enemy : MonoBehaviour {
 
 	protected IEnumerator BodyDissolve ()
 	{
-		agent.enabled = false;
+		navMeshAgent.enabled = false;
 		GetComponent<Rigidbody>().isKinematic = true;
 		GetComponent<BoxCollider> ().enabled = false;
 		Destroy (GetComponentInChildren<Canvas> ().gameObject);
@@ -118,15 +100,15 @@ public class Enemy : MonoBehaviour {
 	}
 
 	protected void CheckAggroRange () {
-		if (intruder != null) {
-			agent.SetDestination (intruder.transform.position);
+		if (enemyTarget != null) {
+			navMeshAgent.SetDestination (enemyTarget.transform.position);
 			if (!aS.isPlaying) {
 				aS.clip = move;
 				aS.Play ();
 			}
 			animator.SetBool ("Move", true);
 		} else {
-			agent.SetDestination (this.transform.position);
+			navMeshAgent.SetDestination (this.transform.position);
 			aS.Stop ();
 			animator.SetBool ("Move", false);
 		}
@@ -134,61 +116,44 @@ public class Enemy : MonoBehaviour {
 	}
 
 	protected void Attack () {
-		if (intruder) {
-			float distanceToTarget;
-			bool closeEnough = false;
-
-			distanceToTarget = Vector3.Distance (this.transform.position, intruder.transform.position);
-			closeEnough = distanceToTarget > agent.stoppingDistance ? false : true;
-			if (closeEnough) {
-				Vector3 targetPosition = new Vector3 (intruder.transform.position.x, this.transform.position.y, intruder.transform.position.z);
-				
+		if (enemyTarget && !_onCoolDown) {
+			if (isInRange (enemyTarget)) {
+				Vector3 targetPosition = new Vector3 (enemyTarget.transform.position.x, this.transform.position.y, enemyTarget.transform.position.z);		
 				this.transform.LookAt (targetPosition);
 				animator.SetBool ("Move", false);
 				animator.SetTrigger ("Attack");
+				//StartCoolDown();
 			}
 		}
 	}
 
-	public void AttackSound () {
+	public override bool isInRange (CharacterScript target)
+	{
+		return !(Vector3.Distance (this.transform.position, target.transform.position) > navMeshAgent.stoppingDistance);
+	}
+
+	public override void DamageSound ()
+	{
+		if (!swordS.isPlaying )
+			swordS.Play ();
+	}
+
+	public override void AttackSound () {
 		aS.clip = attack;
 		aS.Play ();
 	}
 
-	public virtual void Damage () {
-		float val = 75 + agi - PlayerScript.instance.agi - Random.Range (1, 101);
-		bool hit = val > 0 ? true : false;
-
-		if (intruder && Vector3.Distance (this.transform.position, intruder.transform.position) <= 2.0 && hit) {
-			PlayerScript.instance.DamagePlayer (GetDamage ());
-			swordS.Play ();
-		} else {
-			PlayerScript.instance.DamagePlayer (0, true);
-		}
-	}
-
-	public int GetDamage()
-	{
-		return Random.Range (minDamage, maxDamage + 1);
-	}
-
-	public void ReceiveDamage (int damage, bool miss = false, bool heal = false) {
-		GameObject clone = Instantiate (Resources.Load ("Prefabs/GUI/DamageText", typeof(GameObject)) as GameObject, this.transform.position + new Vector3(0, this.agent.height, 0), Quaternion.identity) as GameObject;
-		clone.GetComponent<DamageTextScript>().SetText ((!miss) ? damage.ToString () : "Miss", false);
-		this.current_hp = Mathf.Clamp (this.current_hp - damage, 0, this.hpMax);
-	}
-
-	protected virtual void Start () {
+	protected override void Start () {
 		spawnStats = baseStats [type];
 		str = spawnStats [0];
 		agi = spawnStats [1];
 		con = spawnStats [2];
 		expGiven = spawnStats [3];
-		moneyGiven = spawnStats [4];
+		money = spawnStats [4];
 		InstantiateStats ();
-		current_hp = hpMax;
 		dead = false;
-		agent.stoppingDistance = 2.0f;
+		base.Start ();
+		navMeshAgent.stoppingDistance = 2.0f;
 	}
 
 	protected virtual void Update () {
