@@ -299,7 +299,6 @@ public abstract class SkillScript : MonoBehaviour, IBeginDragHandler, IDragHandl
 	
 	public void OnPointerExit (PointerEventData data) {
 		GameObject tooltip = GameObject.FindGameObjectWithTag("Tooltip");
-		CancelInvoke ("activeTooltip");
 		tooltip.GetComponent<CanvasGroup>().alpha = 0;
 		tooltip.GetComponentInChildren<Text>().text = "";
 		tooltip.transform.SetParent (null);
