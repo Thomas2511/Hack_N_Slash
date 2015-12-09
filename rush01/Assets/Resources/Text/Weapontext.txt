@@ -1,49 +1,49 @@
-<size=12><color=orange>Doom Blade</color></size>
+<size=20><color=orange>Doom Blade</color></size>
 Damage	   	: <<damage>>
 Range	   	: <<range>>
 Swing speed	: <<attack_speed>>
 <i>A vile blade, pulsating with unholy power, claimed from a vanquished demon.</i>#[0]#
-<size=12><color=fushia>Heart Seeker</color></size>
+<size=20><color=fushia>Heart Seeker</color></size>
 Damage	   	: <<damage>>
 Range	   	: <<range>>
 Swing speed	: <<attack_speed>>
 <i>An enchanted fencing foil, craed for war. Good at seeking the vitals of the enemy.</i>#[1]#
-<size=12><color=blue>Cruel Scimitar</color></size>
+<size=20><color=blue>Cruel Scimitar</color></size>
 Damage	   	: <<damage>>
 Range	   	: <<range>>
 Swing speed	: <<attack_speed>>
 <i>A large scimitar inflicting grievous wounds, scary to face in combat.</i>#[2]#
-<size=12><color=blue>Lord Silvester's Blade</color></size>
+<size=20><color=blue>Lord Silvester's Blade</color></size>
 Damage	   	: <<damage>>
 Range	   	: <<range>>
 Swing speed	: <<attack_speed>>
 <i>Rich and pompous, lord Silvester bought this blade to parade, and to punish his servant when he felt like it.</i>#[3]#
-<size=12><color=lime>Crystal Sword</color></size>
+<size=20><color=lime>Crystal Sword</color></size>
 Damage	   	: <<damage>>
 Range	   	: <<range>>
 Swing speed	: <<attack_speed>>
 <i>Crystal makes swords very sharp, very hard, and easily enchantable. Rare, but sought for material by swordsmiths.</i>#[4]#
-<size=12><color=lime>Barbarian Greatsword</color></size>
+<size=20><color=lime>Barbarian Greatsword</color></size>
 Damage	   	: <<damage>>
 Range	   	: <<range>>
 Swing speed	: <<attack_speed>>
 <i>A heavy blade, only wielded by the fierce northern warrior.</i>#[5]#
-<size=12><color=lime>Ancient Warrior Relica</color></size>
+<size=20><color=lime>Ancient Warrior Relica</color></size>
 Damage	   	: <<damage>>
 Range	   	: <<range>>
 Swing speed	: <<attack_speed>>
 <i>This sword was buried in a nameless soldier's grave. It is still sharp and deadly.</i>#[6]#
-<size=12><color=white>Seasoned Veteran's Sword</color></size>
+<size=20><color=white>Seasoned Veteran's Sword</color></size>
 Damage	   	: <<damage>>
 Range	   	: <<range>>
 Swing speed	: <<attack_speed>>
 <i>The blade of a seasoned veteran, sharpened with good care.</i>#[7]#
-<size=12><color=white>Jagged Blade</color></size>
+<size=20><color=white>Jagged Blade</color></size>
 Damage	   	: <<damage>>
 Range	   	: <<range>>
 Swing speed	: <<attack_speed>>
 <i>The blade on this sword was craed to inflict the most painful wounds possible.</i>#[8]#
-<size=12><color=white>Knight Battle Sword</color></size>
+<size=20><color=white>Knight Battle Sword</color></size>
 Damage	   	: <<damage>>
 Range	   	: <<range>>
 Swing speed	: <<attack_speed>>

@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 6d3312ad3c4464245ba757d8b5b2ca2e
-timeCreated: 1449629500
+guid: e83e67fbf6afb419abbad65f9d8342c7
+timeCreated: 1449631629
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
-    21300000: 640x480_0_Portrait.png_0
+    21300000: frame_0
   serializedVersion: 2
   mipmaps:
     mipMapMode: 0
@@ -51,13 +51,13 @@ TextureImporter:
   buildTargetSettings: []
   spriteSheet:
     sprites:
-    - name: 640x480_0_Portrait.png_0
+    - name: frame_0
       rect:
         serializedVersion: 2
-        x: 6
-        y: 395
-        width: 222
-        height: 84
+        x: 235
+        y: 60
+        width: 261
+        height: 363
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}

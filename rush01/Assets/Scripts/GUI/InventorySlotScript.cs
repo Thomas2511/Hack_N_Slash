@@ -4,7 +4,7 @@ using UnityEngine.UI;
 using System.Collections;
 
 [RequireComponent(typeof(Image))]
-public class InventorySlotScript : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IDropHandler, IPointerClickHandler
+public class InventorySlotScript : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IDropHandler, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
 {
 	public WeaponScript			weapon = null;
 	public GameObject			weaponIcon = null;
@@ -108,22 +108,12 @@ public class InventorySlotScript : MonoBehaviour, IBeginDragHandler, IDragHandle
 	}
 
 	public void OnPointerEnter (PointerEventData data) {
-		tooltip.transform.parent = this.transform;
-		tooltip.GetComponent<Image>().enabled = true;
-		tooltip.GetComponentInChildren<Text>().enabled = true;
-		if (weapon != null) {
-			tooltip.GetComponentInChildren<Text> ().text = "Damage = " + weapon.damage.ToString ();
-			tooltip.GetComponentInChildren<Text> ().text += "Cooldown = " + weapon.coolDown.ToString ();
-			tooltip.GetComponentInChildren<Text> ().text += "Attack Speed = " + weapon.attackSpeed.ToString ();
-			tooltip.GetComponentInChildren<Text> ().text += "Range = " + weapon.range.ToString ();
-			tooltip.GetComponentInChildren<Text> ().text += "Rarity = " + weapon.rarity.ToString ();
-		} else {
-			tooltip.GetComponentInChildren<Text> ().text = "";
-		}
+		if (weapon != null)
+			weapon.activeTooltip (this.transform.position + new Vector3(0, -10, 0));
 	}
 
 	public void OnPointerExit (PointerEventData data) {
-		tooltip.GetComponent<Image>().enabled = false;
-		tooltip.GetComponentInChildren<Text>().enabled = false;
+		if (weapon != null)
+			weapon.OnMouseExit ();
 	}
 }

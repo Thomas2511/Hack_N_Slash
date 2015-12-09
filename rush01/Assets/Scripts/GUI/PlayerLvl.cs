@@ -5,6 +5,6 @@ using System.Collections;
 public class PlayerLvl : MonoBehaviour {
 
 	void Update () {
-		GetComponent<Text> ().text = PlayerScript.instance.level.ToString ();
+		GetComponent<Text> ().text = "Lvl " + PlayerScript.instance.level.ToString ();
 	}
 }

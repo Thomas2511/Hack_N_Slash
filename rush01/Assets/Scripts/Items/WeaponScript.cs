@@ -45,16 +45,16 @@ public class WeaponScript : MonoBehaviour
 		newText = newText.Replace ("<<attack_speed>>", attackSpeed.ToString());
 		return newText;
 	}
-	public void activeTooltip(Vector3 offset, Transform parent)
+	public void activeTooltip(Vector3 position)
 	{
-		tooltip.transform.position = Camera.main.WorldToScreenPoint (offset + parent.position);
+		tooltip.transform.position = position;
 		tooltip.GetComponent<CanvasGroup> ().alpha = 1;
 		tooltip.GetComponentInChildren<Text>().text = _tooltipText;
 	}
 
 	public void activeTooltip()
 	{
-		activeTooltip (new Vector3 (0, -1f, 0), this.transform);
+		activeTooltip (Camera.main.WorldToScreenPoint (new Vector3(0, -1f, 0) + transform.position));
 	}
 
 	protected virtual IEnumerator waitForTooltip()

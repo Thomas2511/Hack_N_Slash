@@ -1,40 +1,40 @@
-<size=12><color=aqua>Heal <<level>></color></size>
+<size=20><color=aqua>Heal <<level>></color></size>
 <<mana_cost>>
 <<cooldown>>
 <i>Heals your wounds (<<damage>>  of your max hp) with pure light energy.</i>#[0]#
-<size=12><color=blue>Melee Combo <<level>></color></size>
+<size=20><color=blue>Melee Combo <<level>></color></size>
 <<mana_cost>>
 <<cooldown>>
 <i>A succession of sword attacks. Deals <<damage_modifier>> damage each strike. You gain an additionnal attack at level 3 of this skill. A sword is required to use this skill.</i>#[1]#
-<size=12><color=orange>Fire Cloud <<level>></color></size>
+<size=20><color=orange>Fire Cloud <<level>></color></size>
 <<mana_cost>>
 <<cooldown>>
 <i>When activated, surrounds you with a fire cloud. Deals <<damage>> damage to all enemies around you every second.</i>#[2]#
-<size=12><color=orange>Fire Ball <<level>></color></size>
+<size=20><color=orange>Fire Ball <<level>></color></size>
 <<mana_cost>>
 <<cooldown>>
 <i>Replace your physical attack by a ranged fire attack that deals <<damage>> damage to a target enemy.</i>#[3]#
-<size=12><color=orange>Fire Burst <<level>></color></size>
+<size=20><color=orange>Fire Burst <<level>></color></size>
 <<mana_cost>>
 <<cooldown>>
 <i>Burns all enemies in the selected area for <<damage>> damage.</i>#[4]#
-<size=12><color=fushia>Rage <<level>></color></size>
+<size=20><color=fushia>Rage <<level>></color></size>
 <<mana_cost>>
 <<cooldown>>
 <i>When activated, increase your muscle mass. You gain bonuses in Constitution (<<con>>), Strength (<<str>>), Agility (<<agi>>) and Damage (<<bonus_damage>>), but you lose <<p_intel>> of your intelligence in the process.</i>#[5]#
-<size=12><color=blue>Jump Attack <<level>></color></size>
+<size=20><color=blue>Jump Attack <<level>></color></size>
 <<mana_cost>>
 <<cooldown>>
 <i>An impressive, but terribly animated jump attack. Deals <<damage>> damage to a single enemy. A sword  is required to use this skill.</i>#[6]#
-<size=12><color=fushia>Witch Ward <<level>></color></size>
+<size=20><color=fushia>Witch Ward <<level>></color></size>
 <<mana_cost>>
 <<cooldown>>
 <i>When activated, increase your Constitution by <<p_con>>, your Health by <<p_hp>> and your Intelligence by <<p_intel>>.</i>#[7]#
-<size=12><color=lightblue>Lightning Strike <<level>></color></size>
+<size=20><color=lightblue>Lightning Strike <<level>></color></size>
 <<mana_cost>>
 <<cooldown>>
 <i>Shocks all enemies in the selected area for <<damage>> damage.</i>#[8]#
-<size=12><color=lime>Tornado <<level>></color></size>
+<size=20><color=lime>Tornado <<level>></color></size>
 <<mana_cost>>
 <<cooldown>>
 <i>When activated, surrounds you with a powerful tornado. Deals <<damage>> damage to all enemies around you every second.</i>#[9]#
