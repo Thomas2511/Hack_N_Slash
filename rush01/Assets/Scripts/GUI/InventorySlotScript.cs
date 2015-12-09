@@ -108,11 +108,13 @@ public class InventorySlotScript : MonoBehaviour, IBeginDragHandler, IDragHandle
 	}
 
 	public void OnPointerEnter (PointerEventData data) {
+		Debug.Log ("Enter");
 		if (weapon != null)
 			weapon.activeTooltip (this.transform.position + new Vector3(0, -10, 0));
 	}
 
 	public void OnPointerExit (PointerEventData data) {
+		Debug.Log ("Exit");
 		if (weapon != null)
 			weapon.OnMouseExit ();
 	}
