@@ -3,22 +3,27 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using System.Collections;
 
+[RequireComponent(typeof(Image))]
 public class InventorySlotScript : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IDropHandler, IPointerClickHandler
 {
 	public WeaponScript			weapon = null;
 	public GameObject			weaponIcon = null;
+	public Sprite				emptySprite;
 	public GameObject			tooltip;
 	public static GameObject	iconBeingDragged = null;
 	public static WeaponScript	weaponBeingDragged = null;
-	private Vector3				startPosition;
+
+	void Start()
+	{
+		emptySprite = GetComponent<Image> ().sprite;
+	}
 
 	public bool addWeapon (WeaponScript weapon)
 	{
 
 		this.weapon = weapon;
-		this.weaponIcon = Instantiate(this.weapon.weaponIcon);
-		weaponIcon.transform.SetParent (this.transform);
-		weaponIcon.transform.localPosition = Vector3.zero;
+		weaponIcon = this.weapon.weaponIcon;
+		GetComponent<Image> ().sprite = weapon.weaponIcon.GetComponent<Image> ().sprite;
 		if (PlayerScript.instance.weapon == null) PlayerScript.instance.attachWeapon (weapon);
 		else this.weapon.gameObject.SetActive (false);
 		return true;
@@ -26,11 +31,11 @@ public class InventorySlotScript : MonoBehaviour, IBeginDragHandler, IDragHandle
 	
 	public void OnBeginDrag (PointerEventData eventData)
 	{
-		if (weaponIcon != null)
+		if (weapon != null)
 		{
-			iconBeingDragged = weaponIcon;
+			iconBeingDragged = Instantiate(weaponIcon, this.transform.position, Quaternion.identity) as GameObject;
+			iconBeingDragged.transform.SetParent (this.transform);
 			weaponBeingDragged = weapon;
-			startPosition = iconBeingDragged.transform.position;
 		}
 	}
 	
@@ -63,13 +68,12 @@ public class InventorySlotScript : MonoBehaviour, IBeginDragHandler, IDragHandle
 						weapon.GetComponent<Rigidbody>().velocity = Vector3.zero;
 						weapon = null;
 					}
-					Destroy (weaponIcon);
-					return ;
+					GetComponent<Image>().sprite = emptySprite;
 				}
 			}
-			if (iconBeingDragged.transform.parent == this.transform)
-				iconBeingDragged.transform.position = startPosition;
+			Destroy (iconBeingDragged);
 			iconBeingDragged = null;
+			weaponBeingDragged = null;
 		}
 	}
 	
@@ -80,14 +84,14 @@ public class InventorySlotScript : MonoBehaviour, IBeginDragHandler, IDragHandle
 			GameObject parent = iconBeingDragged.transform.parent.gameObject;
 			GameObject weaponIcon = this.weaponIcon;
 			WeaponScript weapon = this.weapon;
-			iconBeingDragged.transform.SetParent (this.transform);
-			iconBeingDragged.transform.localPosition = Vector3.zero;
+			parent.GetComponent<Image>().sprite = this.GetComponent<Image>().sprite;
+			Destroy (iconBeingDragged);
 			this.weapon = weaponBeingDragged;
-			this.weaponIcon = iconBeingDragged;
+			this.weaponIcon = weaponBeingDragged.weaponIcon;
+			GetComponent<Image> ().sprite = this.weaponIcon.GetComponent<Image> ().sprite;
 			if (weaponIcon != null)
 			{
-				weaponIcon.transform.SetParent (parent.transform);
-				weaponIcon.transform.localPosition = Vector3.zero;
+				parent.GetComponent<Image>().sprite = weaponIcon.GetComponent<Image>().sprite;
 			}
 			parent.GetComponent<InventorySlotScript>().weapon = weapon;
 			parent.GetComponent<InventorySlotScript>().weaponIcon = weaponIcon;
