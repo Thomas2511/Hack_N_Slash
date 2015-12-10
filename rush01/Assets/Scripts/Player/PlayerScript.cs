@@ -47,6 +47,7 @@ public class PlayerScript : CharacterScript {
 	// Use this for initialization
 	protected override void Start () {
 		base.Start ();
+
 		experienceCurve = new long[49];
 		experienceCurve[0] = 15;
 		for (long i = 1; i < experienceCurve.Length; i++)
@@ -273,11 +274,12 @@ public class PlayerScript : CharacterScript {
 	{
 		if (!_dead && current_hp <= 0)
 		{
+			OnDeath ();
 			navMeshAgent.Stop ();
 			animator.SetTrigger("Death");
 			animator.SetInteger ("RandomDeath", Random.Range(0, 4));
 			_dead = true;
-			StartCoroutine (PrepareToReload());
+			//StartCoroutine (PrepareToReload());
 		}
 	}
 

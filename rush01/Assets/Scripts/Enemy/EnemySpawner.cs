@@ -33,7 +33,7 @@ public class EnemySpawner : MonoBehaviour {
 			                        this.transform.position.y,
 			                        this.transform.position.z + Random.Range (-radius, radius));
 			_clone = Instantiate (_spawn, position, Quaternion.Euler(0f, 0f + Random.Range(0, 360), 0f)) as Enemy;
-			_clone.OnDeath += OnEnemyDeathListener;
+			_clone.Death += OnEnemyDeathListener;
 			_clone.type = type;
 			if (PlayerScript.instance)
 				_clone.level = PlayerScript.instance.level;

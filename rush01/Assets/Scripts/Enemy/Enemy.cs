@@ -7,9 +7,7 @@ using System.Collections.Generic;
 [RequireComponent(typeof(AudioSource))]
 [RequireComponent(typeof(Rigidbody))]
 public class Enemy : CharacterScript {
-
-	public delegate void  EnemyEvent();
-	public event EnemyEvent OnDeath;
+	
 	public string enemyName;
 	public int[] spawnStats;
 	public int expGiven;

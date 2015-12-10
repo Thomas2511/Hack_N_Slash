@@ -7,6 +7,10 @@ using System.Collections.Generic;
 [RequireComponent(typeof(AudioSource))]
 [RequireComponent(typeof(Animator))]
 public abstract class CharacterScript : MonoBehaviour {
+
+	public delegate void  CharacterEvent();
+	public event CharacterEvent Death;
+
 	public enum AttackType
 	{
 		WEAPON_ATTACK,
@@ -81,6 +85,12 @@ public abstract class CharacterScript : MonoBehaviour {
 	bool targetInRange()
 	{
 		return (enemyTarget != null && isInRange(enemyTarget));
+	}
+
+	protected		void OnDeath()			
+	{
+		if (Death != null)
+		Death ();
 	}
 	
 	public abstract bool isInRange(CharacterScript target);
