@@ -30,8 +30,7 @@ public abstract class StatScript : MonoBehaviour, IPointerEnterHandler, IPointer
 		text.text += (percentStat != 0) ? "<color=orange>%Bonus:" + (percentStat > 0 ? " + " : " - ") + Mathf.Abs(percentStat).ToString () + "% * </color>" + baseStat.ToString () + "\n" : "";
 		text.text += (bonusStat != 0) ? "<color=lime>Bonus:" + (bonusStat > 0 ? " + " : " - ") + Mathf.Abs(bonusStat).ToString () + "</color>\n" : "";
 		text.text += " => " + totalStat.ToString () + "</size>";
-		tooltip.transform.SetParent (this.transform);
-		tooltip.transform.localPosition = new Vector3(0, -30, 0);
+		tooltip.transform.position = this.transform.position + new Vector3(0, -60, 0);
 	}
 
 	public void OnPointerEnter (PointerEventData eventData)
@@ -45,6 +44,5 @@ public abstract class StatScript : MonoBehaviour, IPointerEnterHandler, IPointer
 		CancelInvoke ("ActiveTooltip");
 		tooltip.GetComponent<CanvasGroup>().alpha = 0;
 		tooltip.GetComponentInChildren<Text>().text = "";
-		tooltip.transform.SetParent (null);
 	}
 }

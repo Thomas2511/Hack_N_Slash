@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 
-[RequireComponent(typeof(Animator))]
 [RequireComponent(typeof(NavMeshAgent))]
 [RequireComponent(typeof(AudioSource))]
 [RequireComponent(typeof(Rigidbody))]
@@ -69,7 +68,8 @@ public class Enemy : CharacterScript {
 	protected void CheckHealth () {
 		if (current_hp <= 0 && !dead) {
 			dead = true;
-			OnDeath();
+			if (OnDeath != null)
+				OnDeath();
 			animator.SetTrigger ("Death");
 			aS.clip = death;
 			aS.Play ();
