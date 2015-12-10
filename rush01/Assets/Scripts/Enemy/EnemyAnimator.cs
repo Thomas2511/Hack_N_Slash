@@ -2,6 +2,7 @@
 using System.Collections;
 
 public class EnemyAnimator : MonoBehaviour {
+	public bool		dancing;
 
 	void ApplyDamage () {
 		GetComponentInParent<Enemy> ().DamageCharacter();
@@ -9,5 +10,11 @@ public class EnemyAnimator : MonoBehaviour {
 
 	void AttackSound () {
 		GetComponentInParent<Enemy> ().AttackSound ();
+	}
+
+	void Start()
+	{
+		if (dancing)
+			GetComponent<Animator> ().SetTrigger ("Dance");
 	}
 }
