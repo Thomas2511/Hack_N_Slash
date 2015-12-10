@@ -20,12 +20,12 @@ public class InventorySlotScript : MonoBehaviour, IBeginDragHandler, IDragHandle
 
 	public bool addWeapon (WeaponScript weapon)
 	{
-
 		this.weapon = weapon;
 		weaponIcon = this.weapon.weaponIcon;
 		GetComponent<Image> ().sprite = weapon.weaponIcon.GetComponent<Image> ().sprite;
 		if (PlayerScript.instance.weapon == null) PlayerScript.instance.attachWeapon (weapon);
 		else this.weapon.gameObject.SetActive (false);
+		GetComponent <Image> ().color = Color.white;
 		return true;
 	}
 	
@@ -69,6 +69,7 @@ public class InventorySlotScript : MonoBehaviour, IBeginDragHandler, IDragHandle
 						weapon = null;
 					}
 					GetComponent<Image>().sprite = emptySprite;
+					GetComponent <Image> ().color = Color.clear;
 				}
 			}
 			Destroy (iconBeingDragged);
@@ -85,10 +86,12 @@ public class InventorySlotScript : MonoBehaviour, IBeginDragHandler, IDragHandle
 			GameObject weaponIcon = this.weaponIcon;
 			WeaponScript weapon = this.weapon;
 			parent.GetComponent<Image>().sprite = this.GetComponent<Image>().sprite;
+			parent.GetComponent<Image>().color = this.GetComponent<Image>().color;
 			Destroy (iconBeingDragged);
 			this.weapon = weaponBeingDragged;
 			this.weaponIcon = weaponBeingDragged.weaponIcon;
 			GetComponent<Image> ().sprite = this.weaponIcon.GetComponent<Image> ().sprite;
+			GetComponent <Image> ().color = Color.white;
 			if (weaponIcon != null)
 			{
 				parent.GetComponent<Image>().sprite = weaponIcon.GetComponent<Image>().sprite;
@@ -108,13 +111,11 @@ public class InventorySlotScript : MonoBehaviour, IBeginDragHandler, IDragHandle
 	}
 
 	public void OnPointerEnter (PointerEventData data) {
-		Debug.Log ("Enter");
 		if (weapon != null)
 			weapon.activeTooltip (this.transform.position + new Vector3(0, -10, 0));
 	}
 
 	public void OnPointerExit (PointerEventData data) {
-		Debug.Log ("Exit");
 		if (weapon != null)
 			weapon.OnMouseExit ();
 	}

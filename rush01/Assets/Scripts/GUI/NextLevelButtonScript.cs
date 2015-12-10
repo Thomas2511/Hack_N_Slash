@@ -30,7 +30,8 @@ public class NextLevelButtonScript : MonoBehaviour, IPointerEnterHandler, IPoint
 
 	void OnDisable()
 	{
-		GetComponentInParent<SkillScript> ().tooltipEnabled = true;
+		if (GetComponentInParent<SkillScript>())
+			GetComponentInParent<SkillScript> ().tooltipEnabled = true;
 	}
 
 	// Update is called once per frame
