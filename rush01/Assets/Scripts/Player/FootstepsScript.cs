@@ -10,7 +10,7 @@ public class FootstepsScript : MonoBehaviour {
 
 	void OnCollisionEnter(Collision col) 
 	{
-		if (col.gameObject.tag == "Ground" && !GetComponent<AudioSource>().isPlaying)
+		if (col.gameObject.tag == "Ground")
 		{
 			GetComponent<AudioSource>().clip = sounds[Random.Range(0,sounds.Length)];
 			GetComponent<AudioSource>().Play();
