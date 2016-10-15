@@ -89,7 +89,7 @@ public abstract class CharacterScript : MonoBehaviour {
 
 	protected		void OnDeath()			
 	{
-		if (Death != null)
+		//if (Death != null)
 		Death ();
 	}
 	

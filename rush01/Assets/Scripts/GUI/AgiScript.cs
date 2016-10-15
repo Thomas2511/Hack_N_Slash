@@ -22,7 +22,6 @@ public class AgiScript : StatScript {
 		totalStat = PlayerScript.instance.agiTotal;
 		bonusStat = PlayerScript.instance.buffs.agi;
 		percentStat = PlayerScript.instance.buffs.pAgi;
-
 	}
 
 	public void IncreaseAgi()

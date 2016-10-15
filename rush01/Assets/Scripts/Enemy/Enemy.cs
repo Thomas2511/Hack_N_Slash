@@ -66,7 +66,7 @@ public class Enemy : CharacterScript {
 	protected void CheckHealth () {
 		if (current_hp <= 0 && !dead) {
 			dead = true;
-			if (OnDeath != null)
+			//if (Death != null)
 				OnDeath();
 			animator.SetTrigger ("Death");
 			aS.clip = death;
