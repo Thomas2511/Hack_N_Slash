@@ -11,51 +11,74 @@ public enum LootType {
 
 public class LootManager : MonoBehaviour {
 	public static LootManager instance;
-	public Dictionary<string, Potion> potionPrefabs;
-	public Dictionary<string, WeaponScript> weaponPrefabs;
+	public Dictionary<string, GameObject> potionPrefabs;
+	public Dictionary<string, GameObject> weaponPrefabs;
+
+	public Dictionary<string, LootTable> lootTables;
 
 	void Start () {
 		instance = this;
+		potionPrefabs = new Dictionary<string, GameObject> ();
+		weaponPrefabs = new Dictionary<string, GameObject> ();
+		lootTables = new Dictionary<string, LootTable> ();
+		_loadPrefabs();
+		_loadLootTables ();
+	}
+
+	private void _loadPrefabs() {
 		TextAsset content = Resources.Load("Conf/Items") as TextAsset;
 		List<PrefabPath> prefabPaths = XmlParser.parseLootPrefabPaths (content.text);
-
+		
 		foreach (PrefabPath prefabPath in prefabPaths) {
-
+			
 			switch (prefabPath.type) {
-				case LootType.SWORD:
-					WeaponScript ws = Resources.Load (prefabPath.path) as WeaponScript;
-					weaponPrefabs.Add (prefabPath.id, ws);
+			case LootType.SWORD:
+				Debug.Log (prefabPath.path);
+				GameObject ws = Resources.Load (prefabPath.path) as GameObject;
+				weaponPrefabs.Add (prefabPath.id, ws);
 				break;
-				case LootType.POTION:
-					Potion potion = Resources.Load (prefabPath.path) as Potion;
-					potionPrefabs.Add (prefabPath.id, potion);
+			case LootType.POTION:
+				Debug.Log (prefabPath.path);
+				GameObject potion = Resources.Load (prefabPath.path) as GameObject;
+				potionPrefabs.Add (prefabPath.id, potion);
 				break;
 			}
 		}
 	}
 
-	public void DropLoot (Enemy enemy) {
-		int roll = UnityEngine.Random.Range(1,101);
-		WeaponScript weapon;
+	void _loadLootTables ()
+	{
+		TextAsset content = Resources.Load("Conf/LootTables") as TextAsset;
+		List<EnemyToLootTable> enemyToLootTables = XmlParser.parseLootTables(content.text);
 
-		if (roll >= 70) {
-			Instantiate (potion, enemy.transform.position, Quaternion.identity);
+		foreach (EnemyToLootTable enemyToLootTable in enemyToLootTables) {
+			lootTables.Add (enemyToLootTable.enemy, enemyToLootTable.loots);
 		}
-		if (roll == 100) {
-			weapon = Instantiate (weaponPrefabs[0], enemy.transform.position, Quaternion.Euler (90.0f, 0.0f, 0.0f)) as WeaponScript;
-			weapon.damage += Mathf.RoundToInt (PlayerScript.instance.level * ((UnityEngine.Random.Range (0, 76) / 100f) + 1f));
-		} else if (roll >= 97) {
-			weapon = Instantiate (weaponPrefabs[1], enemy.transform.position, Quaternion.Euler (90.0f, 0.0f, 0.0f)) as WeaponScript;
-			weapon.damage += Mathf.RoundToInt (PlayerScript.instance.level * ((UnityEngine.Random.Range (0, 51) / 100f) + 1f));
-		} else if (roll >= 90) {
-			weapon = Instantiate (weaponPrefabs[UnityEngine.Random.Range (2, 4)], enemy.transform.position, Quaternion.Euler (90.0f, 0.0f, 0.0f)) as WeaponScript;
-			weapon.damage += Mathf.RoundToInt (PlayerScript.instance.level * ((UnityEngine.Random.Range (0, 34) / 100f) + 1f));
-		} else if (roll >= 80) {
-			weapon = Instantiate (weaponPrefabs[UnityEngine.Random.Range (4, 7)], enemy.transform.position, Quaternion.Euler (90.0f, 0.0f, 0.0f)) as WeaponScript;
-			weapon.damage += Mathf.RoundToInt (PlayerScript.instance.level * ((UnityEngine.Random.Range (0, 26) / 100f) + 1f));
-		} else if (roll >= 66) {
-			weapon = Instantiate (weaponPrefabs[UnityEngine.Random.Range (7, 10)], enemy.transform.position, Quaternion.Euler (90.0f, 0.0f, 0.0f)) as WeaponScript;
-			weapon.damage += PlayerScript.instance.level;
+	}
+
+	public void DropLoot (Enemy enemy) {
+		string enemyName = enemy.enemyName;
+
+		if (lootTables.ContainsKey (enemyName)) {
+			LootTable lootTable = lootTables [enemyName];
+			foreach (Loot loot in lootTable.loots) {
+
+				for (int i = 0; i < loot.amount; i++) {
+					int roll = UnityEngine.Random.Range (1, 1001);
+					if (roll <= loot.dropRate) {
+						switch (loot.type) {
+						case LootType.SWORD:
+							if (weaponPrefabs.ContainsKey (loot.id))
+								Instantiate (weaponPrefabs [loot.id], enemy.transform.position, Quaternion.Euler (90.0f, 0.0f, 0.0f));
+							break;
+						case LootType.POTION:
+							if (potionPrefabs.ContainsKey (loot.id))
+								Instantiate (potionPrefabs [loot.id], enemy.transform.position, Quaternion.identity);
+							break;
+						}
+					}
+				}
+			}
 		}
 	}
 }

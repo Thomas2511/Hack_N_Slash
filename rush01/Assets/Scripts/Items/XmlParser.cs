@@ -10,29 +10,37 @@ public static class XmlParser {
 		XmlDocument xmlDoc = new XmlDocument ();
 
 		xmlDoc.LoadXml (content);
-		XmlNodeList nodeList = xmlDoc.DocumentElement.SelectNodes("/items");
+		XmlNodeList nodeList = xmlDoc.DocumentElement.SelectNodes("/items/item");
 		foreach (XmlNode node in nodeList) {
 			prefabPaths.Add (new PrefabPath(
-				_stringToLootType(node.Name),
 				node.SelectSingleNode("id").InnerText,
-				node.SelectSingleNode("path").InnerText
+				node.SelectSingleNode("path").InnerText,
+				_stringToLootType(node.SelectSingleNode("type").InnerText)
 				));
 		}
 		return prefabPaths;
 	}
 
-	public static List<LootTable> parseLootTables(string content) {
-		List<LootTable> loots = new List<LootTable> ();
+	public static List<EnemyToLootTable> parseLootTables(string content) {
+		List<EnemyToLootTable> enemyToLootTables = new List<EnemyToLootTable> ();
 		XmlDocument xmlDoc = new XmlDocument ();
 
 		xmlDoc.LoadXml (content);
-		XmlNodeList nodeList = xmlDoc.DocumentElement.SelectNodes("/");
+		XmlNodeList nodeList = xmlDoc.DocumentElement.SelectNodes("/allTables/lootTable");
 		foreach (XmlNode node in nodeList) {
-			loots.Add (new EnemyToLootTable(
-
-				));
+			string enemy = node.SelectSingleNode("enemy").InnerText;
+			LootTable lootTable = new LootTable();
+			foreach (XmlNode lootNode in node.SelectSingleNode("loots").ChildNodes) {
+				lootTable.loots.Add (new Loot(
+					lootNode.SelectSingleNode("id").InnerText,
+					float.Parse(lootNode.SelectSingleNode("dropRate").InnerText),
+					int.Parse (lootNode.SelectSingleNode("amount").InnerText),
+					_stringToLootType(lootNode.SelectSingleNode("type").InnerText)
+					));
+			}
+			enemyToLootTables.Add (new EnemyToLootTable(lootTable, enemy));
 		}
-		return loots;
+		return enemyToLootTables;
 	}
 
 	static LootType _stringToLootType(string str)
@@ -50,14 +58,14 @@ public static class XmlParser {
 }
 
 public class PrefabPath {
-	public LootType type { get; private set; }
 	public string id { get; private set; }
 	public string path { get; private set; }
-
-	public PrefabPath(LootType type, string id, string path) {
-		this.type = type;
+	public LootType type { get; private set; }
+	
+	public PrefabPath(string id, string path, LootType type) {
 		this.id = id;
 		this.path = path;
+		this.type = type;
 	}
 }
 

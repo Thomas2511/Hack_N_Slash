@@ -1,46 +1,57 @@
 <items>
-	<sword>
+	<item>
 		<id>sword1</id>
-		<path>/Prefabs/Swords</path>
-	</sword>
-	<sword>
+		<path>Prefabs/Swords/DoomBlade</path>
+		<type>sword</type>
+	</item>
+	<item>
 		<id>sword2</id>
-		<path>/Prefabs/Swords</path>
-	</sword>
-	<sword>
+		<path>Prefabs/Swords/HeartSeeker</path>
+		<type>sword</type>
+	</item>
+	<item>
 		<id>sword3</id>
-		<path>/Prefabs/Swords</path>
-	</sword>
-	<sword>
+		<path>Prefabs/Swords/LordSilvester'sBlade</path>
+		<type>sword</type>
+	</item>
+	<item>
 		<id>sword4</id>
-		<path>/Prefabs/Swords</path>
-	</sword>
-	<sword>
+		<path>Prefabs/Swords/CruelScimitar</path>
+		<type>sword</type>
+	</item>
+	<item>
 		<id>sword5</id>
-		<path>/Prefabs/Swords</path>
-	</sword>
-	<sword>
+		<path>Prefabs/Swords/CrystalSword</path>
+		<type>sword</type>
+	</item>
+	<item>
 		<id>sword6</id>
-		<path>/Prefabs/Swords</path>
-	</sword>
-	<sword>
+		<path>Prefabs/Swords/BarbarianGreatsword</path>
+		<type>sword</type>
+	</item>
+	<item>
 		<id>sword7</id>
-		<path>/Prefabs/Swords</path>
-	</sword>
-	<sword>
+		<path>Prefabs/Swords/AncientWarriorRelica</path>
+		<type>sword</type>
+	</item>
+	<item>
 		<id>sword8</id>
-		<path>/Prefabs/Swords</path>
-	</sword>
-	<sword>
+		<path>Prefabs/Swords/JaggedBlade</path>
+		<type>sword</type>
+	</item>
+	<item>
 		<id>sword9</id>
-		<path>/Prefabs/Swords</path>
-	</sword>
-	<sword>
+		<path>Prefabs/Swords/KnightBattleSword</path>
+		<type>sword</type>
+	</item>
+	<item>
 		<id>sword10</id>
-		<path>/Prefabs/Swords</path>
-	</sword>
-	<misc>
+		<path>Prefabs/Swords/SeasonedVeteranSword</path>
+		<type>sword</type>
+	</item>
+	<item>
 		<id>potion1</id>
-		<path>/Prefabs/Misc</path>
-	</misc>
+		<path>Prefabs/Potions/HealthPotion</path>
+		<type>potion</type>
+	</item>
 </items>
