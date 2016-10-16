@@ -1,0 +1,10 @@
+<lootTable>
+	<enemy>skeleton</enemy>
+	<loots>
+		<loot>
+			<id></id>
+			<dropRate></dropRate>
+			<amount></amount>
+		</loot>
+	</loots>	
+</lootTable>
